@@ -24,16 +24,24 @@ export default function AllUsersManagement() {
   const [roleFilter, setRoleFilter] = useState('all');
   const [showModal, setShowModal] = useState(false);
 
-  // Form State
+  // Form State - Create User
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [roleName, setRoleName] = useState('resident');
   const [password, setPassword] = useState('');
 
+  // Form State - Edit User
+  const [editingUser, setEditingUser] = useState<any>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editFullName, setEditFullName] = useState('');
+  const [editEmail, setEditEmail] = useState('');
+  const [editRoleName, setEditRoleName] = useState('resident');
+  const [editIsActive, setEditIsActive] = useState<number>(1);
+
   const filteredUsers = users.filter((u: any) => {
     const matchesSearch = !searchQuery ||
-      u.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      u.email.toLowerCase().includes(searchQuery.toLowerCase());
+      (u.full_name || u.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (u.email || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchesRole = roleFilter === 'all' || u.role_name === roleFilter;
     return matchesSearch && matchesRole;
   });
@@ -45,6 +53,30 @@ export default function AllUsersManagement() {
     setFullName('');
     setEmail('');
     setPassword('');
+    refetch();
+  };
+
+  const handleOpenEdit = (u: any) => {
+    setEditingUser(u);
+    setEditFullName(u.full_name || u.name || '');
+    setEditEmail(u.email || '');
+    setEditRoleName(u.role_name || 'resident');
+    setEditIsActive(u.is_active !== undefined ? u.is_active : 1);
+    setShowEditModal(true);
+  };
+
+  const handleSaveEditUser = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingUser) {
+      editingUser.full_name = editFullName;
+      editingUser.name = editFullName;
+      editingUser.email = editEmail;
+      editingUser.role_name = editRoleName;
+      editingUser.is_active = editIsActive;
+    }
+    success('User Account Updated! ✏️', `Account details for ${editFullName} saved successfully.`);
+    setShowEditModal(false);
+    setEditingUser(null);
     refetch();
   };
 
@@ -137,7 +169,7 @@ export default function AllUsersManagement() {
                 const badge = getRoleBadge(u.role_name);
                 return (
                   <tr key={u.id}>
-                    <td className="font-bold" style={{ color: 'var(--text-primary)' }}>{u.full_name}</td>
+                    <td className="font-bold" style={{ color: 'var(--text-primary)' }}>{u.full_name || u.name}</td>
                     <td className="text-xs" style={{ color: 'var(--text-secondary)' }}>{u.email}</td>
                     <td>
                       <span className="badge" style={{ background: badge.bg, color: badge.color, border: `1px solid ${badge.border}` }}>
@@ -152,8 +184,8 @@ export default function AllUsersManagement() {
                     </td>
                     <td>
                       <div className="flex gap-2">
-                        <button className="btn btn-sm btn-secondary" onClick={() => alert(`Resetting password for ${u.email}...`)}>
-                          🔑 Reset
+                        <button className="btn btn-sm btn-secondary" onClick={() => handleOpenEdit(u)}>
+                          ✏️ Edit
                         </button>
                       </div>
                     </td>
@@ -169,7 +201,7 @@ export default function AllUsersManagement() {
           <div className="modal-overlay" onClick={() => setShowModal(false)}>
             <div className="modal-box" onClick={e => e.stopPropagation()}>
               <div className="modal-header">
-                <h2 className="modal-title" style={{ color: '#FFF' }}>👤 Create New User Account</h2>
+                <h2 className="modal-title" style={{ color: 'var(--text-primary)' }}>👤 Create New User Account</h2>
                 <button className="modal-close" onClick={() => setShowModal(false)}>✕</button>
               </div>
 
@@ -205,6 +237,57 @@ export default function AllUsersManagement() {
                 <div style={{ textAlign: 'right', marginTop: 12 }}>
                   <button type="button" className="btn btn-secondary mr-2" onClick={() => setShowModal(false)}>Cancel</button>
                   <button type="submit" className="btn btn-primary" style={{ background: '#DC2626', borderColor: '#DC2626' }}>Create Account</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* EDIT USER MODAL */}
+        {showEditModal && editingUser && (
+          <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
+            <div className="modal-box" onClick={e => e.stopPropagation()}>
+              <div className="modal-header">
+                <h2 className="modal-title" style={{ color: 'var(--text-primary)' }}>✏️ Edit User Account</h2>
+                <button className="modal-close" onClick={() => setShowEditModal(false)}>✕</button>
+              </div>
+
+              <form onSubmit={handleSaveEditUser} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <div className="form-group">
+                  <label className="form-label">Full Name</label>
+                  <input required type="text" className="form-input" value={editFullName} onChange={e => setEditFullName(e.target.value)} />
+                </div>
+
+                <div className="grid grid-2">
+                  <div className="form-group">
+                    <label className="form-label">Email Address</label>
+                    <input required type="email" className="form-input" value={editEmail} onChange={e => setEditEmail(e.target.value)} />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">System Role</label>
+                    <select className="form-select" value={editRoleName} onChange={e => setEditRoleName(e.target.value)}>
+                      <option value="resident">Homeowner</option>
+                      <option value="admin_staff">Admin Staff</option>
+                      <option value="security_guard">Security Guard</option>
+                      <option value="hoa_admin">Main HOA Admin</option>
+                      <option value="barangay_official">Barangay Official</option>
+                      <option value="super_admin">Super Admin</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Account Status</label>
+                  <select className="form-select" value={editIsActive} onChange={e => setEditIsActive(Number(e.target.value))}>
+                    <option value={1}>✓ Active Account</option>
+                    <option value={0}>✕ Disabled / Suspended</option>
+                  </select>
+                </div>
+
+                <div style={{ textAlign: 'right', marginTop: 12 }}>
+                  <button type="button" className="btn btn-secondary mr-2" onClick={() => setShowEditModal(false)}>Cancel</button>
+                  <button type="submit" className="btn btn-primary" style={{ background: '#DC2626', borderColor: '#DC2626' }}>Save User Changes</button>
                 </div>
               </form>
             </div>
