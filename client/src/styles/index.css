@@ -1205,6 +1205,20 @@ input[type="time"] {
     margin-bottom: var(--space-4) !important;
   }
 
+  /* Public Landing Page Mobile Fixes */
+  .public-nav-desktop {
+    display: none !important;
+  }
+
+  .mobile-menu-btn {
+    display: block !important;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+
   .modal-box {
     width: calc(100vw - 32px) !important;
     max-width: 100% !important;

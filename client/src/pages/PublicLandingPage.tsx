@@ -207,7 +207,7 @@ export default function PublicLandingPage() {
           </button>
 
           {/* Nav Links */}
-          <nav style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+          <nav className="public-nav-desktop" style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
             {NAV_LINKS.map(link => (
               <button
                 key={link}
