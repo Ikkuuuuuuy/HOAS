@@ -213,10 +213,10 @@ export default function HomeownerPortal() {
             {activeTab === 'financials' && (
               <div>
                 {/* Dues Summary Card */}
-                <div className="card mb-6" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(220,38,38,0.3)', boxShadow: '0 8px 30px rgba(0,0,0,0.4)' }}>
+                <div className="card mb-6" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}>
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <div className="text-xs font-semibold" style={{ color: '#9CA3AF' }}>HOA Dues & Assessment Balance</div>
+                      <div className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>HOA Dues & Assessment Balance</div>
                       <div style={{ fontSize: 'var(--font-3xl)', fontWeight: 800, color: (myDues?.grandTotalDue || 3000) > 0 ? '#F87171' : '#34D399' }}>
                         ₱{(myDues?.grandTotalDue || 3000).toLocaleString()}
                       </div>
@@ -226,40 +226,40 @@ export default function HomeownerPortal() {
                     </button>
                   </div>
 
-                  <div className="grid grid-2" style={{ background: 'rgba(255,255,255,0.05)', padding: 'var(--space-4)', borderRadius: 'var(--radius-md)' }}>
+                  <div className="grid grid-2" style={{ background: 'var(--bg-hover)', padding: 'var(--space-4)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
                     <div>
-                      <span className="text-xs" style={{ color: '#9CA3AF' }}>Current Period Dues: </span>
-                      <strong className="text-sm" style={{ color: '#FFFFFF' }}>₱{(myDues?.totalCurrentDue || 2500).toLocaleString()}</strong>
+                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Current Period Dues: </span>
+                      <strong className="text-sm" style={{ color: 'var(--text-primary)' }}>₱{(myDues?.totalCurrentDue || 2500).toLocaleString()}</strong>
                     </div>
                     <div>
-                      <span className="text-xs" style={{ color: '#9CA3AF' }}>Previous Balance: </span>
-                      <strong className="text-sm" style={{ color: '#FBBF24' }}>₱{(myDues?.totalPreviousBalance || 500).toLocaleString()}</strong>
+                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Previous Balance: </span>
+                      <strong className="text-sm" style={{ color: '#D97706' }}>₱{(myDues?.totalPreviousBalance || 500).toLocaleString()}</strong>
                     </div>
                   </div>
                 </div>
 
                 {/* HOA Community Financial Overview */}
-                <div className="card mb-6" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(255,255,255,0.12)' }}>
-                  <div className="section-title" style={{ color: '#FFF' }}>HOA Financial Status & Reserves Overview</div>
+                <div className="card mb-6" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+                  <div className="section-title" style={{ color: 'var(--text-primary)' }}>HOA Financial Status & Reserves Overview</div>
                   <div className="grid grid-3">
                     <div style={{ background: 'rgba(52, 211, 153, 0.15)', border: '1px solid rgba(52, 211, 153, 0.3)', padding: 'var(--space-4)', borderRadius: 'var(--radius-md)' }}>
-                      <div className="text-xs font-semibold" style={{ color: '#9CA3AF' }}>Total Dues Collected</div>
-                      <div className="text-xl font-bold" style={{ color: '#34D399' }}>₱{communityFin?.totalCollected?.toLocaleString() || '2,500'}</div>
+                      <div className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Total Dues Collected</div>
+                      <div className="text-xl font-bold" style={{ color: '#059669' }}>₱{communityFin?.totalCollected?.toLocaleString() || '2,500'}</div>
                     </div>
                     <div style={{ background: 'rgba(248, 113, 113, 0.15)', border: '1px solid rgba(248, 113, 113, 0.3)', padding: 'var(--space-4)', borderRadius: 'var(--radius-md)' }}>
-                      <div className="text-xs font-semibold" style={{ color: '#9CA3AF' }}>Total Expenditures</div>
-                      <div className="text-xl font-bold" style={{ color: '#F87171' }}>₱{communityFin?.totalSpent?.toLocaleString() || '103,950'}</div>
+                      <div className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Total Expenditures</div>
+                      <div className="text-xl font-bold" style={{ color: '#DC2626' }}>₱{communityFin?.totalSpent?.toLocaleString() || '103,950'}</div>
                     </div>
                     <div style={{ background: 'rgba(96, 165, 250, 0.15)', border: '1px solid rgba(96, 165, 250, 0.3)', padding: 'var(--space-4)', borderRadius: 'var(--radius-md)' }}>
-                      <div className="text-xs font-semibold" style={{ color: '#9CA3AF' }}>Net Cash Reserves</div>
-                      <div className="text-xl font-bold" style={{ color: '#60A5FA' }}>₱{communityFin?.netReserves?.toLocaleString() || '-101,450'}</div>
+                      <div className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Net Cash Reserves</div>
+                      <div className="text-xl font-bold" style={{ color: '#2563EB' }}>₱{communityFin?.netReserves?.toLocaleString() || '-101,450'}</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Expenditures Breakdown Table */}
-                <div className="card" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(255,255,255,0.12)' }}>
-                  <div className="section-title" style={{ color: '#FFF' }}>HOA Community Expenditures & Cash Outflows</div>
+                <div className="card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+                  <div className="section-title" style={{ color: 'var(--text-primary)' }}>HOA Community Expenditures & Cash Outflows</div>
                   <table className="data-table">
                     <thead>
                       <tr><th>Category</th><th>Title / Description</th><th>Date</th><th>Amount</th></tr>
@@ -269,11 +269,11 @@ export default function HomeownerPortal() {
                         <tr key={exp.id}>
                           <td><span className="badge badge-issued" style={{ textTransform: 'capitalize' }}>{exp.category}</span></td>
                           <td>
-                            <div className="font-semibold" style={{ color: '#FFF' }}>{exp.title}</div>
-                            <div className="text-xs" style={{ color: '#9CA3AF' }}>{exp.description}</div>
+                            <div className="font-semibold" style={{ color: 'var(--text-primary)' }}>{exp.title}</div>
+                            <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{exp.description}</div>
                           </td>
-                          <td className="text-xs" style={{ color: '#E5E7EB' }}>{exp.date_spent}</td>
-                          <td className="font-bold" style={{ color: '#F87171' }}>₱{exp.amount.toLocaleString()}</td>
+                          <td className="text-xs" style={{ color: 'var(--text-secondary)' }}>{exp.date_spent}</td>
+                          <td className="font-bold" style={{ color: '#DC2626' }}>₱{exp.amount.toLocaleString()}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -286,7 +286,7 @@ export default function HomeownerPortal() {
             {activeTab === 'requests' && (
               <div>
                 <div className="flex justify-between items-center mb-6">
-                  <div className="section-title" style={{ margin: 0, color: '#FFF' }}>My HOA Service Requests</div>
+                  <div className="section-title" style={{ margin: 0, color: 'var(--text-primary)' }}>My HOA Service Requests</div>
                   <button className="btn btn-primary" style={{ background: '#DC2626', borderColor: '#DC2626' }} onClick={() => setShowRequestModal(true)}>
                     + Submit New Request
                   </button>
@@ -298,16 +298,16 @@ export default function HomeownerPortal() {
                     { title: 'Home Improvement', desc: 'Permit for fencing, roofing, & repairs', icon: '🏗' },
                     { title: 'Schedule Officer Meeting', desc: 'Request 1-on-1 meeting with HOA officers', icon: '🤝' },
                   ].map((r, i) => (
-                    <div key={i} className="card" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer' }} onClick={() => setShowRequestModal(true)}>
+                    <div key={i} className="card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', cursor: 'pointer' }} onClick={() => setShowRequestModal(true)}>
                       <div style={{ fontSize: '2rem', marginBottom: 8 }}>{r.icon}</div>
-                      <div className="font-bold text-sm" style={{ color: '#FFF' }}>{r.title}</div>
-                      <div className="text-xs mt-1" style={{ color: '#9CA3AF' }}>{r.desc}</div>
+                      <div className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>{r.title}</div>
+                      <div className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>{r.desc}</div>
                     </div>
                   ))}
                 </div>
 
-                <div className="card" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(255,255,255,0.12)' }}>
-                  <div className="section-title" style={{ color: '#FFF' }}>Request History & Status</div>
+                <div className="card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+                  <div className="section-title" style={{ color: 'var(--text-primary)' }}>Request History & Status</div>
                   <table className="data-table">
                     <thead>
                       <tr><th>Type</th><th>Details</th><th>Scheduled / Info</th><th>Status</th><th>Date</th></tr>
@@ -316,10 +316,10 @@ export default function HomeownerPortal() {
                       {requests?.map((req: any) => (
                         <tr key={req.id}>
                           <td><span className="badge badge-issued" style={{ textTransform: 'capitalize' }}>{req.request_type.replace(/_/g, ' ')}</span></td>
-                          <td className="truncate" style={{ maxWidth: 180, color: '#FFF' }}>{req.details}</td>
-                          <td className="text-xs" style={{ color: '#9CA3AF' }}>{req.vehicle_info || req.scheduled_at || '—'}</td>
+                          <td className="truncate" style={{ maxWidth: 180, color: 'var(--text-primary)' }}>{req.details}</td>
+                          <td className="text-xs" style={{ color: 'var(--text-muted)' }}>{req.vehicle_info || req.scheduled_at || '—'}</td>
                           <td><span className={`badge badge-${req.status}`}>{req.status}</span></td>
-                          <td className="text-xs" style={{ color: '#E5E7EB' }}>{new Date(req.created_at).toLocaleDateString('en-PH')}</td>
+                          <td className="text-xs" style={{ color: 'var(--text-secondary)' }}>{new Date(req.created_at).toLocaleDateString('en-PH')}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -334,16 +334,16 @@ export default function HomeownerPortal() {
             {/* TAB 4: EVENTS, ANNOUNCEMENTS & MEETINGS */}
             {activeTab === 'events' && (
               <div>
-                <div className="card mb-6" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(255,255,255,0.12)' }}>
-                  <div className="section-title" style={{ color: '#FFF' }}>📢 Community Announcements & Agendas</div>
+                <div className="card mb-6" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+                  <div className="section-title" style={{ color: 'var(--text-primary)' }}>📢 Community Announcements & Agendas</div>
                   {announcements?.map((ann: any) => (
-                    <div key={ann.id} style={{ padding: 'var(--space-4) 0', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                    <div key={ann.id} style={{ padding: 'var(--space-4) 0', borderBottom: '1px solid var(--border)' }}>
                       <div className="flex items-center gap-3 mb-1">
                         <span className={`badge badge-${ann.category === 'urgent' ? 'rejected' : 'issued'}`}>{ann.category}</span>
-                        <span className="text-xs" style={{ color: '#9CA3AF' }}>{new Date(ann.created_at).toLocaleDateString('en-PH')}</span>
+                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{new Date(ann.created_at).toLocaleDateString('en-PH')}</span>
                       </div>
-                      <h4 className="font-bold text-sm" style={{ color: '#FFF' }}>{ann.title}</h4>
-                      <p className="text-xs mt-1" style={{ color: '#D1D5DB' }}>{ann.content}</p>
+                      <h4 className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>{ann.title}</h4>
+                      <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>{ann.content}</p>
                     </div>
                   ))}
                 </div>
@@ -354,13 +354,13 @@ export default function HomeownerPortal() {
           {/* RIGHT SIDEBAR: QUICK LINKS, VICINITY MAP & CALENDAR */}
           <div>
             {/* Quick Links Card */}
-            <div className="card mb-6" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(255,255,255,0.15)' }}>
-              <div className="section-title" style={{ color: '#FFF' }}>🔗 Quick Links</div>
+            <div className="card mb-6" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+              <div className="section-title" style={{ color: 'var(--text-primary)' }}>🔗 Quick Links</div>
               <div className="flex flex-col gap-2">
-                <button className="btn btn-secondary w-full" style={{ justifyContent: 'flex-start', color: '#FFF', background: 'rgba(220,38,38,0.2)', border: '1px solid #DC2626', fontWeight: 700 }} onClick={() => window.location.href = '/#map-&-amenities'}>
+                <button className="btn btn-secondary w-full" style={{ justifyContent: 'flex-start', background: 'rgba(220,38,38,0.08)', border: '1px solid #DC2626', color: '#DC2626', fontWeight: 700 }} onClick={() => window.location.href = '/#map-&-amenities'}>
                   🗺 View Map on Home Page
                 </button>
-                <button className="btn btn-secondary w-full" style={{ justifyContent: 'flex-start', color: '#FFF' }} onClick={() => alert('Downloading BRIA Northridge Grove By-Laws PDF...')}>
+                <button className="btn btn-secondary w-full" style={{ justifyContent: 'flex-start' }} onClick={() => alert('Downloading BRIA Northridge Grove By-Laws PDF...')}>
                   📖 HOA By-Laws & Building Rules
                 </button>
                 <button className="btn btn-secondary w-full text-danger" style={{ justifyContent: 'flex-start' }} onClick={() => alert('Hotlines: Gate Guard: (02) 8987-6543 | Police CSJDM: 911')}>
@@ -370,12 +370,12 @@ export default function HomeownerPortal() {
             </div>
 
             {/* Calendar Widget */}
-            <div className="card" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(255,255,255,0.15)' }}>
-              <div className="section-title" style={{ color: '#FFF' }}>📅 Calendar Events</div>
-              <div style={{ textAlign: 'center', padding: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: 8, marginBottom: 12 }}>
-                <div style={{ fontWeight: 700, color: '#FFF' }}>August 2026</div>
-                <div className="text-xs" style={{ color: '#9CA3AF', marginTop: 4 }}>• Aug 10: Pool Maintenance</div>
-                <div className="text-xs" style={{ color: '#9CA3AF' }}>• Aug 17: Board Meeting</div>
+            <div className="card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+              <div className="section-title" style={{ color: 'var(--text-primary)' }}>📅 Calendar Events</div>
+              <div style={{ textAlign: 'center', padding: '12px', background: 'var(--bg-hover)', borderRadius: 8, border: '1px solid var(--border)' }}>
+                <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>August 2026</div>
+                <div className="text-xs" style={{ color: 'var(--text-muted)', marginTop: 4 }}>• Aug 10: Pool Maintenance</div>
+                <div className="text-xs" style={{ color: 'var(--text-muted)' }}>• Aug 17: Board Meeting</div>
               </div>
             </div>
           </div>
