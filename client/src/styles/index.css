@@ -221,14 +221,14 @@
 }
 
 [data-theme="light"] .sidebar {
-  background: #FFFFFF !important;
-  border-right-color: #E2E8F0 !important;
-  box-shadow: 2px 0 12px rgba(15, 23, 42, 0.03);
+  background: #F1F5F9 !important;
+  border-right-color: #CBD5E1 !important;
+  box-shadow: 4px 0 20px rgba(15, 23, 42, 0.04);
 }
 
 [data-theme="light"] .sidebar-brand {
-  background: #FFFFFF !important;
-  border-bottom-color: #E2E8F0 !important;
+  background: #F1F5F9 !important;
+  border-bottom-color: #CBD5E1 !important;
 }
 
 [data-theme="light"] .sidebar-brand-title {
@@ -240,23 +240,26 @@
 }
 
 [data-theme="light"] .sidebar-nav-item {
-  color: #475569 !important;
+  color: #334155 !important;
 }
 
 [data-theme="light"] .sidebar-nav-item:hover {
-  background: #F1F5F9 !important;
+  background: #E2E8F0 !important;
   color: #0F172A !important;
 }
 
 [data-theme="light"] .sidebar-nav-item.active {
-  background: rgba(220, 38, 38, 0.08) !important;
-  color: var(--nav-accent, #DC2626) !important;
-  font-weight: 700 !important;
+  background: rgba(220, 38, 38, 0.12) !important;
+  color: #DC2626 !important;
+  font-weight: 800 !important;
+  border-left: 3px solid #DC2626 !important;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.12) !important;
 }
 
 [data-theme="light"] .sidebar-user-clickable {
-  background: #F8FAFC !important;
-  border-color: #E2E8F0 !important;
+  background: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05) !important;
 }
 
 [data-theme="light"] .sidebar-user-name {
@@ -271,7 +274,7 @@
 [data-theme="light"] .navbar {
   background: #FFFFFF !important;
   border-bottom-color: #E2E8F0 !important;
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
 }
 
 [data-theme="light"] .navbar-title {
@@ -286,14 +289,14 @@
 [data-theme="light"] .btn-notification,
 [data-theme="light"] .navbar-time {
   background: #F8FAFC !important;
-  border-color: #E2E8F0 !important;
+  border-color: #CBD5E1 !important;
   color: #0F172A !important;
 }
 
 [data-theme="light"] .btn-theme-toggle:hover,
 [data-theme="light"] .btn-notification:hover {
   background: #F1F5F9 !important;
-  border-color: #CBD5E1 !important;
+  border-color: #94A3B8 !important;
 }
 
 [data-theme="light"] .btn-secondary {
