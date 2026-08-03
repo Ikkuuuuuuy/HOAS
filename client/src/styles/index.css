@@ -316,6 +316,70 @@
   font-weight: 700 !important;
 }
 
+/* Modal Overlay & Popover Menu Light Mode Fixes */
+[data-theme="light"] .modal-overlay {
+  background: rgba(15, 23, 42, 0.4) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+[data-theme="light"] .user-popover-menu {
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 -8px 30px rgba(15, 23, 42, 0.15) !important;
+}
+
+[data-theme="light"] .menu-header-name {
+  color: #0F172A !important;
+}
+
+[data-theme="light"] .menu-header-email {
+  color: #64748B !important;
+}
+
+[data-theme="light"] .user-menu-item {
+  color: #0F172A !important;
+}
+
+[data-theme="light"] .user-menu-item:hover {
+  background: #F1F5F9 !important;
+  color: #0F172A !important;
+}
+
+[data-theme="light"] .user-menu-item.logout-item:hover {
+  background: rgba(220, 38, 38, 0.1) !important;
+  color: #DC2626 !important;
+}
+
+[data-theme="light"] .form-label {
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+
+[data-theme="light"] .empty-state h3 {
+  color: #0F172A !important;
+}
+
+[data-theme="light"] .empty-state p {
+  color: #64748B !important;
+}
+
+[data-theme="light"] code {
+  background: #F1F5F9 !important;
+  color: #0F172A !important;
+  border: 1px solid #E2E8F0 !important;
+}
+
+[data-theme="light"] div[style*="rgba(37, 99, 235"] {
+  background: #EFF6FF !important;
+  border-color: #BFDBFE !important;
+  color: #1E40AF !important;
+}
+
+[data-theme="light"] strong[style*="color: '#FFF'"],
+[data-theme="light"] strong[style*="color: #FFF"] {
+  color: #0F172A !important;
+}
+
 /* ── Role theme accents ──────────────────────────────────── */
 :root {
   --brgy-color:     #059669;   /* Emerald — Barangay */

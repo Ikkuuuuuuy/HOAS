@@ -132,12 +132,12 @@ export default function FacilityCalendar() {
         <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
           <div className="flex gap-4 flex-wrap">
             {facilities?.map(f => (
-              <div key={f.id} className="card" style={{ padding: 'var(--space-4) var(--space-6)', minWidth: 200, textAlign: 'center', background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(255,255,255,0.12)' }}>
+              <div key={f.id} className="card" style={{ padding: 'var(--space-4) var(--space-6)', minWidth: 200, textAlign: 'center', background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
                 <div style={{ fontSize: '1.8rem' }}>
                   {f.name.includes('Clubhouse') ? '🏠' : f.name.includes('Basketball') ? '🏀' : f.name.includes('Pool') ? '🏊' : f.name.includes('Hall') ? '🏛' : '🏢'}
                 </div>
-                <div className="font-bold text-sm" style={{ color: '#FFF', marginTop: 6 }}>{f.name}</div>
-                <div className="text-xs text-muted" style={{ color: '#9CA3AF', marginTop: 2 }}>Cap: {f.capacity} Persons</div>
+                <div className="font-bold text-sm" style={{ color: 'var(--text-primary)', marginTop: 6 }}>{f.name}</div>
+                <div className="text-xs text-muted" style={{ color: 'var(--text-muted)', marginTop: 2 }}>Cap: {f.capacity} Persons</div>
               </div>
             ))}
           </div>
@@ -155,11 +155,11 @@ export default function FacilityCalendar() {
         </div>
 
         {/* CLEAN INFORMATIONAL NOTICE BANNER */}
-        <div className="card mb-6" style={{ background: 'rgba(37, 99, 235, 0.12)', border: '1px solid rgba(59, 130, 246, 0.3)', padding: '14px 20px', borderRadius: 10 }}>
+        <div className="card mb-6" style={{ background: 'var(--info-soft)', border: '1px solid rgba(59, 130, 246, 0.3)', padding: '14px 20px', borderRadius: 10 }}>
           <div className="flex items-center gap-3">
             <span style={{ fontSize: 18 }}>ℹ️</span>
-            <div style={{ fontSize: 13, color: '#93C5FD', lineHeight: 1.4 }}>
-              <strong style={{ color: '#FFF' }}>Automatic Time Slot Collision Protection Active:</strong> When booking a facility, taken time slots are automatically locked in 🔴 Red (disabled from being clicked) so double-bookings are prevented.
+            <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+              <strong style={{ color: 'var(--text-primary)' }}>Automatic Time Slot Collision Protection Active:</strong> When booking a facility, taken time slots are automatically locked in 🔴 Red (disabled from being clicked) so double-bookings are prevented.
             </div>
           </div>
         </div>
@@ -167,10 +167,10 @@ export default function FacilityCalendar() {
         {/* Existing Reservations Table */}
         {reservationsByFacility.map(({ facility, reservations: res }) => (
           res.length > 0 && (
-            <div key={facility.id} className="card" style={{ marginBottom: 'var(--space-6)', background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(255,255,255,0.12)' }}>
-              <div className="section-title" style={{ color: '#FFF' }}>
+            <div key={facility.id} className="card" style={{ marginBottom: 'var(--space-6)', background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+              <div className="section-title" style={{ color: 'var(--text-primary)' }}>
                 {facility.name.includes('Clubhouse') ? '🏠' : facility.name.includes('Basketball') ? '🏀' : facility.name.includes('Pool') ? '🏊' : '🏛'} {facility.name}
-                <span className="text-xs text-muted" style={{ textTransform: 'none', letterSpacing: 'normal', color: '#9CA3AF', marginLeft: 8 }}>
+                <span className="text-xs text-muted" style={{ textTransform: 'none', letterSpacing: 'normal', color: 'var(--text-muted)', marginLeft: 8 }}>
                   ({res.length} active reservation{res.length !== 1 ? 's' : ''})
                 </span>
               </div>
@@ -188,10 +188,10 @@ export default function FacilityCalendar() {
                 <tbody>
                   {res.map((r: any) => (
                     <tr key={r.id}>
-                      <td className="font-semibold" style={{ color: '#FFF' }}>{r.title}</td>
+                      <td className="font-semibold" style={{ color: 'var(--text-primary)' }}>{r.title}</td>
                       <td>{r.reserved_by_name || 'Homeowner Resident'}</td>
-                      <td className="text-xs" style={{ color: '#D1D5DB' }}>{new Date(r.start_time).toLocaleString('en-PH')}</td>
-                      <td className="text-xs" style={{ color: '#D1D5DB' }}>{new Date(r.end_time).toLocaleString('en-PH')}</td>
+                      <td className="text-xs" style={{ color: 'var(--text-secondary)' }}>{new Date(r.start_time).toLocaleString('en-PH')}</td>
+                      <td className="text-xs" style={{ color: 'var(--text-secondary)' }}>{new Date(r.end_time).toLocaleString('en-PH')}</td>
                       <td><span className={`badge badge-${r.status}`}>{r.status}</span></td>
                       {canApprove && (
                         <td>
@@ -217,11 +217,11 @@ export default function FacilityCalendar() {
         ))}
 
         {(!reservations || reservations.length === 0) && (
-          <div className="card" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(255,255,255,0.12)' }}>
+          <div className="card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
             <div className="empty-state">
               <div className="empty-state-icon">📅</div>
-              <h3 style={{ color: '#FFF' }}>No active facility reservations</h3>
-              <p style={{ color: '#9CA3AF' }}>Click "+ Book Facility" above to schedule a reservation slot.</p>
+              <h3 style={{ color: 'var(--text-primary)' }}>No active facility reservations</h3>
+              <p style={{ color: 'var(--text-muted)' }}>Click "+ Book Facility" above to schedule a reservation slot.</p>
             </div>
           </div>
         )}
@@ -231,7 +231,7 @@ export default function FacilityCalendar() {
           <div className="modal-overlay" onClick={() => setShowModal(false)}>
             <div className="modal-box" onClick={e => e.stopPropagation()} style={{ maxWidth: 600 }}>
               <div className="modal-header">
-                <h2 className="modal-title" style={{ color: '#FFF' }}>📅 Book Facility Time Slot</h2>
+                <h2 className="modal-title" style={{ color: 'var(--text-primary)' }}>📅 Book Facility Time Slot</h2>
                 <button className="modal-close" onClick={() => setShowModal(false)}>✕</button>
               </div>
 
