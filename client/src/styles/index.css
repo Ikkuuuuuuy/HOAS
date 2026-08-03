@@ -1118,17 +1118,100 @@ input[type="time"] {
   }
 }
 
-/* ── Responsive ──────────────────────────────────────────── */
+/* ── Mobile Auto-Adaptability Responsive Overrides ────────────── */
 @media (max-width: 1280px) {
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
 }
+
 @media (max-width: 1024px) {
   .grid-3 { grid-template-columns: repeat(2, 1fr); }
   .page-content { padding: var(--space-6); }
+
+  /* Collapse hardcoded 2-column sidebar layouts into single column on mobile */
+  div[style*="grid-template-columns: 1fr 320px"],
+  div[style*="gridTemplateColumns: '1fr 320px'"],
+  div[style*="grid-template-columns: 1fr 340px"],
+  div[style*="gridTemplateColumns: '1fr 340px'"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Table Container Auto-Scroll to prevent width overflow */
+  .data-table, table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
+
 @media (max-width: 768px) {
-  .main-content { margin-left: 0; }
-  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
-  .page-content { padding: var(--space-4); }
+  /* Sidebar Mobile Drawer */
+  .sidebar {
+    transform: translateX(-100%);
+    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.25) !important;
+    z-index: 200 !important;
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0) !important;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  .navbar {
+    padding: 10px 14px !important;
+    gap: 8px !important;
+  }
+
+  .navbar-title {
+    font-size: 1.05rem !important;
+  }
+
+  .navbar-subtitle {
+    font-size: 0.72rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+  }
+
+  .navbar-right {
+    gap: 6px !important;
+  }
+
+  .navbar-time {
+    display: none !important;
+  }
+
+  .btn-theme-toggle span:nth-child(2) {
+    display: none;
+  }
+
+  .btn-mobile-sidebar-toggle {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .grid, .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .card {
+    padding: var(--space-4) !important;
+    margin-bottom: var(--space-4) !important;
+  }
+
+  .modal-box {
+    width: calc(100vw - 32px) !important;
+    max-width: 100% !important;
+    padding: var(--space-4) !important;
+    margin: 16px !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+  }
 }
 

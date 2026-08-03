@@ -121,9 +121,33 @@ export default function Navbar({ title, subtitle }: NavbarProps) {
     }
   };
 
+  const toggleMobileSidebar = () => {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      sidebar.classList.toggle('mobile-open');
+    }
+  };
+
   return (
     <header className="navbar">
       <div className="navbar-left">
+        <button
+          className="btn-mobile-sidebar-toggle"
+          onClick={toggleMobileSidebar}
+          title="Toggle Navigation Menu"
+          style={{
+            display: 'none',
+            background: 'none',
+            border: 'none',
+            fontSize: 22,
+            cursor: 'pointer',
+            color: 'var(--text-primary)',
+            padding: '4px 8px',
+            borderRadius: 6,
+          }}
+        >
+          ☰
+        </button>
         <div>
           <h1 className="navbar-title">{title}</h1>
           {subtitle && <p className="navbar-subtitle">{subtitle}</p>}
