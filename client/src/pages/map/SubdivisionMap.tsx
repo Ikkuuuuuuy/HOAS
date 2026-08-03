@@ -243,32 +243,32 @@ export default function SubdivisionMap() {
             </div>
 
             <div>
-              <label className="form-label" style={{ color: '#E5E7EB' }}>Filter Places by Category</label>
-              <div className="flex gap-2 flex-wrap">
-                {[
-                  { id: 'all', label: 'All Places' },
-                  { id: 'hoa', label: '🏠 HOA Amenities' },
-                  { id: 'grocery', label: '🛒 Groceries & Malls' },
-                  { id: 'hospital', label: '🏥 Medical & ER' },
-                  { id: 'school', label: '🏫 Schools' },
-                  { id: 'dining', label: '☕ Dining' },
-                  { id: 'transport', label: '🚍 Transport' },
-                ].map(cat => (
-                  <button
-                    key={cat.id}
-                    onClick={() => setSelectedCategory(cat.id)}
-                    style={{
-                      padding: '5px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 700,
-                      background: selectedCategory === cat.id ? '#166534' : 'rgba(255,255,255,0.08)',
-                      color: selectedCategory === cat.id ? '#FFF' : '#9CA3AF',
-                      border: selectedCategory === cat.id ? '1px solid #22C55E' : '1px solid transparent',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    {cat.label}
-                  </button>
-                ))}
-              </div>
+              <label className="form-label" style={{ color: 'var(--text-secondary)' }}>Filter Places by Category</label>
+              <select
+                className="form-select"
+                value={selectedCategory}
+                onChange={e => setSelectedCategory(e.target.value)}
+                style={{
+                  padding: '10px 14px',
+                  borderRadius: '8px',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  background: 'var(--bg-surface)',
+                  color: 'var(--text-primary)',
+                  border: '1px solid var(--border)',
+                  outline: 'none',
+                  cursor: 'pointer',
+                  minWidth: 220,
+                }}
+              >
+                <option value="all">🌐 All Places & Categories</option>
+                <option value="hoa">🏠 HOA Amenities</option>
+                <option value="grocery">🛒 Groceries & Malls</option>
+                <option value="hospital">🏥 Medical & ER</option>
+                <option value="school">🏫 Schools</option>
+                <option value="dining">☕ Dining</option>
+                <option value="transport">🚍 Transport</option>
+              </select>
             </div>
           </div>
         </div>
