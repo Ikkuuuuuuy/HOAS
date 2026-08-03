@@ -1214,9 +1214,15 @@ input[type="time"] {
     display: block !important;
   }
 
-  .about-grid {
+  .about-grid,
+  .news-grid,
+  .events-grid,
+  .guidelines-grid,
+  .contact-grid,
+  .footer-grid,
+  .map-grid-container {
     grid-template-columns: 1fr !important;
-    gap: 32px !important;
+    gap: 24px !important;
   }
 
   .modal-box {

@@ -806,7 +806,7 @@ function GoogleSubdivisionMapSection() {
       </div>
 
       {/* MAP CANVAS & SIDEBAR LIST */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 20 }}>
+      <div className="map-grid-container" style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 20 }}>
         
         {/* GOOGLE MAPS TILE ENGINE CANVAS WITH BOUNDARY OVERLAY */}
         <div style={{ padding: 0, overflow: 'hidden', border: '1px solid #E5E7EB', borderRadius: 16, height: 560, position: 'relative', boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
