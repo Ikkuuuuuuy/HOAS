@@ -238,9 +238,9 @@ export default function Sidebar() {
                   { label: 'System Access Level', value: user.roleName.replace(/_/g, ' ').toUpperCase() },
                   { label: 'Multi-Tenant Isolation', value: '🔒 Active & Verified' },
                 ].map(info => (
-                  <div key={info.label} className="flex justify-between items-center" style={{ padding: '10px 14px', background: 'var(--bg-hover)', borderRadius: 8, border: '1px solid var(--border)' }}>
+                  <div key={info.label} className="flex justify-between items-center flex-wrap" style={{ padding: '10px 14px', background: 'var(--bg-hover)', borderRadius: 8, border: '1px solid var(--border)', gap: 6 }}>
                     <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>{info.label}</span>
-                    <span style={{ fontSize: 12, color: 'var(--text-primary)', fontWeight: 700 }}>{info.value}</span>
+                    <span style={{ fontSize: 12, color: 'var(--text-primary)', fontWeight: 700, wordBreak: 'break-word' }}>{info.value}</span>
                   </div>
                 ))}
               </div>
