@@ -314,14 +314,16 @@ export default function PublicLandingPage() {
               Official Web-Based Information System for the Bria Homes Northridge Grove Home Owners Association in Barangay Tungkong Mangga, San Jose del Monte, Bulacan. Streamlining ledgers, document requests, payments, and real-time announcements.
             </p>
 
-            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-              <button
-                onClick={handlePortalClick}
-                style={{ padding: '13px 28px', borderRadius: 'var(--radius)', background: '#DC2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 15, fontWeight: 700, boxShadow: '0 4px 16px rgba(220,38,38,0.4)', transition: 'opacity 0.18s' }}
-              >
-                {user ? 'Enter Portal System' : 'Log in'}
-              </button>
-            </div>
+            {user && (
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                <button
+                  onClick={handlePortalClick}
+                  style={{ padding: '13px 28px', borderRadius: 'var(--radius)', background: '#DC2626', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 15, fontWeight: 700, boxShadow: '0 4px 16px rgba(220,38,38,0.4)', transition: 'opacity 0.18s' }}
+                >
+                  Enter Portal System
+                </button>
+              </div>
+            )}
 
           </div>
         </div>
