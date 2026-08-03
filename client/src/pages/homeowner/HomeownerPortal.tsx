@@ -27,7 +27,7 @@ export default function HomeownerPortal() {
   const { user, accessToken } = useAuth();
   const { success, error: showError } = useToast();
 
-  const [activeTab, setActiveTab] = useState<'account' | 'financials' | 'requests' | 'events'>('financials');
+  const [activeTab, setActiveTab] = useState<'financials' | 'requests' | 'events'>('financials');
 
   // API Data
   const { data: accomplishmentsData } = useApi<any[]>('/api/hoa/accomplishments');
@@ -182,12 +182,11 @@ export default function HomeownerPortal() {
         {/* MAIN LAYOUT: 4-TAB PORTAL (LEFT) + SIDEBAR WIDGETS (RIGHT) */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 'var(--space-8)' }}>
           
-          {/* LEFT AREA: 4-TAB NAVIGATION & PANELS */}
+          {/* LEFT AREA: 3-TAB NAVIGATION & PANELS */}
           <div>
             {/* Tab Header Buttons */}
-            <div className="flex gap-2 mb-6" style={{ background: 'rgba(15, 23, 42, 0.95)', padding: '6px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.15)' }}>
+            <div className="flex gap-2 mb-6" style={{ background: 'var(--bg-surface)', padding: '6px', borderRadius: '12px', border: '1px solid var(--border)' }}>
               {[
-                { id: 'account', label: '👤 Account' },
                 { id: 'financials', label: '💳 Financials & Dues' },
                 { id: 'requests', label: '📋 Service Requests' },
                 { id: 'events', label: '📅 Events & Agendas' },
@@ -209,44 +208,6 @@ export default function HomeownerPortal() {
                 </button>
               ))}
             </div>
-
-            {/* TAB 1: ACCOUNT & PROFILE */}
-            {activeTab === 'account' && (
-              <div className="card" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(255,255,255,0.12)' }}>
-                <div className="section-title text-primary" style={{ color: '#FFF' }}>Homeowner Profile & Account Info</div>
-                <div className="grid grid-2 mb-6">
-                  <div style={{ background: 'rgba(255,255,255,0.05)', padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)' }}>
-                    <div className="text-xs text-muted" style={{ color: '#9CA3AF' }}>Registered Owner</div>
-                    <div className="font-bold text-lg" style={{ color: '#FFF' }}>{user?.fullName}</div>
-                    <div className="text-xs text-muted mt-2" style={{ color: '#9CA3AF' }}>Email Address</div>
-                    <div className="font-semibold text-sm" style={{ color: '#F3F4F6' }}>{user?.email}</div>
-                  </div>
-                  <div style={{ background: 'rgba(255,255,255,0.05)', padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)' }}>
-                    <div className="text-xs text-muted" style={{ color: '#9CA3AF' }}>House / Unit Address</div>
-                    <div className="font-bold text-sm" style={{ color: '#FFF' }}>Blk 5 Lot 12, Palmera Ave</div>
-                    <div className="text-xs text-muted mt-2" style={{ color: '#9CA3AF' }}>Ownership Verification Status</div>
-                    <span className="badge badge-approved mt-1">✓ Verified Owner (TCT Verified)</span>
-                  </div>
-                </div>
-
-                <div className="divider mb-6" />
-
-                <div className="section-title" style={{ color: '#FFF' }}>Update Contact & Security</div>
-                <form onSubmit={(e) => { e.preventDefault(); success('Profile Updated', 'Your contact info has been saved.'); }} className="grid grid-2">
-                  <div className="form-group">
-                    <label className="form-label">Update Mobile Number</label>
-                    <input type="tel" className="form-input" value={contactNo} onChange={e => setContactNo(e.target.value)} />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Change Password</label>
-                    <input type="password" className="form-input" placeholder="Enter new password" value={newPassword} onChange={e => setNewPassword(e.target.value)} />
-                  </div>
-                  <div style={{ gridColumn: 'span 2', textAlign: 'right' }}>
-                    <button type="submit" className="btn btn-primary" style={{ background: '#DC2626', borderColor: '#DC2626' }}>Save Profile Changes</button>
-                  </div>
-                </form>
-              </div>
-            )}
 
             {/* TAB 2: FINANCIALS (DUES, CASH FLOW & EXPENDITURES) */}
             {activeTab === 'financials' && (

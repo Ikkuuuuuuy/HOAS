@@ -85,6 +85,8 @@ export default function Sidebar() {
 
   const [showMenu, setShowMenu] = useState(false);
   const [showOverviewModal, setShowOverviewModal] = useState(false);
+  const [modalContactNo, setModalContactNo] = useState('0917-890-1234');
+  const [modalPassword, setModalPassword] = useState('');
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Close menu on click outside
@@ -204,32 +206,37 @@ export default function Sidebar() {
       {/* ACCOUNT OVERVIEW MODAL */}
       {showOverviewModal && (
         <div className="modal-overlay" onClick={() => setShowOverviewModal(false)}>
-          <div className="modal-box" onClick={e => e.stopPropagation()} style={{ maxWidth: 440 }}>
+          <div className="modal-box" onClick={e => e.stopPropagation()} style={{ maxWidth: 480 }}>
             <div className="modal-header">
-              <h2 className="modal-title" style={{ color: 'var(--text-primary)' }}>👤 Account Overview</h2>
+              <h2 className="modal-title" style={{ color: 'var(--text-primary)' }}>👤 Account Overview & Profile Settings</h2>
               <button className="modal-close" onClick={() => setShowOverviewModal(false)}>✕</button>
             </div>
 
-            <div style={{ padding: '8px 0', display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div className="flex items-center gap-4" style={{ background: 'var(--bg-hover)', padding: 16, borderRadius: 10, border: '1px solid var(--border)' }}>
-                <div style={{ width: 48, height: 48, borderRadius: 10, background: config.gradient, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: '#FFF' }}>
+            <div style={{ padding: '4px 0', display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {/* User Profile Header */}
+              <div className="flex items-center gap-4" style={{ background: 'var(--bg-hover)', padding: 16, borderRadius: 12, border: '1px solid var(--border)' }}>
+                <div style={{ width: 52, height: 52, borderRadius: 12, background: config.gradient, display: 'flex', flexShrink: 0, alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 800, color: '#FFF' }}>
                   {user.fullName.charAt(0)}
                 </div>
-                <div>
-                  <div style={{ fontWeight: 800, fontSize: 16, color: 'var(--text-primary)' }}>{user.fullName}</div>
-                  <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>{user.email}</div>
-                  <span className="badge mt-1" style={{ background: 'rgba(124,58,237,0.15)', color: '#7C3AED', border: '1px solid rgba(124,58,237,0.3)', display: 'inline-block' }}>
-                    {config.label}
-                  </span>
+                <div style={{ flex: 1, overflow: 'hidden' }}>
+                  <div style={{ fontWeight: 800, fontSize: 16, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.fullName}</div>
+                  <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{user.email}</div>
+                  <div className="flex gap-2 items-center mt-1">
+                    <span className="badge" style={{ background: 'rgba(124,58,237,0.15)', color: '#7C3AED', border: '1px solid rgba(124,58,237,0.3)' }}>
+                      {config.label}
+                    </span>
+                    <span className="badge badge-approved" style={{ fontSize: 10 }}>✓ Verified Owner</span>
+                  </div>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {/* System Details */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {[
                   { label: 'Assigned Organization', value: user.tenantName },
-                  { label: 'System Access Role', value: user.roleName.replace(/_/g, ' ').toUpperCase() },
+                  { label: 'Registered Property / Unit', value: 'Blk 5 Lot 12, Palmera Ave' },
+                  { label: 'System Access Level', value: user.roleName.replace(/_/g, ' ').toUpperCase() },
                   { label: 'Multi-Tenant Isolation', value: '🔒 Active & Verified' },
-                  { label: 'Account Status', value: '✓ Active & Verified' },
                 ].map(info => (
                   <div key={info.label} className="flex justify-between items-center" style={{ padding: '10px 14px', background: 'var(--bg-hover)', borderRadius: 8, border: '1px solid var(--border)' }}>
                     <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>{info.label}</span>
@@ -238,14 +245,49 @@ export default function Sidebar() {
                 ))}
               </div>
 
-              <div style={{ display: 'flex', gap: 10, marginTop: 12 }}>
-                <button className="btn btn-secondary flex-1" onClick={() => setShowOverviewModal(false)}>
-                  Close
-                </button>
-                <button className="btn btn-primary flex-1" style={{ background: '#DC2626', borderColor: '#DC2626' }} onClick={handleLogout}>
-                  🚪 Logout Account
-                </button>
-              </div>
+              <div className="divider" style={{ margin: '2px 0' }} />
+
+              {/* Interactive Contact & Security Update Form */}
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                alert(`Account contact details and security preferences saved for ${user.fullName}.`);
+                setShowOverviewModal(false);
+              }} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div className="section-title text-sm" style={{ marginBottom: 2, color: 'var(--text-primary)' }}>⚙️ Update Contact & Security</div>
+                
+                <div className="grid grid-2">
+                  <div className="form-group">
+                    <label className="form-label" style={{ fontSize: 12 }}>Mobile Number</label>
+                    <input
+                      type="tel"
+                      className="form-input"
+                      value={modalContactNo}
+                      onChange={e => setModalContactNo(e.target.value)}
+                      placeholder="e.g. 0917-890-1234"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label" style={{ fontSize: 12 }}>Change Password</label>
+                    <input
+                      type="password"
+                      className="form-input"
+                      value={modalPassword}
+                      onChange={e => setModalPassword(e.target.value)}
+                      placeholder="New password"
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: 10, marginTop: 10 }}>
+                  <button type="submit" className="btn btn-primary flex-1" style={{ background: '#DC2626', borderColor: '#DC2626', justifyContent: 'center', fontWeight: 700 }}>
+                    💾 Save Profile Changes
+                  </button>
+                  <button type="button" className="btn btn-secondary" style={{ justifyContent: 'center' }} onClick={handleLogout}>
+                    🚪 Logout
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
