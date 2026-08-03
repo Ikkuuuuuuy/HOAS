@@ -65,26 +65,26 @@ export default function AllUsersManagement() {
 
         {/* METRICS SUMMARY */}
         <div className="grid grid-4 mb-6">
-          <div className="card" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(255,255,255,0.12)' }}>
-            <div className="text-xs text-muted" style={{ color: '#9CA3AF' }}>Total Users</div>
-            <div style={{ fontSize: 'var(--font-2xl)', fontWeight: 800, color: '#FFF' }}>{users.length}</div>
+          <div className="card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+            <div className="text-xs text-muted" style={{ color: 'var(--text-muted)' }}>Total Users</div>
+            <div style={{ fontSize: 'var(--font-2xl)', fontWeight: 800, color: 'var(--text-primary)' }}>{users.length}</div>
           </div>
-          <div className="card" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(34, 197, 94, 0.3)' }}>
-            <div className="text-xs text-muted" style={{ color: '#9CA3AF' }}>Active Accounts</div>
-            <div style={{ fontSize: 'var(--font-2xl)', fontWeight: 800, color: '#34D399' }}>{users.filter(u => u.is_active !== 0).length}</div>
+          <div className="card" style={{ background: 'var(--bg-surface)', border: '1px solid rgba(34, 197, 94, 0.3)' }}>
+            <div className="text-xs text-muted" style={{ color: 'var(--text-muted)' }}>Active Accounts</div>
+            <div style={{ fontSize: 'var(--font-2xl)', fontWeight: 800, color: '#10B981' }}>{users.filter(u => u.is_active !== 0).length}</div>
           </div>
-          <div className="card" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(220, 38, 38, 0.3)' }}>
-            <div className="text-xs text-muted" style={{ color: '#9CA3AF' }}>HOA Officers & Staff</div>
-            <div style={{ fontSize: 'var(--font-2xl)', fontWeight: 800, color: '#F87171' }}>{users.filter(u => ['hoa_admin', 'admin_staff', 'security_guard'].includes(u.role_name)).length}</div>
+          <div className="card" style={{ background: 'var(--bg-surface)', border: '1px solid rgba(220, 38, 38, 0.3)' }}>
+            <div className="text-xs text-muted" style={{ color: 'var(--text-muted)' }}>HOA Officers & Staff</div>
+            <div style={{ fontSize: 'var(--font-2xl)', fontWeight: 800, color: '#DC2626' }}>{users.filter(u => ['hoa_admin', 'admin_staff', 'security_guard'].includes(u.role_name)).length}</div>
           </div>
-          <div className="card" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(8, 145, 178, 0.3)' }}>
-            <div className="text-xs text-muted" style={{ color: '#9CA3AF' }}>Homeowners</div>
-            <div style={{ fontSize: 'var(--font-2xl)', fontWeight: 800, color: '#67E8F9' }}>{users.filter(u => u.role_name === 'resident').length}</div>
+          <div className="card" style={{ background: 'var(--bg-surface)', border: '1px solid rgba(8, 145, 178, 0.3)' }}>
+            <div className="text-xs text-muted" style={{ color: 'var(--text-muted)' }}>Homeowners</div>
+            <div style={{ fontSize: 'var(--font-2xl)', fontWeight: 800, color: '#0891B2' }}>{users.filter(u => u.role_name === 'resident').length}</div>
           </div>
         </div>
 
         {/* CONTROLS BAR */}
-        <div className="card mb-6" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
+        <div className="card mb-6" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
           <div className="flex justify-between items-center flex-wrap gap-4">
             <div className="flex gap-3 items-center flex-1">
               <input
@@ -118,8 +118,8 @@ export default function AllUsersManagement() {
         </div>
 
         {/* USERS TABLE */}
-        <div className="card" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
-          <div className="section-title" style={{ color: '#FFF' }}>System Account Directory</div>
+        <div className="card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+          <div className="section-title" style={{ color: 'var(--text-primary)' }}>System Account Directory</div>
 
           <table className="data-table">
             <thead>
@@ -137,14 +137,14 @@ export default function AllUsersManagement() {
                 const badge = getRoleBadge(u.role_name);
                 return (
                   <tr key={u.id}>
-                    <td className="font-bold" style={{ color: '#FFF' }}>{u.full_name}</td>
-                    <td className="text-xs" style={{ color: '#D1D5DB' }}>{u.email}</td>
+                    <td className="font-bold" style={{ color: 'var(--text-primary)' }}>{u.full_name}</td>
+                    <td className="text-xs" style={{ color: 'var(--text-secondary)' }}>{u.email}</td>
                     <td>
                       <span className="badge" style={{ background: badge.bg, color: badge.color, border: `1px solid ${badge.border}` }}>
                         {badge.label}
                       </span>
                     </td>
-                    <td className="text-xs" style={{ color: '#9CA3AF' }}>{u.tenant_name || 'Bria Northridge Grove HOA'}</td>
+                    <td className="text-xs" style={{ color: 'var(--text-muted)' }}>{u.tenant_name || 'Bria Northridge Grove HOA'}</td>
                     <td>
                       <span className={`badge badge-${u.is_active !== 0 ? 'approved' : 'rejected'}`}>
                         {u.is_active !== 0 ? '✓ Active' : '✕ Disabled'}

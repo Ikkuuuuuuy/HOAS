@@ -60,33 +60,33 @@ export default function TenantsManagement() {
 
         {/* METRICS OVERVIEW */}
         <div className="grid grid-3 mb-6">
-          <div className="card" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(124, 58, 237, 0.3)' }}>
-            <div className="text-xs text-muted" style={{ color: '#9CA3AF' }}>Total Tenant Organizations</div>
+          <div className="card" style={{ background: 'var(--bg-surface)', border: '1px solid rgba(124, 58, 237, 0.3)' }}>
+            <div className="text-xs text-muted" style={{ color: 'var(--text-muted)' }}>Total Tenant Organizations</div>
             <div style={{ fontSize: 'var(--font-3xl)', fontWeight: 800, color: '#7C3AED', marginTop: 4 }}>
               {tenants.length}
             </div>
-            <div className="text-xs mt-2" style={{ color: '#6EE7B7' }}>HOAs & Barangay Councils</div>
+            <div className="text-xs mt-2 font-semibold" style={{ color: 'var(--success)' }}>HOAs & Barangay Councils</div>
           </div>
 
-          <div className="card" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(34, 197, 94, 0.3)' }}>
-            <div className="text-xs text-muted" style={{ color: '#9CA3AF' }}>Total Provisioned Users</div>
-            <div style={{ fontSize: 'var(--font-3xl)', fontWeight: 800, color: '#22C55E', marginTop: 4 }}>
+          <div className="card" style={{ background: 'var(--bg-surface)', border: '1px solid rgba(34, 197, 94, 0.3)' }}>
+            <div className="text-xs text-muted" style={{ color: 'var(--text-muted)' }}>Total Provisioned Users</div>
+            <div style={{ fontSize: 'var(--font-3xl)', fontWeight: 800, color: '#10B981', marginTop: 4 }}>
               {tenants.reduce((sum: number, t: any) => sum + (t.user_count || 1), 0)}
             </div>
-            <div className="text-xs mt-2" style={{ color: '#9CA3AF' }}>Across All Active Tenants</div>
+            <div className="text-xs mt-2 text-muted" style={{ color: 'var(--text-muted)' }}>Across All Active Tenants</div>
           </div>
 
-          <div className="card" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(220, 38, 38, 0.3)' }}>
-            <div className="text-xs text-muted" style={{ color: '#9CA3AF' }}>Data Isolation Guarantee</div>
-            <div style={{ fontSize: 'var(--font-lg)', fontWeight: 800, color: '#F87171', marginTop: 8 }}>
+          <div className="card" style={{ background: 'var(--bg-surface)', border: '1px solid rgba(220, 38, 38, 0.3)' }}>
+            <div className="text-xs text-muted" style={{ color: 'var(--text-muted)' }}>Data Isolation Guarantee</div>
+            <div style={{ fontSize: 'var(--font-lg)', fontWeight: 800, color: '#DC2626', marginTop: 8 }}>
               🔒 Strict RBAC Isolation
             </div>
-            <div className="text-xs mt-2" style={{ color: '#D1D5DB' }}>Separate Tenant Keys & Schema Scoping</div>
+            <div className="text-xs mt-2 text-secondary" style={{ color: 'var(--text-secondary)' }}>Separate Tenant Keys & Schema Scoping</div>
           </div>
         </div>
 
         {/* SEARCH & PROVISION CONTROLS */}
-        <div className="card mb-6" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
+        <div className="card mb-6" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
           <div className="flex justify-between items-center flex-wrap gap-4">
             <div className="flex gap-3 items-center flex-1">
               <input
@@ -117,8 +117,8 @@ export default function TenantsManagement() {
         </div>
 
         {/* TENANTS TABLE */}
-        <div className="card" style={{ background: 'rgba(15, 23, 42, 0.92)', border: '1px solid rgba(255, 255, 255, 0.12)' }}>
-          <div className="section-title" style={{ color: '#FFF' }}>Provisioned Multi-Tenant System Registry</div>
+        <div className="card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+          <div className="section-title" style={{ color: 'var(--text-primary)' }}>Provisioned Multi-Tenant System Registry</div>
 
           <table className="data-table">
             <thead>
@@ -135,18 +135,18 @@ export default function TenantsManagement() {
             <tbody>
               {filteredTenants.map((t: any) => (
                 <tr key={t.id}>
-                  <td className="font-bold" style={{ color: '#FFF' }}>{t.name}</td>
+                  <td className="font-bold" style={{ color: 'var(--text-primary)' }}>{t.name}</td>
                   <td>
-                    <span className="badge" style={{ background: t.type === 'barangay' ? 'rgba(5, 150, 105, 0.2)' : 'rgba(220, 38, 38, 0.2)', color: t.type === 'barangay' ? '#34D399' : '#FCA5A5', border: `1px solid ${t.type === 'barangay' ? '#059669' : '#DC2626'}` }}>
+                    <span className="badge" style={{ background: t.type === 'barangay' ? 'rgba(5, 150, 105, 0.15)' : 'rgba(220, 38, 38, 0.15)', color: t.type === 'barangay' ? '#059669' : '#DC2626', border: `1px solid ${t.type === 'barangay' ? 'rgba(5, 150, 105, 0.3)' : 'rgba(220, 38, 38, 0.3)'}` }}>
                       {t.type === 'barangay' ? '🏛 Barangay Council' : '🏠 Homeowners Association'}
                     </span>
                   </td>
-                  <td className="text-xs" style={{ color: '#D1D5DB' }}>{t.location || 'San Jose del Monte, Bulacan'}</td>
-                  <td className="font-semibold text-xs" style={{ color: '#FFF' }}>{t.user_count || 1} users</td>
+                  <td className="text-xs" style={{ color: 'var(--text-secondary)' }}>{t.location || 'San Jose del Monte, Bulacan'}</td>
+                  <td className="font-semibold text-xs" style={{ color: 'var(--text-primary)' }}>{t.user_count || 1} users</td>
                   <td>
                     <span className="badge badge-approved">✓ Active Tenant</span>
                   </td>
-                  <td className="text-xs" style={{ color: '#9CA3AF' }}>{t.created_at || '2025-01-15'}</td>
+                  <td className="text-xs" style={{ color: 'var(--text-muted)' }}>{t.created_at || '2025-01-15'}</td>
                   <td>
                     <button className="btn btn-sm btn-secondary" onClick={() => alert(`Configuring tenant ${t.name}...`)}>
                       ⚙️ Configure
@@ -163,7 +163,7 @@ export default function TenantsManagement() {
           <div className="modal-overlay" onClick={() => setShowModal(false)}>
             <div className="modal-box" onClick={e => e.stopPropagation()}>
               <div className="modal-header">
-                <h2 className="modal-title" style={{ color: '#FFF' }}>🏛 Provision New Tenant Organization</h2>
+                <h2 className="modal-title" style={{ color: 'var(--text-primary)' }}>🏛 Provision New Tenant Organization</h2>
                 <button className="modal-close" onClick={() => setShowModal(false)}>✕</button>
               </div>
 
