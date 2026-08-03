@@ -1,13 +1,14 @@
 {
-  "name": "hoa-barangay-portal",
+  "name": "hoas",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "concurrently --names \"SERVER,CLIENT\" --prefix-colors \"cyan,magenta\" \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "postinstall": "npm install --prefix server && npm install --prefix client",
     "install:all": "npm install && npm install --prefix server && npm install --prefix client",
     "build": "npm run build --prefix server && npm run build --prefix client"
   },
-  "devDependencies": {
+  "dependencies": {
     "concurrently": "^8.2.2"
   }
 }

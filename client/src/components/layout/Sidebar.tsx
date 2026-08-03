@@ -118,7 +118,7 @@ export default function Sidebar() {
         </div>
         <div>
           <div className="sidebar-brand-title">BRIA Northridge Grove</div>
-          <div className="sidebar-brand-sub">HOA & Barangay Portal</div>
+          <div className="sidebar-brand-sub">HOA Portal</div>
         </div>
       </div>
 
