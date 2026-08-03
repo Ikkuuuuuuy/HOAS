@@ -73,7 +73,7 @@ export default function SuperAdminDashboard() {
                 <div className="stat-icon" style={{ background: card.bg, color: card.color }}>
                   {card.icon}
                 </div>
-                {i === 2 && stats?.activeAlerts > 0 && (
+                {i === 2 && (stats?.activeAlerts ?? 0) > 0 && (
                   <span className="stat-delta" style={{ background: 'var(--danger-soft)', color: 'var(--danger)' }}>
                     LIVE
                   </span>
