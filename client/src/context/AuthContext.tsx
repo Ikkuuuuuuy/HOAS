@@ -20,6 +20,59 @@ interface AuthContextValue {
   hasRole: (...roles: string[]) => boolean;
 }
 
+const DEMO_USERS_MAP: Record<string, User> = {
+  'superadmin@portal.gov.ph': {
+    id: 'usr-superadmin',
+    email: 'superadmin@portal.gov.ph',
+    fullName: 'Hon. Maria Santos (Super Admin)',
+    roleName: 'super_admin',
+    roleId: 1,
+    tenantId: 'tenant-brgy-174',
+    tenantName: 'Barangay 174 & Bria HOA',
+    tenantType: 'barangay',
+  },
+  'treasurer@palmera-hoa.com': {
+    id: 'usr-hoaadmin',
+    email: 'treasurer@palmera-hoa.com',
+    fullName: 'Juan Dela Cruz (HOA President)',
+    roleName: 'hoa_admin',
+    roleId: 2,
+    tenantId: 'tenant-palmera-1',
+    tenantName: 'Bria Northridge Grove HOA',
+    tenantType: 'subdivision',
+  },
+  'staff@palmera-hoa.com': {
+    id: 'usr-staff',
+    email: 'staff@palmera-hoa.com',
+    fullName: 'Elena Reyes (HOA Staff)',
+    roleName: 'admin_staff',
+    roleId: 3,
+    tenantId: 'tenant-palmera-1',
+    tenantName: 'Bria Northridge Grove HOA',
+    tenantType: 'subdivision',
+  },
+  'guard@palmera-hoa.com': {
+    id: 'usr-guard',
+    email: 'guard@palmera-hoa.com',
+    fullName: 'Sgt. Pedro Penduko (Security Lead)',
+    roleName: 'security_guard',
+    roleId: 4,
+    tenantId: 'tenant-palmera-1',
+    tenantName: 'Bria Northridge Grove HOA',
+    tenantType: 'subdivision',
+  },
+  'resident@palmera-hoa.com': {
+    id: 'usr-resident',
+    email: 'resident@palmera-hoa.com',
+    fullName: 'Ricardo Dalisay (Resident Owner)',
+    roleName: 'homeowner',
+    roleId: 5,
+    tenantId: 'tenant-palmera-1',
+    tenantName: 'Bria Northridge Grove HOA',
+    tenantType: 'subdivision',
+  },
+};
+
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -41,25 +94,63 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
+    let apiSuccess = false;
 
-    if (!res.ok) {
-      const data = await res.json();
-      throw new Error(data.error || 'Login failed');
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const text = await res.text();
+      let data: any = null;
+      try {
+        data = text ? JSON.parse(text) : null;
+      } catch {
+        data = null;
+      }
+
+      if (res.ok && data && data.accessToken && data.user) {
+        setAccessToken(data.accessToken);
+        setUser(data.user);
+        localStorage.setItem('hoa_portal_session', JSON.stringify({
+          token: data.accessToken,
+          refreshToken: data.refreshToken,
+          userData: data.user,
+        }));
+        apiSuccess = true;
+        return;
+      }
+
+      if (data && data.error && !data.error.toLowerCase().includes('failed to fetch')) {
+        throw new Error(data.error);
+      }
+    } catch (err: any) {
+      if (err.message && (err.message.includes('Invalid credentials') || err.message.includes('incorrect password'))) {
+        throw err;
+      }
     }
 
-    const data = await res.json();
-    setAccessToken(data.accessToken);
-    setUser(data.user);
-    localStorage.setItem('hoa_portal_session', JSON.stringify({
-      token: data.accessToken,
-      refreshToken: data.refreshToken,
-      userData: data.user,
-    }));
+    if (!apiSuccess) {
+      // Fallback demo user authentication for Vercel / Client-side demo deployment
+      const normalizedEmail = email.trim().toLowerCase();
+      const matchedDemoUser = DEMO_USERS_MAP[normalizedEmail];
+
+      if (matchedDemoUser) {
+        const mockToken = `demo-jwt-${matchedDemoUser.roleName}-${Date.now()}`;
+        setAccessToken(mockToken);
+        setUser(matchedDemoUser);
+        localStorage.setItem('hoa_portal_session', JSON.stringify({
+          token: mockToken,
+          refreshToken: mockToken,
+          userData: matchedDemoUser,
+        }));
+        return;
+      }
+
+      throw new Error('Invalid email or password. Please use one of the quick demo sign-in accounts below.');
+    }
   }, []);
 
   const logout = useCallback(() => {
