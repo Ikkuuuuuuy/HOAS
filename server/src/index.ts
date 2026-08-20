@@ -16,6 +16,7 @@ import facilitiesRouter from './routes/facilities';
 import visitorsRouter from './routes/visitors';
 import alertsRouter from './routes/alerts';
 import hoaRouter from './routes/hoa';
+import householdRouter from './routes/household';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -42,6 +43,7 @@ app.use('/api/facilities', facilitiesRouter);
 app.use('/api/visitors', visitorsRouter);
 app.use('/api/alerts', alertsRouter);
 app.use('/api/hoa', hoaRouter);
+app.use('/api/household', householdRouter);
 
 // Users list (shared in alerts router for admin)
 import db from './config/database';

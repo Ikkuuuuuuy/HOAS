@@ -11,6 +11,7 @@ const db = new DatabaseSync(path.resolve(DB_PATH));
 
 async function seed() {
   console.log('🌱 Starting database seed for enhanced HOA Flow...');
+  db.exec('PRAGMA foreign_keys = OFF;');
 
   // ── 1. Roles ──────────────────────────────────────────────
   const roles = [
@@ -88,14 +89,30 @@ async function seed() {
   const insertFacility = db.prepare(
     'INSERT INTO facilities (id, tenant_id, name, capacity, description) VALUES (?, ?, ?, ?, ?)'
   );
-  const fClubhouseId = 'fac-clubhouse';
   const fBballId = 'fac-basketball';
-  const fPoolId = 'fac-pool';
 
-  insertFacility.run(fClubhouseId, tenantHoaId, 'Palmera Grand Clubhouse', 150, 'Air-conditioned main hall for events & meetings');
-  insertFacility.run(fBballId, tenantHoaId, 'Basketball Court (Covered)', 80, 'Full-court covered basketball court with LED lights');
-  insertFacility.run(fPoolId, tenantHoaId, 'Community Swimming Pool', 40, 'Adult & kiddie pool area');
+  insertFacility.run(fBballId, tenantHoaId, 'Covered Basketball Court', 80, 'Full-court covered basketball court with LED floodlights & tournament-grade acrylic flooring');
   console.log('✅ Facilities seeded');
+
+  // Seed sample reservations for Basketball Court
+  db.exec('DELETE FROM reservations');
+  const insertRes = db.prepare(
+    'INSERT INTO reservations (id, facility_id, tenant_id, reserved_by, title, start_time, end_time, status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+  );
+  const todayStr = new Date().toISOString().split('T')[0];
+  insertRes.run(
+    uuidv4(), fBballId, tenantHoaId, uResident1Id,
+    'Youth 3v3 Basketball Practice',
+    `${todayStr}T14:00:00.000Z`, `${todayStr}T16:00:00.000Z`,
+    'approved', 'Bring extra basketballs and hydration'
+  );
+  insertRes.run(
+    uuidv4(), fBballId, tenantHoaId, uResident2Id,
+    'Inter-Block League Tournament',
+    `${todayStr}T18:00:00.000Z`, `${todayStr}T20:00:00.000Z`,
+    'approved', 'Scoreboard setup requested'
+  );
+  console.log('✅ Basketball court sample reservations seeded');
 
   // ── 6. Billing Ledgers ────────────────────────────────────
   db.exec('DELETE FROM billing_ledgers');
@@ -143,9 +160,9 @@ async function seed() {
   );
   insertAcc.run(
     uuidv4(), tenantHoaId,
-    'Clubhouse & Swimming Pool Renovation',
-    'Upgraded the community pool filtration system and renovated the Air-Conditioned Multi-Purpose Grand Clubhouse.',
-    'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=1200&h=400&fit=crop&auto=format',
+    'Covered Basketball Court LED Lighting & Flooring Upgrade',
+    'Upgraded court LED floodlights, repainted lines, and resurfaced tournament-grade acrylic flooring for night games.',
+    'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1200&h=400&fit=crop&auto=format',
     '2025-07-10', 145000.00
   );
   console.log('✅ HOA Accomplishments seeded');
@@ -159,7 +176,7 @@ async function seed() {
     uuidv4(), tenantHoaId,
     'Q4 2025 Annual General Homeowners Assembly',
     '2025-11-15 14:00:00',
-    'Palmera Grand Clubhouse',
+    'Covered Basketball Court Pavilion',
     '1. Presentation of 2025 Financial Statement & Cash Flow\n2. Vote on Proposed Gate RFID System\n3. Holiday Security Protocols',
     null,
     'upcoming'
@@ -168,7 +185,7 @@ async function seed() {
     uuidv4(), tenantHoaId,
     'Q3 2025 Board of Directors Regular Meeting',
     '2025-08-20 19:00:00',
-    'Palmera Clubhouse Conference Room',
+    'HOA Administrative Pavilion',
     '1. Approval of Solar Streetlight Project Contractor\n2. Tree Trimming & Drainage Clearing before Typhoon Season\n3. Review of Unpaid Dues & Collection Strategy',
     'MINUTES:\n- Meeting called to order at 7:05 PM by President Roberto Garcia.\n- Financial Report presented by Treasurer Ana Ramos: Total collections at 88% rate.\n- Resolution #2025-08 approved for Solar Light installation budget of ₱320,000.\n- Meeting adjourned at 8:45 PM.',
     'completed'

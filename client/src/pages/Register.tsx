@@ -130,12 +130,14 @@ export default function Register() {
       <div className="login-container" style={{ maxWidth: 680, gridTemplateColumns: '1fr', marginTop: 80 }}>
         <div className="login-card">
           
-          {/* BRIA Brand Header */}
-          <div className="login-brand mb-4">
-            <div className="login-brand-icon" style={{ background: '#DC2626', color: '#FFF' }}>📝</div>
+          {/* Brand Header */}
+          <div className="login-brand mb-4" style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{ width: 48, height: 48, borderRadius: '50%', overflow: 'hidden', border: '2px solid #F59E0B', boxShadow: '0 0 10px rgba(245,158,11,0.3)', flexShrink: 0 }}>
+              <img src="/nrg-ph2-logo.png" alt="NRG PH2 Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
             <div>
-              <h1 className="login-brand-name" style={{ fontSize: '1.3rem' }}>BRIA Northridge Grove HOA</h1>
-              <p className="login-brand-tagline">Brgy. Tungkong Mangga, CSJDM, Bulacan 3023</p>
+              <h1 className="login-brand-name" style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF' }}>NRG PH2 HOA INC</h1>
+              <p className="login-brand-tagline" style={{ fontSize: '0.82rem', color: '#F59E0B' }}>Northridge Grove Phase 2 • Brgy. Tungkong Mangga, CSJDM 3023</p>
             </div>
           </div>
 
@@ -150,7 +152,7 @@ export default function Register() {
               <div key={s.num} style={{ display: 'flex', alignItems: 'center', gap: 6, opacity: step >= s.num ? 1 : 0.4 }}>
                 <div style={{
                   width: 22, height: 22, borderRadius: '50%',
-                  background: step >= s.num ? '#DC2626' : 'rgba(255,255,255,0.2)',
+                  background: step >= s.num ? '#166534' : 'rgba(255,255,255,0.2)',
                   color: '#fff', fontSize: 11, fontWeight: 700,
                   display: 'flex', alignItems: 'center', justifyContent: 'center'
                 }}>
@@ -184,11 +186,11 @@ export default function Register() {
               </div>
 
               <div>
-                <label className="form-label">House / Unit Address (Northridge Grove)</label>
+                <label className="form-label">House / Unit Address (Northridge Grove Phase 2)</label>
                 <input
                   type="text"
                   className="form-input"
-                  placeholder="e.g. Block 3 Lot 12, Northridge Grove, Brgy. Tungkong Mangga"
+                  placeholder="e.g. Block 3 Lot 12, Phase 2, NRG PH2 HOA INC, Brgy. Tungkong Mangga"
                   value={address}
                   onChange={e => setAddress(e.target.value)}
                   required
@@ -398,9 +400,9 @@ export default function Register() {
               </p>
 
               <div style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)', padding: 14, borderRadius: 8, textAlign: 'left', marginBottom: 24 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#FBBF24', marginBottom: 4 }}>⏳ Verification Status: Pending HOA Approval</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#FBBF24', marginBottom: 4 }}>⏳ Verification Status: Pending Phase 2 HOA Approval</div>
                 <div style={{ fontSize: 12, color: '#E5E7EB' }}>
-                  The BRIA Northridge Grove Main Administrator will review your proof of ownership document. Once verified, your account will be activated and you can sign in.
+                  The NRG PH2 HOA INC Administrator will review your proof of ownership document. Once verified, your account will be activated and you can sign in.
                 </div>
               </div>
 

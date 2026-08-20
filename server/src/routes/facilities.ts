@@ -28,18 +28,11 @@ router.get('/reservations', authenticate, (req: Request, res: Response): void =>
       JOIN users u ON r.reserved_by = u.id
       ORDER BY r.start_time ASC
     `).all();
-  } else if (user!.roleName === 'resident') {
-    rows = db.prepare(`
-      SELECT r.*, f.name as facility_name
-      FROM reservations r JOIN facilities f ON r.facility_id = f.id
-      WHERE r.reserved_by = ?
-      ORDER BY r.start_time ASC
-    `).all(user!.userId);
   } else {
     rows = db.prepare(`
       SELECT r.*, f.name as facility_name, u.full_name as reserved_by_name
       FROM reservations r JOIN facilities f ON r.facility_id = f.id
-      JOIN users u ON r.reserved_by = u.id
+      LEFT JOIN users u ON r.reserved_by = u.id
       WHERE r.tenant_id = ?
       ORDER BY r.start_time ASC
     `).all(user!.tenantId);

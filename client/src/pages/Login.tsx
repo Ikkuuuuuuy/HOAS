@@ -57,13 +57,12 @@ export default function Login() {
       
       {/* ── TOP HEADER WITH CLEAR BACK TO HOME BUTTON ── */}
       <header style={{ width: '100%', position: 'absolute', top: 0, left: 0, right: 0, padding: '16px 32px', zIndex: 30, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(5, 8, 17, 0.8)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ color: '#DC2626', fontWeight: 900, fontSize: '1.4rem', letterSpacing: '-1px' }}>BRIA</span>
-            <span style={{ background: '#166534', color: '#fff', fontSize: '9px', fontWeight: 700, padding: '2px 6px', borderRadius: 3 }}>HOMES</span>
+        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ width: 40, height: 40, borderRadius: '50%', overflow: 'hidden', border: '2px solid #F59E0B' }}>
+            <img src="/nrg-ph2-logo.png" alt="NRG PH2 HOA INC Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
-          <span style={{ color: '#E5E7EB', fontWeight: 600, fontSize: '14px', borderLeft: '1px solid rgba(255,255,255,0.2)', paddingLeft: 10 }}>
-            Northridge Grove HOA
+          <span style={{ color: '#FFFFFF', fontWeight: 800, fontSize: '16px', letterSpacing: '-0.02em' }}>
+            NRG PH2 HOA INC
           </span>
         </Link>
 
@@ -80,8 +79,8 @@ export default function Login() {
             transition: 'all 0.2s ease',
           }}
           onMouseEnter={e => {
-            e.currentTarget.style.background = '#DC2626';
-            e.currentTarget.style.borderColor = '#DC2626';
+            e.currentTarget.style.background = '#166534';
+            e.currentTarget.style.borderColor = '#166534';
           }}
           onMouseLeave={e => {
             e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
@@ -102,38 +101,39 @@ export default function Login() {
         
         {/* Left Side Branding */}
         <div className="login-left">
-          <div style={{ display: 'inline-block', padding: '6px 14px', borderRadius: 20, background: 'rgba(220,38,38,0.2)', border: '1px solid rgba(220,38,38,0.4)', color: '#F87171', fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', marginBottom: 20 }}>
-            📍 BRIA HOMES • BULACAN (3023)
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 20, background: 'rgba(217,119,6,0.25)', border: '1px solid rgba(245,158,11,0.5)', color: '#FDE68A', fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', marginBottom: 20 }}>
+            <img src="/nrg-ph2-logo.png" alt="Logo Seal" style={{ width: 18, height: 18, borderRadius: '50%' }} />
+            📍 NRG PH2 HOA INC • PHASE 2 (2026-2027)
           </div>
 
           <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2.6rem', fontWeight: 800, color: '#FFFFFF', lineHeight: 1.15, marginBottom: 16 }}>
-            Northridge Grove <br />
-            <span style={{ color: '#6EE7B7', fontWeight: 400, fontStyle: 'italic' }}>Homeowners Association</span>
+            NRG PH2 HOA INC <br />
+            <span style={{ color: '#F59E0B', fontWeight: 700, fontSize: '2.1rem' }}>Northridge Grove Phase 2</span>
           </h1>
 
           <p style={{ fontSize: '1rem', color: '#9CA3AF', lineHeight: 1.6, marginBottom: 28, maxWidth: 480 }}>
-            Sign in to access your automated financial history, real-time community notices, facility reservations, gate visitor passes, and Barangay Tungkong Mangga services.
+            Sign in to access your Phase 2 automated financial ledgers, community notices, facility bookings, RFID gate visitor passes, and Barangay Tungkong Mangga services.
           </p>
 
           <div style={{ background: 'rgba(17, 24, 39, 0.8)', padding: 18, borderRadius: 12, border: '1px solid rgba(255,255,255,0.12)' }}>
-            <div style={{ fontSize: 11, color: '#9CA3AF', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
-              📍 OFFICIAL COMMUNITY ADDRESS
+            <div style={{ fontSize: 11, color: '#F59E0B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
+              📍 OFFICIAL PHASE 2 COMMUNITY ADDRESS
             </div>
             <div style={{ fontSize: 14, fontWeight: 700, color: '#F3F4F6' }}>
-              Northridge Grove, Barangay Tungkong Mangga, San Jose del Monte, Bulacan, Philippines, 3023
+              Northridge Grove Phase 2, Barangay Tungkong Mangga, San Jose del Monte, Bulacan, Philippines, 3023
             </div>
           </div>
         </div>
 
         {/* Right Side High Contrast Login Card */}
         <div className="login-card">
-          <div className="login-brand mb-6">
-            <div className="login-brand-icon" style={{ background: '#DC2626', color: '#FFF' }}>
-              🏠
+          <div className="login-brand mb-6" style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{ width: 50, height: 50, borderRadius: '50%', overflow: 'hidden', border: '2px solid #F59E0B', boxShadow: '0 0 10px rgba(245,158,11,0.3)', flexShrink: 0 }}>
+              <img src="/nrg-ph2-logo.png" alt="NRG PH2 Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div>
-              <h2 className="login-brand-name" style={{ fontSize: '1.3rem' }}>BRIA Northridge Grove</h2>
-              <p className="login-brand-tagline">Sign in to your account</p>
+              <h2 className="login-brand-name" style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827' }}>NRG PH2 HOA INC</h2>
+              <p className="login-brand-tagline" style={{ fontSize: '0.82rem', color: '#4B5563' }}>Phase 2 Resident & Staff Sign In</p>
             </div>
           </div>
 

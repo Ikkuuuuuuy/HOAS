@@ -54,13 +54,12 @@ export default function ForgotPassword() {
       
       {/* ── TOP HEADER WITH BACK TO HOME BUTTON ── */}
       <header style={{ width: '100%', position: 'absolute', top: 0, left: 0, right: 0, padding: '16px 32px', zIndex: 30, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(5, 8, 17, 0.8)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ color: '#DC2626', fontWeight: 900, fontSize: '1.4rem', letterSpacing: '-1px' }}>BRIA</span>
-            <span style={{ background: '#166534', color: '#fff', fontSize: '9px', fontWeight: 700, padding: '2px 6px', borderRadius: 3 }}>HOMES</span>
+        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ width: 40, height: 40, borderRadius: '50%', overflow: 'hidden', border: '2px solid #F59E0B' }}>
+            <img src="/nrg-ph2-logo.png" alt="NRG PH2 HOA INC Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
-          <span style={{ color: '#E5E7EB', fontWeight: 600, fontSize: '14px', borderLeft: '1px solid rgba(255,255,255,0.2)', paddingLeft: 10 }}>
-            Password Recovery
+          <span style={{ color: '#FFFFFF', fontWeight: 800, fontSize: '16px', letterSpacing: '-0.02em' }}>
+            NRG PH2 HOA INC
           </span>
         </Link>
 
@@ -75,8 +74,8 @@ export default function ForgotPassword() {
             transition: 'all 0.2s ease',
           }}
           onMouseEnter={e => {
-            e.currentTarget.style.background = '#DC2626';
-            e.currentTarget.style.borderColor = '#DC2626';
+            e.currentTarget.style.background = '#166534';
+            e.currentTarget.style.borderColor = '#166534';
           }}
           onMouseLeave={e => {
             e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
@@ -95,12 +94,14 @@ export default function ForgotPassword() {
       <div className="login-container" style={{ maxWidth: 520, gridTemplateColumns: '1fr', marginTop: 80 }}>
         <div className="login-card">
           
-          {/* BRIA Brand Header */}
-          <div className="login-brand mb-6 text-center" style={{ justifyContent: 'center' }}>
-            <div className="login-brand-icon" style={{ background: '#DC2626', color: '#FFF' }}>🔑</div>
+          {/* Brand Header */}
+          <div className="login-brand mb-6" style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{ width: 48, height: 48, borderRadius: '50%', overflow: 'hidden', border: '2px solid #F59E0B', boxShadow: '0 0 10px rgba(245,158,11,0.3)', flexShrink: 0 }}>
+              <img src="/nrg-ph2-logo.png" alt="NRG PH2 Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
             <div style={{ textAlign: 'left' }}>
-              <h2 className="login-brand-name" style={{ fontSize: '1.3rem' }}>Password Recovery</h2>
-              <p className="login-brand-tagline">Northridge Grove • Brgy. Tungkong Mangga</p>
+              <h2 className="login-brand-name" style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827' }}>Password Recovery</h2>
+              <p className="login-brand-tagline" style={{ fontSize: '0.82rem', color: '#F59E0B' }}>NRG PH2 HOA INC • Phase 2</p>
             </div>
           </div>
 

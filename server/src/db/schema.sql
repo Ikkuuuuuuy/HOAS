@@ -285,3 +285,28 @@ CREATE TABLE IF NOT EXISTS announcements (
 );
 
 CREATE INDEX IF NOT EXISTS idx_announcements_tenant ON announcements(tenant_id);
+
+-- ============================================================
+-- 17. HOUSEHOLD MEMBERS (Resident Dependents & Household Module)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS household_members (
+  id                   TEXT PRIMARY KEY,
+  tenant_id            TEXT NOT NULL REFERENCES tenants(id),
+  user_id              TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  full_name            TEXT NOT NULL,
+  relationship         TEXT NOT NULL,
+  gender               TEXT,
+  birthdate            DATE,
+  age                  INTEGER,
+  contact_number       TEXT,
+  email                TEXT,
+  occupation           TEXT,
+  is_emergency_contact INTEGER DEFAULT 0,
+  has_rfid_access      INTEGER DEFAULT 0,
+  notes                TEXT,
+  photo_url            TEXT,
+  created_at           DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_household_tenant ON household_members(tenant_id);
+CREATE INDEX IF NOT EXISTS idx_household_user   ON household_members(user_id);

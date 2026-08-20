@@ -256,8 +256,8 @@ export default function Navbar({ title, subtitle }: NavbarProps) {
           height: 76px;
           min-height: 76px;
           box-sizing: border-box;
-          background: var(--shell-bg);
-          border-bottom: 1px solid var(--shell-border);
+          background: var(--navbar-bg);
+          border-bottom: 1px solid var(--navbar-border);
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -265,11 +265,11 @@ export default function Navbar({ title, subtitle }: NavbarProps) {
           position: sticky;
           top: 0;
           z-index: 40;
-          transition: background 0.25s ease;
+          transition: background 0.25s ease, border-color 0.25s ease;
         }
         .navbar-left { display: flex; align-items: center; gap: var(--space-4); }
-        .navbar-title { font-size: var(--font-xl); font-weight: 800; color: var(--shell-text-title); margin: 0; }
-        .navbar-subtitle { font-size: var(--font-xs); color: var(--shell-text-sub); margin-top: 1px; }
+        .navbar-title { font-size: var(--font-xl); font-weight: 800; color: var(--navbar-text-title); margin: 0; }
+        .navbar-subtitle { font-size: var(--font-xs); color: var(--navbar-text-sub); margin-top: 1px; }
         .navbar-right { display: flex; align-items: center; gap: var(--space-4); }
         .navbar-alert-badge {
           display: flex;
@@ -291,21 +291,21 @@ export default function Navbar({ title, subtitle }: NavbarProps) {
         }
         .navbar-time {
           font-size: var(--font-xs);
-          color: var(--shell-text-title);
+          color: var(--navbar-text-title);
           font-weight: 700;
-          background: var(--shell-card-bg);
+          background: var(--sidebar-card-bg);
           padding: 6px 12px;
           border-radius: var(--radius-md);
-          border: 1px solid var(--shell-card-bdr);
+          border: 1px solid var(--sidebar-card-bdr);
           font-family: monospace, monospace;
           white-space: nowrap;
         }
 
         /* Theme Toggle Button */
         .btn-theme-toggle {
-          background: var(--shell-card-bg);
-          border: 1px solid var(--shell-card-bdr);
-          color: var(--shell-text-title);
+          background: var(--sidebar-card-bg);
+          border: 1px solid var(--sidebar-card-bdr);
+          color: var(--navbar-text-title);
           padding: 6px 12px;
           border-radius: var(--radius-md);
           display: flex; align-items: center; gap: 6px;
@@ -314,8 +314,9 @@ export default function Navbar({ title, subtitle }: NavbarProps) {
           transition: all 0.2s ease;
         }
         .btn-theme-toggle:hover {
-          background: var(--shell-nav-act-bg);
-          border-color: #7C3AED;
+          background: #FFFFFF;
+          border-color: #166534;
+          color: #166534;
         }
 
         /* Notification Dropdown Styles */
@@ -324,17 +325,19 @@ export default function Navbar({ title, subtitle }: NavbarProps) {
         }
         .btn-notification {
           position: relative;
-          background: rgba(255, 255, 255, 0.06);
-          border: 1px solid var(--border);
+          background: var(--sidebar-card-bg);
+          border: 1px solid var(--sidebar-card-bdr);
           width: 38px; height: 38px;
           border-radius: var(--radius-md);
           display: flex; align-items: center; justify-content: center;
           cursor: pointer;
           transition: all 0.2s ease;
+          color: var(--navbar-text-title);
         }
         .btn-notification:hover, .btn-notification.active {
-          background: rgba(124, 58, 237, 0.2);
-          border-color: #7C3AED;
+          background: #FFFFFF;
+          border-color: #166534;
+          color: #166534;
         }
         .bell-icon { font-size: 16px; }
         .notification-badge {
@@ -347,30 +350,30 @@ export default function Navbar({ title, subtitle }: NavbarProps) {
           width: 18px; height: 18px;
           border-radius: 50%;
           display: flex; align-items: center; justify-content: center;
-          border: 2px solid var(--bg-surface);
+          border: 2px solid var(--navbar-bg);
           animation: pulse 2s infinite;
         }
         .notification-dropdown {
           position: absolute;
           top: 48px; right: 0;
           width: 340px;
-          background: #0F172A;
-          border: 1px solid rgba(255, 255, 255, 0.15);
+          background: var(--popover-bg);
+          border: 1px solid var(--popover-border);
           border-radius: 12px;
-          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 12px 36px rgba(0, 0, 0, 0.16);
           z-index: 100;
           overflow: hidden;
           animation: fadeInUp 0.2s ease;
         }
         .notification-header {
           padding: 12px 16px;
-          background: #1E293B;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          background: var(--bg-hover);
+          border-bottom: 1px solid var(--popover-border);
           display: flex; justify-content: space-between; align-items: center;
         }
         .btn-mark-read {
           background: none; border: none;
-          color: #A78BFA; font-size: 11px; font-weight: 700;
+          color: #DC2626; font-size: 11px; font-weight: 700;
           cursor: pointer; text-decoration: underline;
         }
         .notification-list {
@@ -379,34 +382,34 @@ export default function Navbar({ title, subtitle }: NavbarProps) {
         }
         .notification-item {
           padding: 12px 16px;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          border-bottom: 1px solid var(--border);
           display: flex; gap: 12px; align-items: flex-start;
           cursor: pointer; transition: background 0.15s;
           position: relative;
         }
         .notification-item:hover {
-          background: rgba(255, 255, 255, 0.04);
+          background: var(--bg-hover);
         }
         .notification-item.unread {
-          background: rgba(124, 58, 237, 0.08);
+          background: rgba(220, 38, 38, 0.05);
         }
         .notification-item.alert-item {
-          background: rgba(220, 38, 38, 0.15);
+          background: rgba(220, 38, 38, 0.12);
           border-left: 3px solid #DC2626;
         }
         .item-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
         .item-content { flex: 1; }
-        .item-title { font-size: 12px; font-weight: 700; color: #FFF; line-height: 1.3; }
-        .item-sub { font-size: 11px; color: #D1D5DB; margin-top: 2px; }
-        .item-time { font-size: 10px; color: #9CA3AF; margin-top: 4px; }
+        .item-title { font-size: 12px; font-weight: 700; color: var(--popover-text); line-height: 1.3; }
+        .item-sub { font-size: 11px; color: var(--popover-sub); margin-top: 2px; }
+        .item-time { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
         .unread-dot {
           width: 7px; height: 7px; border-radius: 50%;
-          background: #7C3AED; flex-shrink: 0; margin-top: 6px;
+          background: #DC2626; flex-shrink: 0; margin-top: 6px;
         }
         .notification-footer {
           padding: 10px 16px;
-          background: #1E293B;
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          background: var(--bg-hover);
+          border-top: 1px solid var(--popover-border);
           text-align: center;
         }
       `}</style>

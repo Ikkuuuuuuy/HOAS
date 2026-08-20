@@ -5,7 +5,7 @@ import { useApi, apiCall } from '../../hooks/useApi';
 import { useToast } from '../../context/ToastContext';
 
 const DEFAULT_TENANTS = [
-  { id: 'tenant-bria-northridge', name: 'Bria Homes Northridge Grove HOA', type: 'hoa', location: 'San Jose del Monte, Bulacan (3023)', user_count: 731, status: 'active', created_at: '2025-01-15' },
+  { id: 'tenant-nrg-ph2', name: 'NRG PH2 HOA INC (Northridge Grove Phase 2)', type: 'hoa', location: 'San Jose del Monte, Bulacan (3023)', user_count: 731, status: 'active', created_at: '2025-01-15' },
   { id: 'tenant-tungkong-mangga', name: 'Barangay Tungkong Mangga Official Council', type: 'barangay', location: 'CSJDM, Bulacan (3023)', user_count: 4200, status: 'active', created_at: '2025-01-10' },
   { id: 'tenant-palmera-subd', name: 'Palmera Residences HOA', type: 'hoa', location: 'San Jose del Monte, Bulacan', user_count: 312, status: 'active', created_at: '2025-02-01' },
 ];

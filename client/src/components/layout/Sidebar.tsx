@@ -16,11 +16,14 @@ const ROLE_CONFIG: Record<string, {
     nav: [
       { path: '/dashboard', icon: '⊞', label: 'Overview' },
       { path: '/homeowner-portal', icon: '🏠', label: 'Homeowner Portal' },
+      { path: '/household', icon: '👨‍👩‍👧‍👦', label: 'Household Members' },
+      { path: '/events', icon: '📅', label: 'Calendar Events' },
+      { path: '/documents', icon: '📋', label: 'Service Requests' },
       { path: '/hoa-manage', icon: '⚙️', label: 'HOA Admin Staff Hub' },
       { path: '/tenants', icon: '🏛', label: 'Tenants' },
       { path: '/users', icon: '👥', label: 'All Users' },
       { path: '/billing', icon: '💳', label: 'Billing' },
-      { path: '/facilities', icon: '🏢', label: 'Facilities' },
+      { path: '/facilities', icon: '🏀', label: 'Basketball Reservation' },
       { path: '/visitors', icon: '🚗', label: 'Visitor Logs' },
       { path: '/alerts', icon: '🚨', label: 'Alerts' },
     ],
@@ -32,11 +35,14 @@ const ROLE_CONFIG: Record<string, {
     gradient: 'linear-gradient(135deg, #7F1D1D, #DC2626)',
     nav: [
       { path: '/dashboard', icon: '⊞', label: 'Dashboard' },
+      { path: '/household', icon: '👨‍👩‍👧‍👦', label: 'Household Members' },
+      { path: '/events', icon: '📅', label: 'Calendar Events' },
+      { path: '/documents', icon: '📋', label: 'Service Requests' },
       { path: '/hoa-manage', icon: '⚙️', label: 'Admin Staff & Approvals' },
       { path: '/financial-reports', icon: '📊', label: 'Financial Reports' },
       { path: '/homeowner-portal', icon: '🏠', label: 'Homeowner View' },
       { path: '/billing', icon: '💳', label: 'Billing Ledger' },
-      { path: '/facilities', icon: '🏊', label: 'Facilities' },
+      { path: '/facilities', icon: '🏀', label: 'Basketball Reservation' },
       { path: '/visitors', icon: '🚗', label: 'Visitor Logs' },
       { path: '/alerts', icon: '🚨', label: 'Alerts' },
     ],
@@ -47,10 +53,14 @@ const ROLE_CONFIG: Record<string, {
     gradient: 'linear-gradient(135deg, #1D4ED8, #3B82F6)',
     nav: [
       { path: '/dashboard', icon: '⊞', label: 'Dashboard' },
+      { path: '/household', icon: '👨‍👩‍👧‍👦', label: 'Household Members' },
+      { path: '/events', icon: '📅', label: 'Calendar Events' },
+      { path: '/documents', icon: '📋', label: 'Service Requests' },
       { path: '/hoa-manage', icon: '⚙️', label: 'Approvals & Publishing' },
       { path: '/financial-reports', icon: '📊', label: 'Financial Reports' },
       { path: '/homeowner-portal', icon: '🏠', label: 'Homeowner View' },
       { path: '/billing', icon: '💳', label: 'Billing Ledger' },
+      { path: '/facilities', icon: '🏀', label: 'Basketball Reservation' },
       { path: '/visitors', icon: '🚗', label: 'Visitor Logs' },
     ],
   },
@@ -60,6 +70,8 @@ const ROLE_CONFIG: Record<string, {
     gradient: 'linear-gradient(135deg, #78350F, #D97706)',
     nav: [
       { path: '/dashboard', icon: '⊞', label: 'Dashboard' },
+      { path: '/events', icon: '📅', label: 'Calendar Events' },
+      { path: '/documents', icon: '📋', label: 'Service Requests' },
       { path: '/visitors', icon: '🚗', label: 'Visitor Log' },
       { path: '/alerts', icon: '🚨', label: 'Alerts' },
     ],
@@ -70,9 +82,12 @@ const ROLE_CONFIG: Record<string, {
     gradient: 'linear-gradient(135deg, #164E63, #0891B2)',
     nav: [
       { path: '/homeowner-portal', icon: '🏠', label: 'Homeowner Portal' },
+      { path: '/household', icon: '👨‍👩‍👧‍👦', label: 'Household Members' },
+      { path: '/events', icon: '📅', label: 'Calendar Events' },
       { path: '/dashboard', icon: '⊞', label: 'My Dashboard' },
+      { path: '/documents', icon: '📋', label: 'Service Requests' },
       { path: '/billing', icon: '💳', label: 'My Bills' },
-      { path: '/facilities', icon: '📅', label: 'Facility Booking' },
+      { path: '/facilities', icon: '🏀', label: 'Basketball Reservation' },
       { path: '/alerts', icon: '🚨', label: 'Emergency' },
     ],
   },
@@ -113,12 +128,12 @@ export default function Sidebar() {
     <aside className="sidebar">
       {/* Brand header — Unified dark theme aligned with Top Navbar */}
       <div className="sidebar-brand">
-        <div className="sidebar-logo">
-          <span>🏠</span>
+        <div className="sidebar-logo" style={{ background: 'transparent', padding: 0, overflow: 'hidden', width: 44, height: 44, borderRadius: '50%', flexShrink: 0, boxShadow: '0 0 0 2px rgba(245, 158, 11, 0.4)' }}>
+          <img src="/nrg-ph2-logo.png" alt="NRG PH2 HOA INC Seal" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
         <div>
-          <div className="sidebar-brand-title">BRIA Northridge Grove</div>
-          <div className="sidebar-brand-sub">HOA Portal</div>
+          <div className="sidebar-brand-title" style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--sidebar-text-title)', letterSpacing: '-0.02em' }}>NRG PH2 HOA INC</div>
+          <div className="sidebar-brand-sub" style={{ fontSize: '0.72rem', color: 'var(--sidebar-text-sub)', fontWeight: 700, letterSpacing: '0.04em' }}>Phase 2 HOA Portal</div>
         </div>
       </div>
 
@@ -128,10 +143,10 @@ export default function Sidebar() {
           to="/"
           className="sidebar-nav-item"
           style={{
-            background: 'rgba(220, 38, 38, 0.12)',
-            border: '1px solid rgba(220, 38, 38, 0.35)',
-            color: 'var(--shell-nav-act-t, #DC2626)',
-            fontWeight: 700,
+            background: 'var(--sidebar-card-bg)',
+            border: '1px solid var(--sidebar-card-bdr)',
+            color: 'var(--sidebar-text-title)',
+            fontWeight: 800,
             borderRadius: 'var(--radius-md)',
             justifyContent: 'center',
           }}
@@ -300,8 +315,8 @@ export default function Sidebar() {
           position: fixed;
           top: 0;
           left: 0;
-          background: var(--shell-bg);
-          border-right: 1px solid var(--shell-border);
+          background: var(--sidebar-bg);
+          border-right: 1px solid var(--sidebar-border);
           display: flex;
           flex-direction: column;
           z-index: 50;
@@ -316,8 +331,8 @@ export default function Sidebar() {
           display: flex;
           align-items: center;
           gap: var(--space-3);
-          background: var(--shell-bg);
-          border-bottom: 1px solid var(--shell-border);
+          background: var(--sidebar-bg);
+          border-bottom: 1px solid var(--sidebar-border);
         }
         .sidebar-logo {
           width: 34px; height: 34px;
@@ -328,10 +343,10 @@ export default function Sidebar() {
           font-size: 1.1rem;
           flex-shrink: 0;
         }
-        .sidebar-brand-title { font-size: var(--font-sm); font-weight: 800; color: var(--shell-text-title); }
-        .sidebar-brand-sub { font-size: var(--font-xs); color: var(--shell-text-sub); }
+        .sidebar-brand-title { font-size: var(--font-sm); font-weight: 800; color: var(--sidebar-text-title); }
+        .sidebar-brand-sub { font-size: var(--font-xs); color: var(--sidebar-text-sub); }
 
-        .sidebar-divider { height: 1px; background: var(--shell-border); margin: var(--space-2) var(--space-4); }
+        .sidebar-divider { height: 1px; background: var(--sidebar-border); margin: var(--space-2) var(--space-4); }
         .sidebar-nav { flex: 1; padding: var(--space-2) var(--space-3); display: flex; flex-direction: column; gap: 2px; }
         .sidebar-nav-item {
           display: flex;
@@ -341,19 +356,20 @@ export default function Sidebar() {
           border-radius: var(--radius-md);
           font-size: var(--font-sm);
           font-weight: 600;
-          color: var(--shell-nav-color);
+          color: var(--sidebar-nav-color);
           text-decoration: none;
           transition: all var(--transition-fast);
           position: relative;
         }
         .sidebar-nav-item:hover {
-          background: var(--shell-nav-hover);
-          color: var(--shell-nav-hover-t);
+          background: var(--sidebar-nav-hover);
+          color: var(--sidebar-nav-hover-t);
         }
         .sidebar-nav-item.active {
-          background: var(--shell-nav-act-bg);
-          color: var(--shell-nav-act-t);
+          background: var(--sidebar-nav-act-bg);
+          color: var(--sidebar-nav-act-t);
           font-weight: 700;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
         .sidebar-nav-item.active::before {
           content: '';
@@ -362,7 +378,7 @@ export default function Sidebar() {
           top: 4px;
           bottom: 4px;
           width: 3px;
-          background: var(--nav-accent, #DC2626);
+          background: #F59E0B;
           border-radius: 0 2px 2px 0;
         }
         .nav-icon { width: 20px; text-align: center; font-size: 1rem; }
@@ -392,13 +408,13 @@ export default function Sidebar() {
           align-items: center;
           cursor: pointer;
           transition: all 0.2s ease;
-          background: var(--shell-card-bg);
-          border: 1px solid var(--shell-card-bdr);
+          background: var(--sidebar-card-bg);
+          border: 1px solid var(--sidebar-card-bdr);
           user-select: none;
         }
         .sidebar-user-clickable:hover, .sidebar-user-clickable.active {
-          background: var(--shell-nav-act-bg);
-          border-color: #7C3AED;
+          background: var(--sidebar-nav-hover);
+          border-color: rgba(255, 255, 255, 0.25);
         }
         .sidebar-avatar {
           width: 36px; height: 36px;
@@ -408,10 +424,10 @@ export default function Sidebar() {
           flex-shrink: 0;
         }
         .sidebar-user-info { flex: 1; overflow: hidden; }
-        .sidebar-user-name { font-size: 13px; font-weight: 800; color: var(--shell-text-title); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sidebar-user-name { font-size: 13px; font-weight: 800; color: var(--sidebar-text-title); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .sidebar-user-role { font-size: 11px; font-weight: 700; margin-top: 2px; }
-        .sidebar-user-tenant { font-size: 10px; color: var(--shell-text-sub); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .sidebar-user-chevron { font-size: 10px; color: var(--shell-text-sub); transition: transform 0.2s; }
+        .sidebar-user-tenant { font-size: 10px; color: var(--sidebar-text-sub); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sidebar-user-chevron { font-size: 10px; color: var(--sidebar-text-sub); transition: transform 0.2s; }
         .sidebar-user-clickable.active .sidebar-user-chevron { transform: rotate(180deg); }
 
         /* Popover Menu Styles */
@@ -431,7 +447,7 @@ export default function Sidebar() {
         }
         .menu-header {
           padding: 10px 12px;
-          border-bottom: 1px solid var(--shell-border);
+          border-bottom: 1px solid var(--border);
           margin-bottom: 4px;
         }
         .menu-header-name { font-size: 13px; font-weight: 800; color: var(--popover-text); }
@@ -453,12 +469,12 @@ export default function Sidebar() {
           text-align: left;
         }
         .user-menu-item:hover {
-          background: var(--shell-nav-hover);
-          color: var(--shell-nav-hover-t);
+          background: var(--bg-hover);
+          color: var(--text-primary);
         }
         .user-menu-item.logout-item:hover {
-          background: rgba(220, 38, 38, 0.18);
-          color: #F87171;
+          background: rgba(220, 38, 38, 0.12);
+          color: #DC2626;
         }
       `}</style>
     </aside>

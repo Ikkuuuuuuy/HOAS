@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HOA &amp; Barangay Portal — System Flowchart</title>
+<style>
+  body { margin: 0; padding: 16px 24px; background: #fff; font-family: Arial, sans-serif; }
+  svg { display: block; }
+  .sh  { fill: #fff; stroke: #000; stroke-width: 1.6; }
+  .t   { font-size: 11px; fill: #000; font-family: Arial, sans-serif; }
+  .ts  { font-size: 10px; fill: #000; font-family: Arial, sans-serif; }
+  .tb  { font-size: 11px; fill: #000; font-family: Arial, sans-serif; font-weight: bold; }
+  .yes { font-size: 10px; fill: #007000; font-weight: bold; font-family: Arial, sans-serif; }
+  .no  { font-size: 10px; fill: #cc0000; font-weight: bold; font-family: Arial, sans-serif; }
+  .hdr { font-size: 12px; fill: #000; font-weight: bold; font-family: Arial, sans-serif; }
+  .ttl { font-size: 16px; fill: #000; font-weight: bold; font-family: Arial, sans-serif; }
+  .ln  { fill: none; stroke: #000;    stroke-width: 1.6; }
+  .lr  { fill: none; stroke: #cc0000; stroke-width: 1.6; }
+  .lg  { fill: none; stroke: #007000; stroke-width: 1.6; }
+  .sep { stroke: #ccc; stroke-width: 1; }
+</style>
+</head>
+<body>
+<svg width="980" height="1260" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <!-- Black arrowhead -->
+  <marker id="a"  markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+    <path d="M0,0 L9,4.5 L0,9 Z" fill="#000"/>
+  </marker>
+  <!-- Red arrowhead -->
+  <marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+    <path d="M0,0 L9,4.5 L0,9 Z" fill="#cc0000"/>
+  </marker>
+  <!-- Green arrowhead -->
+  <marker id="ag" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+    <path d="M0,0 L9,4.5 L0,9 Z" fill="#007000"/>
+  </marker>
+</defs>
+
+<!-- ══════════════════════════════════════════════════
+     TITLE
+══════════════════════════════════════════════════ -->
+<text x="490" y="22" text-anchor="middle" class="ttl">HOA &amp; Barangay Portal — System Flowchart</text>
+
+<!-- ══════════════════════════════════════════════════
+     TOP SPINE  (center x = 490)
+══════════════════════════════════════════════════ -->
+
+<!-- START oval -->
+<ellipse cx="490" cy="52" rx="58" ry="21" class="sh"/>
+<text x="490" y="57" text-anchor="middle" class="tb">START</text>
+
+<!-- ↓ -->
+<line x1="490" y1="73" x2="490" y2="90" class="ln" marker-end="url(#a)"/>
+
+<!-- LOGIN  [RECT = process] -->
+<rect x="388" y="90" width="204" height="40" class="sh"/>
+<text x="490" y="115" text-anchor="middle" class="tb">LOGIN</text>
+
+<!-- ↓ -->
+<line x1="490" y1="130" x2="490" y2="147" class="ln" marker-end="url(#a)"/>
+
+<!-- Enter Email & Password  [PARA = input] -->
+<polygon points="405,147 590,147 575,185 390,185" class="sh"/>
+<text x="490" y="170" text-anchor="middle" class="ts">Enter Email &amp; Password</text>
+
+<!-- ↓ -->
+<line x1="490" y1="185" x2="490" y2="202" class="ln" marker-end="url(#a)"/>
+
+<!-- Credentials Valid?  [DIAMOND = decision]  center(490,230) hw=93 hh=30 -->
+<polygon points="490,202 583,230 490,258 397,230" class="sh"/>
+<text x="490" y="226" text-anchor="middle" class="ts">Credentials</text>
+<text x="490" y="238" text-anchor="middle" class="ts">Valid?</text>
+
+<!-- NO ← left to Display Error, loop back to LOGIN -->
+<line x1="397" y1="230" x2="207" y2="230" class="lr" marker-end="url(#ar)"/>
+<text x="352" y="222" text-anchor="middle" class="no">No</text>
+
+<!-- Display Error Message  [PARA = output]  cx≈155 -->
+<polygon points="68,213 278,213 262,250 52,250" class="sh"/>
+<text x="167" y="228" text-anchor="middle" class="ts">Display Error</text>
+<text x="167" y="241" text-anchor="middle" class="ts">Message</text>
+
+<!-- Loop from error box back to left side of LOGIN -->
+<polyline points="52,230 36,230 36,110 388,110" class="lr" marker-end="url(#ar)"/>
+
+<!-- YES ↓ -->
+<line x1="490" y1="258" x2="490" y2="275" class="lg" marker-end="url(#ag)"/>
+<text x="499" y="271" class="yes">Yes</text>
+
+<!-- User Role?  [DIAMOND]  center(490,303) hw=110 hh=30 -->
+<polygon points="490,273 600,303 490,333 380,303" class="sh"/>
+<text x="490" y="299" text-anchor="middle" class="ts">User</text>
+<text x="490" y="311" text-anchor="middle" class="ts">Role?</text>
+
+<!-- Spine from diamond bottom → horizontal bar → two columns -->
+<line x1="490" y1="333" x2="490" y2="350" class="ln"/>
+<!-- Horizontal bar -->
+<line x1="218" y1="350" x2="762" y2="350" class="ln"/>
+<!-- Left drop -->
+<line x1="218" y1="350" x2="218" y2="367" class="ln" marker-end="url(#a)"/>
+<!-- Right drop -->
+<line x1="762" y1="350" x2="762" y2="367" class="ln" marker-end="url(#a)"/>
+
+<!-- Column headers (between bar and first box) -->
+<text x="218" y="365" text-anchor="middle" class="hdr">Admin User</text>
+<text x="762" y="365" text-anchor="middle" class="hdr">End User</text>
+<text x="218" y="376" text-anchor="middle" class="ts">(Super Admin · HOA Admin · Staff)</text>
+<text x="762" y="376" text-anchor="middle" class="ts">(Security Guard · Homeowner)</text>
+
+
+<!-- ══════════════════════════════════════════════════
+     LEFT COLUMN — ADMIN USER
+     center x=218  box x=118..318  bypass x=323
+══════════════════════════════════════════════════ -->
+
+<!-- 1. Open Admin Dashboard  [RECT] -->
+<rect x="118" y="383" width="200" height="40" class="sh"/>
+<text x="218" y="397" text-anchor="middle" class="ts">Open Admin</text>
+<text x="218" y="410" text-anchor="middle" class="ts">Dashboard</text>
+<line x1="218" y1="423" x2="218" y2="440" class="ln" marker-end="url(#a)"/>
+
+<!-- 2. View Members & Billing Ledger  [PARA = output] -->
+<polygon points="133,440 328,440 313,478 118,478" class="sh"/>
+<text x="226" y="454" text-anchor="middle" class="ts">View Members &amp;</text>
+<text x="226" y="467" text-anchor="middle" class="ts">Billing Ledger</text>
+<line x1="218" y1="478" x2="218" y2="495" class="ln" marker-end="url(#a)"/>
+
+<!-- 3. Billing Action?  [DIAMOND]  center(218,522) hw=80 hh=28 -->
+<polygon points="218,494 298,522 218,550 138,522" class="sh"/>
+<text x="218" y="518" text-anchor="middle" class="ts">Billing</text>
+<text x="218" y="530" text-anchor="middle" class="ts">Action?</text>
+
+<!-- YES ↓ -->
+<line x1="218" y1="550" x2="218" y2="567" class="lg" marker-end="url(#ag)"/>
+<text x="226" y="563" class="yes">Yes</text>
+
+<!-- 4. Enter Payment Details  [PARA = input] -->
+<polygon points="133,567 328,567 313,605 118,605" class="sh"/>
+<text x="226" y="581" text-anchor="middle" class="ts">Enter Payment</text>
+<text x="226" y="594" text-anchor="middle" class="ts">Details</text>
+<line x1="218" y1="605" x2="218" y2="622" class="ln" marker-end="url(#a)"/>
+
+<!-- 5. Process Payment / Update Ledger  [RECT] -->
+<rect x="118" y="622" width="200" height="40" class="sh"/>
+<text x="218" y="636" text-anchor="middle" class="ts">Process Payment /</text>
+<text x="218" y="649" text-anchor="middle" class="ts">Update Ledger</text>
+<line x1="218" y1="662" x2="218" y2="679" class="ln" marker-end="url(#a)"/>
+
+<!-- NO bypass: right of Billing diamond → down → rejoin at y=679 -->
+<polyline points="298,522 323,522 323,679 218,679" class="lr" marker-end="url(#ar)"/>
+<text x="308" y="515" class="no">No</text>
+
+<!-- 6. View Document Requests  [PARA = output] -->
+<polygon points="133,679 328,679 313,717 118,717" class="sh"/>
+<text x="226" y="693" text-anchor="middle" class="ts">View Document</text>
+<text x="226" y="706" text-anchor="middle" class="ts">Requests</text>
+<line x1="218" y1="717" x2="218" y2="734" class="ln" marker-end="url(#a)"/>
+
+<!-- 7. Document Action?  [DIAMOND]  center(218,761) hw=80 hh=28 -->
+<polygon points="218,733 298,761 218,789 138,761" class="sh"/>
+<text x="218" y="757" text-anchor="middle" class="ts">Document</text>
+<text x="218" y="769" text-anchor="middle" class="ts">Action?</text>
+
+<!-- YES ↓ -->
+<line x1="218" y1="789" x2="218" y2="806" class="lg" marker-end="url(#ag)"/>
+<text x="226" y="802" class="yes">Yes</text>
+
+<!-- 8. Enter Request Details  [PARA = input] -->
+<polygon points="133,806 328,806 313,844 118,844" class="sh"/>
+<text x="226" y="820" text-anchor="middle" class="ts">Enter Request</text>
+<text x="226" y="833" text-anchor="middle" class="ts">Details</text>
+<line x1="218" y1="844" x2="218" y2="861" class="ln" marker-end="url(#a)"/>
+
+<!-- 9. Approve / Reject Document  [RECT] -->
+<rect x="118" y="861" width="200" height="40" class="sh"/>
+<text x="218" y="875" text-anchor="middle" class="ts">Approve / Reject</text>
+<text x="218" y="888" text-anchor="middle" class="ts">Document Request</text>
+<line x1="218" y1="901" x2="218" y2="918" class="ln" marker-end="url(#a)"/>
+
+<!-- NO bypass: right of Document diamond → down → rejoin at y=918 -->
+<polyline points="298,761 323,761 323,918 218,918" class="lr" marker-end="url(#ar)"/>
+<text x="308" y="754" class="no">No</text>
+
+<!-- 10. Manage Facility Reservations  [RECT] -->
+<rect x="118" y="918" width="200" height="40" class="sh"/>
+<text x="218" y="932" text-anchor="middle" class="ts">Manage Facility</text>
+<text x="218" y="945" text-anchor="middle" class="ts">Reservations</text>
+<line x1="218" y1="958" x2="218" y2="975" class="ln" marker-end="url(#a)"/>
+
+<!-- 11. Manage Visitor Logbook  [RECT] -->
+<rect x="118" y="975" width="200" height="40" class="sh"/>
+<text x="218" y="989" text-anchor="middle" class="ts">Manage</text>
+<text x="218" y="1002" text-anchor="middle" class="ts">Visitor Logbook</text>
+<line x1="218" y1="1015" x2="218" y2="1032" class="ln" marker-end="url(#a)"/>
+
+<!-- 12. Send Notification to Residents  [PARA = output] -->
+<polygon points="133,1032 328,1032 313,1070 118,1070" class="sh"/>
+<text x="226" y="1046" text-anchor="middle" class="ts">Send Notification</text>
+<text x="226" y="1059" text-anchor="middle" class="ts">to Residents</text>
+<line x1="218" y1="1070" x2="218" y2="1087" class="ln" marker-end="url(#a)"/>
+
+<!-- Left col converges down to shared junction bar at y=1107 -->
+<line x1="218" y1="1070" x2="218" y2="1107" class="ln"/>
+
+
+<!-- ══════════════════════════════════════════════════
+     RIGHT COLUMN — END USER
+     center x=762  box x=662..862  bypass x=867
+══════════════════════════════════════════════════ -->
+
+<!-- 1. Open User Dashboard  [RECT] -->
+<rect x="662" y="383" width="200" height="40" class="sh"/>
+<text x="762" y="397" text-anchor="middle" class="ts">Open User</text>
+<text x="762" y="410" text-anchor="middle" class="ts">Dashboard</text>
+<line x1="762" y1="423" x2="762" y2="440" class="ln" marker-end="url(#a)"/>
+
+<!-- 2. View Assigned Info / Billing / Logbook  [PARA = output] -->
+<polygon points="677,440 872,440 857,478 662,478" class="sh"/>
+<text x="770" y="454" text-anchor="middle" class="ts">View Assigned Info /</text>
+<text x="770" y="467" text-anchor="middle" class="ts">Billing / Logbook</text>
+<line x1="762" y1="478" x2="762" y2="495" class="ln" marker-end="url(#a)"/>
+
+<!-- 3. Action Needed?  [DIAMOND]  center(762,522) hw=80 hh=28 -->
+<polygon points="762,494 842,522 762,550 682,522" class="sh"/>
+<text x="762" y="518" text-anchor="middle" class="ts">Action</text>
+<text x="762" y="530" text-anchor="middle" class="ts">Needed?</text>
+
+<!-- YES ↓ -->
+<line x1="762" y1="550" x2="762" y2="567" class="lg" marker-end="url(#ag)"/>
+<text x="770" y="563" class="yes">Yes</text>
+
+<!-- 4. Enter Visitor/Payment/Request Details  [PARA = input] -->
+<polygon points="677,567 872,567 857,605 662,605" class="sh"/>
+<text x="770" y="581" text-anchor="middle" class="ts">Enter Visitor / Payment /</text>
+<text x="770" y="594" text-anchor="middle" class="ts">Request Details</text>
+<line x1="762" y1="605" x2="762" y2="622" class="ln" marker-end="url(#a)"/>
+
+<!-- 5. Process: Log Visitor / Submit / File Request  [RECT] -->
+<rect x="662" y="622" width="200" height="40" class="sh"/>
+<text x="762" y="636" text-anchor="middle" class="ts">Log Visitor / Submit</text>
+<text x="762" y="649" text-anchor="middle" class="ts">Payment / File Request</text>
+<line x1="762" y1="662" x2="762" y2="679" class="ln" marker-end="url(#a)"/>
+
+<!-- NO bypass: right of Action Needed → down → rejoin at y=679 -->
+<polyline points="842,522 867,522 867,679 762,679" class="lr" marker-end="url(#ar)"/>
+<text x="851" y="515" class="no">No</text>
+
+<!-- 6. Submission Complete?  [DIAMOND]  center(762,707) hw=80 hh=28 -->
+<polygon points="762,679 842,707 762,735 682,707" class="sh"/>
+<text x="762" y="703" text-anchor="middle" class="ts">Submission</text>
+<text x="762" y="715" text-anchor="middle" class="ts">Complete?</text>
+
+<!-- YES ↓ -->
+<line x1="762" y1="735" x2="762" y2="752" class="lg" marker-end="url(#ag)"/>
+<text x="770" y="748" class="yes">Yes</text>
+
+<!-- NO → left → Revise/Resubmit box → loop back to Action Needed diamond left vertex -->
+<line x1="682" y1="707" x2="598" y2="707" class="lr" marker-end="url(#ar)"/>
+<text x="647" y="700" class="no">No</text>
+<!-- Revise / Resubmit box  [RECT] -->
+<rect x="500" y="693" width="98" height="30" class="sh"/>
+<text x="549" y="706" text-anchor="middle" class="ts">Revise /</text>
+<text x="549" y="717" text-anchor="middle" class="ts">Resubmit</text>
+<!-- Loop from Revise box back up to left vertex of Action Needed diamond (682,522) -->
+<polyline points="500,707 472,707 472,522 682,522" class="lr" marker-end="url(#ar)"/>
+
+<!-- 7. Track Status / View Confirmation  [PARA = output] -->
+<polygon points="677,752 872,752 857,790 662,790" class="sh"/>
+<text x="770" y="766" text-anchor="middle" class="ts">Track Status /</text>
+<text x="770" y="779" text-anchor="middle" class="ts">View Confirmation</text>
+<line x1="762" y1="790" x2="762" y2="807" class="ln" marker-end="url(#a)"/>
+
+<!-- 8. Reserve Facility  [RECT] -->
+<rect x="662" y="807" width="200" height="40" class="sh"/>
+<text x="762" y="821" text-anchor="middle" class="ts">Reserve</text>
+<text x="762" y="834" text-anchor="middle" class="ts">Facility</text>
+<line x1="762" y1="847" x2="762" y2="864" class="ln" marker-end="url(#a)"/>
+
+<!-- 9. View Emergency Alerts  [PARA = output] -->
+<polygon points="677,864 872,864 857,902 662,902" class="sh"/>
+<text x="770" y="878" text-anchor="middle" class="ts">View Emergency</text>
+<text x="770" y="891" text-anchor="middle" class="ts">Alerts</text>
+<line x1="762" y1="902" x2="762" y2="919" class="ln" marker-end="url(#a)"/>
+
+<!-- 10. Emergency Detected?  [DIAMOND]  center(762,947) hw=80 hh=28 -->
+<polygon points="762,919 842,947 762,975 682,947" class="sh"/>
+<text x="762" y="943" text-anchor="middle" class="ts">Emergency</text>
+<text x="762" y="955" text-anchor="middle" class="ts">Detected?</text>
+
+<!-- YES ↓ -->
+<line x1="762" y1="975" x2="762" y2="992" class="lg" marker-end="url(#ag)"/>
+<text x="770" y="988" class="yes">Yes</text>
+
+<!-- 11. Trigger / Report Emergency Alert  [PARA = output] -->
+<polygon points="677,992 872,992 857,1030 662,1030" class="sh"/>
+<text x="770" y="1006" text-anchor="middle" class="ts">Trigger / Report</text>
+<text x="770" y="1019" text-anchor="middle" class="ts">Emergency Alert</text>
+<line x1="762" y1="1030" x2="762" y2="1047" class="ln" marker-end="url(#a)"/>
+
+<!-- NO bypass: right of Emergency → down → rejoin at y=1047 -->
+<polyline points="842,947 867,947 867,1047 762,1047" class="lr" marker-end="url(#ar)"/>
+<text x="851" y="940" class="no">No</text>
+
+<!-- Right col converges down to shared junction bar at y=1107 -->
+<line x1="762" y1="1047" x2="762" y2="1107" class="ln"/>
+
+
+<!-- ══════════════════════════════════════════════════
+     SHARED CONVERGENCE → LOGOUT → END
+══════════════════════════════════════════════════ -->
+
+<!-- Horizontal junction bar at y=1107 -->
+<line x1="218" y1="1107" x2="762" y2="1107" class="ln"/>
+
+<!-- Center drop from bar to shared Logout -->
+<line x1="490" y1="1107" x2="490" y2="1125" class="ln" marker-end="url(#a)"/>
+
+<!-- Shared LOGOUT  [RECT] -->
+<rect x="388" y="1125" width="204" height="38" class="sh"/>
+<text x="490" y="1149" text-anchor="middle" class="tb">Logout</text>
+
+<!-- ↓ -->
+<line x1="490" y1="1163" x2="490" y2="1180" class="ln" marker-end="url(#a)"/>
+
+<!-- Shared END oval -->
+<ellipse cx="490" cy="1200" rx="56" ry="21" class="sh"/>
+<text x="490" y="1205" text-anchor="middle" class="tb">END</text>
+
+
+<!-- ══════════════════════════════════════════════════
+     SYMBOL LEGEND
+══════════════════════════════════════════════════ -->
+<line x1="36" y1="1235" x2="944" y2="1235" class="sep"/>
+<text x="490" y="1252" text-anchor="middle" font-size="13" font-weight="bold" fill="#000" font-family="Arial">Symbol Legend</text>
+
+<!-- Oval -->
+<ellipse cx="75" cy="1272" rx="40" ry="17" class="sh"/>
+<text x="75" y="1277" text-anchor="middle" font-size="9" fill="#000" font-family="Arial">Start/End</text>
+<text x="122" y="1277" font-size="10" fill="#000" font-family="Arial">= Start / End Point</text>
+
+<!-- Parallelogram -->
+<polygon points="270,1261 400,1261 385,1286 255,1286" class="sh"/>
+<text x="330" y="1278" text-anchor="middle" font-size="9" fill="#000" font-family="Arial">Input / Output</text>
+<text x="408" y="1278" font-size="10" fill="#000" font-family="Arial">= Input or Output</text>
+
+<!-- Rect -->
+<rect x="570" y="1261" width="100" height="25" class="sh"/>
+<text x="620" y="1278" text-anchor="middle" font-size="9" fill="#000" font-family="Arial">Process</text>
+<text x="678" y="1278" font-size="10" fill="#000" font-family="Arial">= Process Step</text>
+
+<!-- Diamond -->
+<polygon points="848,1261 876,1274 848,1286 820,1274" class="sh"/>
+<text x="848" y="1278" text-anchor="middle" font-size="8" fill="#000" font-family="Arial">?</text>
+<text x="883" y="1278" font-size="10" fill="#000" font-family="Arial">= Decision</text>
+
+</svg>
+</body>
+</html>

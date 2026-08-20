@@ -237,6 +237,51 @@ router.post('/meetings', authenticate, requireRole('hoa_admin', 'admin_staff', '
   }
 });
 
+router.put('/meetings/:id', authenticate, requireRole('hoa_admin', 'admin_staff', 'super_admin'), (req: any, res) => {
+  try {
+    const { id } = req.params;
+    const { title, meetingDate, location, agenda, minutes, status } = req.body;
+
+    const existing: any = db.prepare('SELECT * FROM hoa_meetings WHERE id = ?').get(id);
+    if (!existing) {
+      return res.status(404).json({ error: 'Meeting/Event not found' });
+    }
+
+    db.prepare(`
+      UPDATE hoa_meetings SET
+        title = ?,
+        meeting_date = ?,
+        location = ?,
+        agenda = ?,
+        minutes = ?,
+        status = ?
+      WHERE id = ?
+    `).run(
+      title || existing.title,
+      meetingDate || existing.meeting_date,
+      location || existing.location,
+      agenda || existing.agenda,
+      minutes !== undefined ? minutes : existing.minutes,
+      status || existing.status,
+      id
+    );
+
+    res.json({ message: 'Meeting updated successfully', meetingId: id });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete('/meetings/:id', authenticate, requireRole('hoa_admin', 'admin_staff', 'super_admin'), (req: any, res) => {
+  try {
+    const { id } = req.params;
+    db.prepare('DELETE FROM hoa_meetings WHERE id = ?').run(id);
+    res.json({ success: true, message: 'Meeting/Event deleted successfully' });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ============================================================
 // 5. ACCOMPLISHMENTS (Slideshow Projects)
 // ============================================================

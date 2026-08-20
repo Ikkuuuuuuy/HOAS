@@ -17,6 +17,8 @@ import FacilityCalendar from './pages/facilities/FacilityCalendar';
 import VisitorLogbook from './pages/visitors/VisitorLogbook';
 import EmergencyAlerts from './pages/alerts/EmergencyAlerts';
 import ResidentsPage from './pages/residents/ResidentsPage';
+import HouseholdMembers from './pages/household/HouseholdMembers';
+import CalendarEvents from './pages/events/CalendarEvents';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -46,6 +48,10 @@ export default function App() {
 
       <Route path="/dashboard" element={<ProtectedRoute><DashboardRouter /></ProtectedRoute>} />
       <Route path="/homeowner-portal" element={<ProtectedRoute><HomeownerPortal /></ProtectedRoute>} />
+      <Route path="/household" element={<ProtectedRoute><HouseholdMembers /></ProtectedRoute>} />
+      <Route path="/household-members" element={<ProtectedRoute><HouseholdMembers /></ProtectedRoute>} />
+      <Route path="/events" element={<ProtectedRoute><CalendarEvents /></ProtectedRoute>} />
+      <Route path="/calendar-events" element={<ProtectedRoute><CalendarEvents /></ProtectedRoute>} />
       <Route path="/hoa-manage" element={<ProtectedRoute><HOAAdminManagement /></ProtectedRoute>} />
       <Route path="/tenants" element={<ProtectedRoute><TenantsManagement /></ProtectedRoute>} />
       <Route path="/users" element={<ProtectedRoute><AllUsersManagement /></ProtectedRoute>} />
