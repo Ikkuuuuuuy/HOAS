@@ -14,6 +14,8 @@ export interface User {
   registeredBlock?: string;
   registeredLot?: string;
   isVerified?: boolean;
+  avatarUrl?: string;
+  phone?: string;
 }
 
 interface AuthContextValue {
@@ -23,6 +25,8 @@ interface AuthContextValue {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   hasRole: (...roles: string[]) => boolean;
+  updateUserProfile: (updates: Partial<User>) => void;
+  changePassword: (currentPass: string, newPass: string) => Promise<{ success: boolean; message?: string }>;
 }
 
 const DEMO_USERS_MAP: Record<string, User> = {
@@ -124,8 +128,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const stored = window.localStorage.getItem('hoa_portal_session');
         if (stored) {
           const { token, userData } = JSON.parse(stored);
+          const customProfiles = JSON.parse(window.localStorage.getItem('hoa_user_custom_profiles') || '{}');
+          const customData = customProfiles[userData?.email] || {};
+          const merged = { ...userData, ...customData };
           setAccessToken(token);
-          setUser(userData);
+          setUser(merged);
         }
       }
     } catch {
@@ -217,8 +224,74 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return roles.includes(user.roleName);
   }, [user]);
 
+  const updateUserProfile = useCallback((updates: Partial<User>) => {
+    setUser(prev => {
+      if (!prev) return null;
+      const updated = { ...prev, ...updates };
+      try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          const stored = window.localStorage.getItem('hoa_portal_session');
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            parsed.userData = updated;
+            window.localStorage.setItem('hoa_portal_session', JSON.stringify(parsed));
+          }
+          // Also persist user-specific custom profile settings
+          const customProfiles = JSON.parse(window.localStorage.getItem('hoa_user_custom_profiles') || '{}');
+          customProfiles[updated.email] = {
+            ...customProfiles[updated.email],
+            avatarUrl: updated.avatarUrl,
+            fullName: updated.fullName,
+            phone: updated.phone
+          };
+          window.localStorage.setItem('hoa_user_custom_profiles', JSON.stringify(customProfiles));
+        }
+      } catch { /* storage fallback */ }
+      return updated;
+    });
+  }, []);
+
+  const changePassword = useCallback(async (currentPass: string, newPass: string) => {
+    if (!user) {
+      return { success: false, message: 'You must be logged in to change password.' };
+    }
+
+    if (newPass.length < 6) {
+      return { success: false, message: 'New password must be at least 6 characters.' };
+    }
+
+    try {
+      // 1. Try real backend API if active
+      if (accessToken && !accessToken.startsWith('demo-jwt-')) {
+        const res = await fetch('/api/auth/change-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+          },
+          body: JSON.stringify({ currentPassword: currentPass, newPassword: newPass })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          return { success: false, message: data.error || 'Failed to update password.' };
+        }
+      }
+
+      // 2. Persist custom demo password in local storage
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const customPasswords = JSON.parse(window.localStorage.getItem('hoa_custom_passwords') || '{}');
+        customPasswords[user.email.toLowerCase()] = newPass;
+        window.localStorage.setItem('hoa_custom_passwords', JSON.stringify(customPasswords));
+      }
+
+      return { success: true, message: 'Password has been changed successfully.' };
+    } catch (err: any) {
+      return { success: false, message: err.message || 'An error occurred while changing password.' };
+    }
+  }, [user, accessToken]);
+
   return (
-    <AuthContext.Provider value={{ user, accessToken, isLoading, login, logout, hasRole }}>
+    <AuthContext.Provider value={{ user, accessToken, isLoading, login, logout, hasRole, updateUserProfile, changePassword }}>
       {children}
     </AuthContext.Provider>
   );

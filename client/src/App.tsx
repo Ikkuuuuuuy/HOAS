@@ -21,6 +21,7 @@ import HouseholdMembers from './pages/household/HouseholdMembers';
 import CalendarEvents from './pages/events/CalendarEvents';
 import HOAOfficersDirectory from './pages/admin/HOAOfficersDirectory';
 import HOAMasterlistManagement from './pages/admin/HOAMasterlistManagement';
+import UserProfileSettings from './pages/profile/UserProfileSettings';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -71,6 +72,8 @@ export default function App() {
       <Route path="/directory" element={<ProtectedRoute><HOAOfficersDirectory /></ProtectedRoute>} />
       <Route path="/masterlist" element={<ProtectedRoute><HOAMasterlistManagement /></ProtectedRoute>} />
       <Route path="/hoa-masterlist" element={<ProtectedRoute><HOAMasterlistManagement /></ProtectedRoute>} />
+      <Route path="/profile" element={<ProtectedRoute><UserProfileSettings /></ProtectedRoute>} />
+      <Route path="/account-settings" element={<ProtectedRoute><UserProfileSettings /></ProtectedRoute>} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

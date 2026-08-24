@@ -194,6 +194,16 @@ export default function Sidebar() {
               <div className="menu-header-email">{user.email}</div>
             </div>
             
+            <button className="user-menu-item" onClick={() => { setShowMenu(false); navigate('/profile'); }}>
+              <span className="item-icon">⚙️</span>
+              <span>Edit Profile & Photo</span>
+            </button>
+
+            <button className="user-menu-item" onClick={() => { setShowMenu(false); navigate('/profile'); }}>
+              <span className="item-icon">🔑</span>
+              <span>Change Password</span>
+            </button>
+
             <button className="user-menu-item" onClick={() => { setShowMenu(false); setShowOverviewModal(true); }}>
               <span className="item-icon">👤</span>
               <span>Account Overview</span>
@@ -212,9 +222,18 @@ export default function Sidebar() {
           onClick={() => setShowMenu(prev => !prev)}
           title="Click to view Account Overview & Logout"
         >
-          <div className="sidebar-avatar" style={{ background: config.gradient }}>
-            {user.fullName.charAt(0)}
-          </div>
+          {user.avatarUrl ? (
+            <img
+              src={user.avatarUrl}
+              alt={user.fullName}
+              className="sidebar-avatar"
+              style={{ objectFit: 'cover' }}
+            />
+          ) : (
+            <div className="sidebar-avatar" style={{ background: config.gradient }}>
+              {user.fullName.charAt(0)}
+            </div>
+          )}
           <div className="sidebar-user-info">
             <div className="sidebar-user-name">{user.fullName}</div>
             <div className="sidebar-user-role" style={{ color: config.color }}>
@@ -238,9 +257,17 @@ export default function Sidebar() {
             <div style={{ padding: '4px 0', display: 'flex', flexDirection: 'column', gap: 16 }}>
               {/* User Profile Header */}
               <div className="flex items-center gap-4" style={{ background: 'var(--bg-hover)', padding: 16, borderRadius: 12, border: '1px solid var(--border)' }}>
-                <div style={{ width: 52, height: 52, borderRadius: 12, background: config.gradient, display: 'flex', flexShrink: 0, alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 800, color: '#FFF' }}>
-                  {user.fullName.charAt(0)}
-                </div>
+                {user.avatarUrl ? (
+                  <img
+                    src={user.avatarUrl}
+                    alt={user.fullName}
+                    style={{ width: 52, height: 52, borderRadius: 12, objectFit: 'cover', flexShrink: 0 }}
+                  />
+                ) : (
+                  <div style={{ width: 52, height: 52, borderRadius: 12, background: config.gradient, display: 'flex', flexShrink: 0, alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 800, color: '#FFF' }}>
+                    {user.fullName.charAt(0)}
+                  </div>
+                )}
                 <div style={{ flex: 1, overflow: 'hidden' }}>
                   <div style={{ fontWeight: 800, fontSize: 16, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.fullName}</div>
                   <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{user.email}</div>

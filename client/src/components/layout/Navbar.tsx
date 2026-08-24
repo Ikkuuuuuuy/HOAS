@@ -249,6 +249,53 @@ export default function Navbar({ title, subtitle }: NavbarProps) {
           <span style={{ color: 'var(--shell-text-sub)', marginRight: 4 }}>🕒</span>
           <span>{timeString}</span>
         </div>
+
+        {/* USER PROFILE QUICK BUTTON */}
+        {user && (
+          <button
+            type="button"
+            onClick={() => navigate('/profile')}
+            className="navbar-user-btn"
+            title="Click to view & edit Profile / Change Password"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              background: 'var(--sidebar-card-bg)',
+              border: '1px solid var(--sidebar-card-bdr)',
+              borderRadius: 'var(--radius-md)',
+              padding: '4px 10px 4px 6px',
+              cursor: 'pointer',
+              color: 'var(--navbar-text-title)',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            {user.avatarUrl ? (
+              <img
+                src={user.avatarUrl}
+                alt={user.fullName}
+                style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover' }}
+              />
+            ) : (
+              <div style={{
+                width: 28, height: 28, borderRadius: '50%',
+                background: 'linear-gradient(135deg, #166534, #15803D)',
+                color: '#FFF', fontSize: 12, fontWeight: 800,
+                display: 'flex', alignItems: 'center', justifyContent: 'center'
+              }}>
+                {user.fullName.charAt(0)}
+              </div>
+            )}
+            <div style={{ textAlign: 'left', lineHeight: 1.2 }}>
+              <div style={{ fontSize: 12, fontWeight: 800, whiteSpace: 'nowrap', maxWidth: 110, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {user.fullName.split(' ')[0]}
+              </div>
+              <div style={{ fontSize: 10, color: 'var(--navbar-text-sub)' }}>
+                Profile ⚙️
+              </div>
+            </div>
+          </button>
+        )}
       </div>
 
       <style>{`
