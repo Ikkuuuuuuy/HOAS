@@ -148,7 +148,9 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="login-form">
             <div>
-              <label className="form-label">Email Address</label>
+              <label className="form-label">
+                Email Address <span className="req-star">*</span>
+              </label>
               <input
                 type="email"
                 className="form-input"
@@ -160,7 +162,9 @@ export default function Login() {
             </div>
 
             <div>
-              <label className="form-label" style={{ display: 'block', marginBottom: 6 }}>Password</label>
+              <label className="form-label" style={{ display: 'block', marginBottom: 6 }}>
+                Password <span className="req-star">*</span>
+              </label>
               <input
                 type="password"
                 className="form-input"

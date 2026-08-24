@@ -326,7 +326,9 @@ export default function Register() {
               
               {/* Full Name */}
               <div>
-                <label className="form-label">Registered Homeowner Full Name</label>
+                <label className="form-label">
+                  Registered Homeowner Full Name <span className="req-star">*</span>
+                </label>
                 <input
                   type="text"
                   className="form-input"
@@ -340,7 +342,9 @@ export default function Register() {
               {/* Block, Lot, Street Grid */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', gap: 12 }}>
                 <div>
-                  <label className="form-label">Block Number</label>
+                  <label className="form-label">
+                    Block Number <span className="req-star">*</span>
+                  </label>
                   <select
                     className="form-input"
                     value={selectedBlock}
@@ -354,7 +358,9 @@ export default function Register() {
                 </div>
 
                 <div>
-                  <label className="form-label">Lot Number</label>
+                  <label className="form-label">
+                    Lot Number <span className="req-star">*</span>
+                  </label>
                   <input
                     type="text"
                     className="form-input"
@@ -430,7 +436,9 @@ export default function Register() {
               {/* Contact, Email, HOA Account # */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
-                  <label className="form-label">Mobile Contact Number</label>
+                  <label className="form-label">
+                    Mobile Contact Number <span className="req-star">*</span>
+                  </label>
                   <input
                     type="tel"
                     className="form-input"
@@ -442,7 +450,9 @@ export default function Register() {
                 </div>
 
                 <div>
-                  <label className="form-label">Email Address</label>
+                  <label className="form-label">
+                    Email Address <span className="req-star">*</span>
+                  </label>
                   <input
                     type="email"
                     className="form-input"
@@ -457,7 +467,9 @@ export default function Register() {
               {/* Password & Confirm Password */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
-                  <label className="form-label">Create Password</label>
+                  <label className="form-label">
+                    Create Password <span className="req-star">*</span>
+                  </label>
                   <input
                     type="password"
                     className="form-input"
@@ -470,7 +482,9 @@ export default function Register() {
                 </div>
 
                 <div>
-                  <label className="form-label">Confirm Password</label>
+                  <label className="form-label">
+                    Confirm Password <span className="req-star">*</span>
+                  </label>
                   <input
                     type="password"
                     className="form-input"
@@ -584,7 +598,9 @@ export default function Register() {
               </div>
 
               <div>
-                <label className="form-label">Enter 6-Digit Code</label>
+                <label className="form-label">
+                  Enter 6-Digit Code <span className="req-star">*</span>
+                </label>
                 <input
                   type="text"
                   className="form-input"

@@ -242,7 +242,9 @@ export default function VisitorLogbook() {
               </div>
               <form onSubmit={handleLogVisitor} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
                 <div className="form-group">
-                  <label className="form-label">Host Resident</label>
+                  <label className="form-label">
+                    Host Resident <span className="req-star">*</span>
+                  </label>
                   <select
                     className="form-select"
                     value={form.hostId}
@@ -257,7 +259,9 @@ export default function VisitorLogbook() {
                   </select>
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Visitor Full Name</label>
+                  <label className="form-label">
+                    Visitor Full Name <span className="req-star">*</span>
+                  </label>
                   <input
                     type="text"
                     className="form-input"
@@ -306,7 +310,9 @@ export default function VisitorLogbook() {
                     />
                   </div>
                   <div className="form-group">
-                    <label className="form-label">Purpose of Visit</label>
+                    <label className="form-label">
+                      Purpose of Visit <span className="req-star">*</span>
+                    </label>
                     <input
                       type="text"
                       className="form-input"

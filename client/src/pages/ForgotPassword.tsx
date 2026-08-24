@@ -116,7 +116,9 @@ export default function ForgotPassword() {
           {step === 1 && (
             <form onSubmit={handleSendCode} className="login-form">
               <div>
-                <label className="form-label">Registered Email or Mobile Number</label>
+                <label className="form-label">
+                  Registered Email or Mobile Number <span className="req-star">*</span>
+                </label>
                 <input
                   type="text"
                   className="form-input"
@@ -155,7 +157,9 @@ export default function ForgotPassword() {
               </div>
 
               <div>
-                <label className="form-label">6-Digit Verification Code</label>
+                <label className="form-label">
+                  6-Digit Verification Code <span className="req-star">*</span>
+                </label>
                 <input
                   type="text"
                   className="form-input"
@@ -183,7 +187,9 @@ export default function ForgotPassword() {
           {step === 3 && (
             <form onSubmit={handleResetPassword} className="login-form">
               <div>
-                <label className="form-label">New Password</label>
+                <label className="form-label">
+                  New Password <span className="req-star">*</span>
+                </label>
                 <input
                   type="password"
                   className="form-input"
@@ -196,7 +202,9 @@ export default function ForgotPassword() {
               </div>
 
               <div>
-                <label className="form-label">Confirm New Password</label>
+                <label className="form-label">
+                  Confirm New Password <span className="req-star">*</span>
+                </label>
                 <input
                   type="password"
                   className="form-input"
