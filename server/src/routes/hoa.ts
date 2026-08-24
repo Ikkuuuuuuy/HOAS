@@ -8,11 +8,27 @@ import bcrypt from 'bcryptjs';
 const router = Router();
 
 // ============================================================
-// 1. PUBLIC HOMEOWNER REGISTRATION WITH PROOF & OTP SIMULATION
+// 1. PUBLIC HOMEOWNER REGISTRATION WITH AUTOMATED MASTERLIST AUTO-ACCEPT
 // ============================================================
+const SERVER_HOA_MASTERLIST = [
+  { block: 'Block 1', lot: 'Lot 02', street: 'Magiting Street', ownerName: 'Pedro Penduko', accountNo: 'NRG2-B01L02', phone: '0922-345-6789' },
+  { block: 'Block 1', lot: 'Lot 08', street: 'Magiting Street', ownerName: 'Anne Gregori', accountNo: 'NRG2-B01L08', phone: '0919-334-8811' },
+  { block: 'Block 2', lot: 'Lot 01', street: 'Maagap Street', ownerName: 'Rey Mar Villanueva', accountNo: 'NRG2-B02L01', phone: '0917-882-9401' },
+  { block: 'Block 2', lot: 'Lot 06', street: 'Maagap Street', ownerName: 'Jemma Alamillo', accountNo: 'NRG2-B02L06', phone: '0917-445-9922' },
+  { block: 'Block 3', lot: 'Lot 12', street: 'Maagap Street', ownerName: 'Juan Dela Cruz', accountNo: 'NRG2-B03L12', phone: '0917-123-4567' },
+  { block: 'Block 3', lot: 'Lot 18', street: 'Maagap Street', ownerName: 'Jocelyn Selanova', accountNo: 'NRG2-B03L18', phone: '0920-881-2233' },
+  { block: 'Block 4', lot: 'Lot 05', street: 'Mabuti Street', ownerName: 'Maria Santos', accountNo: 'NRG2-B04L05', phone: '0918-234-5678' },
+  { block: 'Block 4', lot: 'Lot 11', street: 'Mabuti Street', ownerName: 'Melinda Domingo', accountNo: 'NRG2-B04L11', phone: '0918-662-7744' },
+  { block: 'Block 5', lot: 'Lot 09', street: 'Mabuti Street', ownerName: 'Cezar Climaco', accountNo: 'NRG2-B05L09', phone: '0918-554-1102' },
+  { block: 'Block 6', lot: 'Lot 03', street: 'Magiting Street', ownerName: 'Alma Valdezco', accountNo: 'NRG2-B06L03', phone: '0917-123-4567' },
+  { block: 'Block 7', lot: 'Lot 08', street: 'Maagap Street', ownerName: 'Ricardo Dalisay', accountNo: 'NRG2-B07L08', phone: '0917-888-9999' },
+  { block: 'Block 8', lot: 'Lot 14', street: 'Mapayapa Street', ownerName: 'Ana Elena Reyes', accountNo: 'NRG2-B08L14', phone: '0905-456-7890' },
+  { block: 'Block 9', lot: 'Lot 05', street: 'Mapayapa Street', ownerName: 'Jennerfer Barlaan', accountNo: 'NRG2-B09L05', phone: '0918-994-5599' },
+];
+
 router.post('/register-homeowner', async (req, res) => {
   try {
-    const { fullName, email, password, address, contactNumber, proofDocUrl, otpCode } = req.body;
+    const { fullName, email, password, address, contactNumber, proofDocUrl, otpCode, block, lot, accountNo } = req.body;
 
     if (!fullName || !email || !password || !address || !contactNumber) {
       return res.status(400).json({ error: 'All fields are required' });
@@ -29,16 +45,37 @@ router.post('/register-homeowner', async (req, res) => {
       return res.status(409).json({ error: 'An account with this email address already exists' });
     }
 
+    // ── AUTOMATED MASTERLIST MATCHING ────────────────────────────
+    const normName = (fullName || '').trim().toLowerCase();
+    const normBlock = (block || address || '').replace(/[^0-9]/g, '');
+    const normLot = (lot || address || '').replace(/[^0-9]/g, '');
+    const normAccount = (accountNo || '').trim().toLowerCase();
+
+    const masterlistMatch = SERVER_HOA_MASTERLIST.find(record => {
+      if (normAccount && record.accountNo.toLowerCase() === normAccount) return true;
+      const recBlock = record.block.replace(/[^0-9]/g, '');
+      const recLot = record.lot.replace(/[^0-9]/g, '');
+      const recName = record.ownerName.trim().toLowerCase();
+
+      const blockLotMatch = (normBlock && recBlock === normBlock) || address.toLowerCase().includes(record.block.toLowerCase());
+      const nameMatch = normName.length >= 3 && (recName.includes(normName) || normName.includes(recName));
+
+      return blockLotMatch && nameMatch;
+    });
+
+    const isAutoApproved = !!masterlistMatch;
+    const userStatus = isAutoApproved ? 'active' : 'pending_approval';
+
     const userId = `usr-${uuidv4().slice(0, 8)}`;
     const tenantId = 'tenant-palmera-hoa'; // Default demo HOA tenant
     const roleId = 5; // Resident
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // Insert user with status = pending_approval
+    // Insert user
     db.prepare(`
       INSERT INTO users (id, tenant_id, role_id, email, password_hash, full_name, is_active, status, proof_doc_url, phone_number)
-      VALUES (?, ?, ?, ?, ?, ?, 1, 'pending_approval', ?, ?)
-    `).run(userId, tenantId, roleId, email, passwordHash, fullName, proofDocUrl || null, contactNumber);
+      VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?, ?)
+    `).run(userId, tenantId, roleId, email, passwordHash, fullName, userStatus, proofDocUrl || null, contactNumber);
 
     // Insert resident profile
     db.prepare(`
@@ -47,9 +84,13 @@ router.post('/register-homeowner', async (req, res) => {
     `).run(uuidv4(), userId, tenantId, address, contactNumber, proofDocUrl || null);
 
     res.status(201).json({
-      message: 'Registration successful! Your account is pending verification and approval by the HOA Administrator.',
+      message: isAutoApproved
+        ? '🎉 Instant Auto-Verification Successful! Verified against NRG PH2 HOA Official Masterlist. Your account is immediately activated!'
+        : 'Registration successful! Your application is in the queue for manual HOA Board review.',
       userId,
-      status: 'pending_approval',
+      status: userStatus,
+      autoAccepted: isAutoApproved,
+      matchedRecord: masterlistMatch || null,
     });
   } catch (error: any) {
     console.error('Registration Error:', error);

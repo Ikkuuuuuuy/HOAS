@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getMockData, setMockData, INITIAL_MOCK_DATABASE, MockDatabaseSchema } from '../data/mockDatabase';
+import { getMockData, setMockData, INITIAL_MOCK_DATABASE, MockDatabaseSchema, matchMasterlistRecord } from '../data/mockDatabase';
 
 interface UseApiOptions {
   manual?: boolean;
@@ -124,6 +124,63 @@ export async function apiCall<T>(
 
   // ── CLIENT-SIDE MOCK SIMULATION ENGINE ───────────────────────
   const clean = endpoint.split('?')[0];
+
+  // 0. Public Homeowner Registration with Masterlist Auto-Verification
+  if ((clean === '/api/hoa/register-homeowner' || clean === '/api/auth/register') && method === 'POST') {
+    const match = matchMasterlistRecord({
+      fullName: body.fullName || '',
+      block: body.block || body.address || '',
+      lot: body.lot || body.address || '',
+      accountNo: body.accountNo || '',
+      phone: body.contactNumber || body.phone || '',
+    });
+
+    const isAutoApproved = !!match;
+    const userStatus = isAutoApproved ? 'active' : 'pending_approval';
+    const userId = `usr-res-${Date.now()}`;
+
+    // Add to mock users
+    const currentUsers = getMockData('users') || [];
+    const newUser = {
+      id: userId,
+      full_name: body.fullName,
+      email: body.email,
+      role_name: 'resident',
+      tenant_name: 'Bria Northridge Grove HOA',
+      tenant_id: 'tenant-palmera-1',
+      is_active: 1,
+      status: userStatus,
+      is_verified: isAutoApproved ? 1 : 0,
+      verification_type: isAutoApproved ? 'auto_masterlist_match' : 'pending_manual',
+      created_at: new Date().toISOString(),
+    };
+    setMockData('users', [newUser, ...currentUsers]);
+
+    // Add to mock residents
+    const currentResidents = getMockData('residents') || [];
+    const newResident = {
+      id: `res-${Date.now()}`,
+      full_name: body.fullName,
+      email: body.email,
+      contact_number: body.contactNumber,
+      address: body.address || `${body.block || 'Block 3'} ${body.lot || 'Lot 12'}, NRG Phase 2`,
+      civil_status: 'married',
+      indigency_status: 0,
+      voter_status: 'registered',
+      created_at: new Date().toISOString(),
+    };
+    setMockData('residents', [newResident, ...currentResidents]);
+
+    return {
+      message: isAutoApproved
+        ? '🎉 Instant Auto-Verification Successful! Verified against NRG PH2 HOA Official Masterlist. Your account is immediately activated!'
+        : 'Registration successful! Your application is in the queue for manual HOA Board review.',
+      userId,
+      status: userStatus,
+      autoAccepted: isAutoApproved,
+      matchedRecord: match || null,
+    } as unknown as T;
+  }
 
   // 1. Household Members
   if (clean === '/api/household' && method === 'POST') {
