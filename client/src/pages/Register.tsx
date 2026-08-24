@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { HOA_MASTERLIST_DATABASE, matchMasterlistRecord, MasterlistRecord } from '../data/mockDatabase';
+import PrivacyPolicyModal from '../components/common/PrivacyPolicyModal';
 
 const BLOCK_STREET_MAP: Record<string, string> = {
   'Block 1': 'Magiting Street',
@@ -36,6 +37,8 @@ export default function Register() {
   const [attachedFile, setAttachedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600');
   const [otpCode, setOtpCode] = useState('123456');
+  const [agreePrivacyConsent, setAgreePrivacyConsent] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   // UI state
   const [isLoading, setIsLoading] = useState(false);
@@ -113,6 +116,11 @@ export default function Register() {
 
     if (!proofDocUrl && !attachedFile) {
       setError('Please attach a clear picture of your valid Government ID for verification.');
+      return;
+    }
+
+    if (!agreePrivacyConsent) {
+      setError('Please check and agree to the Data Privacy & Protection Consent (R.A. 10173) before submitting.');
       return;
     }
 
@@ -513,6 +521,25 @@ export default function Register() {
                 </div>
               </div>
 
+              {/* Step 1 PII Data Privacy Notice */}
+              <div style={{
+                background: 'rgba(15, 23, 42, 0.65)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                padding: '10px 14px',
+                borderRadius: 8,
+                fontSize: 11.5,
+                color: '#94A3B8',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                marginTop: 4
+              }}>
+                <span>🛡️</span>
+                <span>
+                  <strong>Data Privacy (R.A. 10173):</strong> Your demographic and property details are collected strictly for verified resident directory and emergency administration.
+                </span>
+              </div>
+
               {/* Next Button */}
               <button
                 type="submit"
@@ -656,6 +683,7 @@ export default function Register() {
                 </label>
               </div>
 
+              {/* Data Vault Notice */}
               <div style={{
                 background: 'rgba(15, 23, 42, 0.6)',
                 border: '1px solid rgba(255,255,255,0.08)',
@@ -669,8 +697,52 @@ export default function Register() {
               }}>
                 <span>🔒</span>
                 <span>
-                  <strong>Data Privacy Standard:</strong> Your ID photo is securely archived in the Super Admin Security Vault and used solely for homeowner verification.
+                  <strong>Encrypted Vault Protection:</strong> Uploaded ID images are encrypted and restricted solely to Super Admin Master Clearance.
                 </span>
+              </div>
+
+              {/* Mandatory Consent Checkbox */}
+              <div style={{
+                background: agreePrivacyConsent ? 'rgba(22, 101, 52, 0.2)' : 'rgba(30, 41, 59, 0.75)',
+                border: agreePrivacyConsent ? '1.5px solid #22C55E' : '1px solid rgba(245, 158, 11, 0.4)',
+                padding: '14px 16px',
+                borderRadius: 10,
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: 12,
+                transition: 'all 0.2s ease'
+              }}>
+                <input
+                  type="checkbox"
+                  id="privacy-consent-checkbox"
+                  checked={agreePrivacyConsent}
+                  onChange={e => setAgreePrivacyConsent(e.target.checked)}
+                  style={{ width: 18, height: 18, marginTop: 2, cursor: 'pointer', accentColor: '#16A34A' }}
+                  required
+                />
+                <label htmlFor="privacy-consent-checkbox" style={{ fontSize: 12, color: '#F1F5F9', cursor: 'pointer', lineHeight: 1.5 }}>
+                  I declare that all submitted details are true and correct. I explicitly consent to the collection, processing, and encrypted storage of my PII, Sensitive Personal Data (Birthdate, Gender, Government ID), and emergency contacts by <strong>Northridge Grove Phase 2 HOA Inc.</strong> pursuant to the{' '}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setShowPrivacyModal(true);
+                    }}
+                    style={{
+                      color: '#38BDF8',
+                      textDecoration: 'underline',
+                      background: 'none',
+                      border: 'none',
+                      padding: 0,
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      fontSize: 12
+                    }}
+                  >
+                    Philippine Data Privacy Act of 2012 (R.A. 10173)
+                  </button>.
+                </label>
               </div>
 
               <div style={{ display: 'flex', gap: 12, marginTop: 12 }}>
@@ -692,10 +764,11 @@ export default function Register() {
                   disabled={isLoading}
                   style={{
                     flex: 2, padding: 12, borderRadius: 8,
-                    background: 'linear-gradient(135deg, #15803D, #16A34A)',
+                    background: agreePrivacyConsent ? 'linear-gradient(135deg, #15803D, #16A34A)' : 'rgba(255,255,255,0.1)',
                     color: '#fff', border: 'none',
                     fontWeight: 800, cursor: isLoading ? 'not-allowed' : 'pointer',
-                    boxShadow: '0 4px 16px rgba(22,163,74,0.4)'
+                    boxShadow: agreePrivacyConsent ? '0 4px 16px rgba(22,163,74,0.4)' : 'none',
+                    opacity: agreePrivacyConsent ? 1 : 0.6
                   }}
                 >
                   {isLoading ? 'Verifying & Submitting...' : '✓ Complete Verification & Submit'}
@@ -774,6 +847,11 @@ export default function Register() {
 
         </div>
       </div>
+
+      <PrivacyPolicyModal
+        isOpen={showPrivacyModal}
+        onClose={() => setShowPrivacyModal(false)}
+      />
     </div>
   );
 }

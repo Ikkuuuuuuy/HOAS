@@ -1221,6 +1221,25 @@ export default function DocumentRequests() {
                   />
                 </div>
 
+                {/* Data Privacy Notice */}
+                <div style={{
+                  background: 'rgba(15, 23, 42, 0.65)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  padding: '10px 14px',
+                  borderRadius: 8,
+                  fontSize: 11.5,
+                  color: 'var(--text-muted)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  marginBottom: 16
+                }}>
+                  <span style={{ fontSize: 14 }}>🛡️</span>
+                  <span>
+                    <strong>Document Processing & Privacy (R.A. 10173):</strong> Information submitted in this request is used solely for evaluating, approving, and issuing official HOA/Barangay certificates and permits.
+                  </span>
+                </div>
+
                 <div className="flex gap-3">
                   <button
                     type="button"

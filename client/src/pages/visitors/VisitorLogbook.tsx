@@ -323,6 +323,25 @@ export default function VisitorLogbook() {
                     />
                   </div>
                 </div>
+
+                {/* Visitor Logbook Privacy Notice */}
+                <div style={{
+                  background: 'rgba(15, 23, 42, 0.65)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  padding: '8px 12px',
+                  borderRadius: 6,
+                  fontSize: 11,
+                  color: 'var(--text-muted)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6
+                }}>
+                  <span>🛡️</span>
+                  <span>
+                    <strong>Gate Logbook Privacy (R.A. 10173):</strong> Visitor details are recorded solely for subdivision physical security and perimeter monitoring. Records are protected and auto-purged on scheduled cycles.
+                  </span>
+                </div>
+
                 <div className="flex gap-3" style={{ justifyContent: 'flex-end', marginTop: 'var(--space-2)' }}>
                   <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
                   <button type="submit" className="btn btn-primary" style={{ background: '#DC2626', borderColor: '#DC2626', fontWeight: 800 }} disabled={isSubmitting} id="submit-visitor-btn">

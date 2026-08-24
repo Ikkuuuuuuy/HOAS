@@ -558,6 +558,25 @@ export default function HouseholdMembers() {
                 <button onClick={() => setShowModal(false)} className="modal-close">✕</button>
               </div>
               <div className="modal-body">
+                {/* Household Data Privacy Notice */}
+                <div style={{
+                  background: 'rgba(15, 23, 42, 0.65)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  padding: '10px 14px',
+                  borderRadius: 8,
+                  fontSize: 11.5,
+                  color: 'var(--text-muted)',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: 8,
+                  marginBottom: 14
+                }}>
+                  <span style={{ fontSize: 14 }}>🛡️</span>
+                  <span>
+                    <strong>Household Data Protection (R.A. 10173):</strong> By registering family members, dependents, or domestic staff, you confirm consent to record their demographic, gate access, and emergency contact details for community security and emergency response.
+                  </span>
+                </div>
+
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                   <div>
                     <label className="form-label">Full Name *</label>
