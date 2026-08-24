@@ -6,11 +6,17 @@ import BarangayDashboard from './BarangayDashboard';
 import HOAAdminDashboard from './HOAAdminDashboard';
 import SecurityDashboard from './SecurityDashboard';
 import ResidentDashboard from './ResidentDashboard';
+import PendingApprovalWelcomePage from '../homeowner/PendingApprovalWelcomePage';
 
 export default function DashboardRouter() {
   const { user } = useAuth();
 
   if (!user) return null;
+
+  // Intercept unverified / pending / rejected applicants
+  if (user.status === 'pending_approval' || user.status === 'pending' || user.status === 'rejected') {
+    return <PendingApprovalWelcomePage />;
+  }
 
   switch (user.roleName) {
     case 'super_admin': return <SuperAdminDashboard />;

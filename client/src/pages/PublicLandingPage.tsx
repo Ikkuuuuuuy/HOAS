@@ -493,6 +493,33 @@ export default function PublicLandingPage() {
         )}
       </header>
 
+      {/* Pending Homeowner Application Banner */}
+      {user && (user.status === 'pending_approval' || user.status === 'pending') && (
+        <div style={{
+          background: 'linear-gradient(135deg, #78350F, #B45309)',
+          borderBottom: '1px solid #F59E0B',
+          color: '#FEF3C7',
+          padding: '10px 20px',
+          textAlign: 'center',
+          fontSize: '13px',
+          fontWeight: 700,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '8px',
+          zIndex: 40,
+          position: 'relative'
+        }}>
+          <span>⏳</span>
+          <span>
+            Welcome, <strong>{user.fullName}</strong>! Your Homeowner Account Application is currently under review by the HOA Board. You can browse the public website, but portal services remain locked until approval.
+          </span>
+          <Link to="/dashboard" style={{ color: '#FFF', background: 'rgba(0,0,0,0.3)', padding: '2px 8px', borderRadius: 4, textDecoration: 'underline', marginLeft: 6 }}>
+            View Status →
+          </Link>
+        </div>
+      )}
+
       {/* ── HERO SECTION ── */}
       <section id="home" style={{ position: 'relative', minHeight: '92vh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
         <img

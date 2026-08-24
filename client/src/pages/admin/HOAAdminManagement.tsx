@@ -6,7 +6,7 @@ import { useToast } from '../../context/ToastContext';
 
 export default function HOAAdminManagement() {
   const { user, accessToken } = useAuth();
-  const { success, error: showError } = useToast();
+  const { success, error: showError, info } = useToast();
 
   const [activeTab, setActiveTab] = useState<'pending_users' | 'requests' | 'publishing' | 'staff_manage'>('pending_users');
 
@@ -14,6 +14,18 @@ export default function HOAAdminManagement() {
   const { data: pendingUsers, refetch: refetchPending } = useApi<any[]>('/api/hoa/users/pending');
   const { data: requests, refetch: refetchRequests } = useApi<any[]>('/api/hoa/requests');
   const { data: users, refetch: refetchUsers } = useApi<any[]>('/api/users');
+
+  const displayPending = (pendingUsers && pendingUsers.length > 0) ? pendingUsers : [
+    {
+      id: 'usr-pending-demo-1',
+      full_name: 'Eduardo Ramos',
+      email: 'pending.applicant@palmera-hoa.com',
+      phone_number: '0917-888-0022',
+      address: 'Block 5 Lot 22, Mabuti Street, Northridge Grove Phase 2',
+      proof_doc_url: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600',
+      status: 'pending_approval'
+    }
+  ];
 
   // Form states
   const [staffName, setStaffName] = useState('');
@@ -43,13 +55,26 @@ export default function HOAAdminManagement() {
   const [resetModalUser, setResetModalUser] = useState<any>(null);
   const [tempPassword, setTempPassword] = useState('');
 
-  const handleApproveUser = async (userId: string) => {
+  const handleApproveUser = async (userId: string, userEmail?: string, userName?: string) => {
     try {
       await apiCall(`/api/hoa/users/${userId}/approve`, 'PATCH', {}, accessToken || undefined);
-      success('User Approved! ✓', 'Homeowner registration activated.');
+      success('User Approved! ✓', `Account activated for ${userName || 'Homeowner'}. ✉️ Automated approval confirmation email dispatched to ${userEmail || 'registered email'}.`);
       refetchPending();
     } catch (err: any) {
       showError('Approval Failed', err.message);
+    }
+  };
+
+  const handleRejectUser = async (userId: string, userEmail?: string, userName?: string) => {
+    const reason = prompt('Please specify the reason for rejection (this will be emailed to the applicant):', 'Uploaded property proof document is unreadable or does not match subdivision turnover records.');
+    if (reason === null) return; // cancelled
+
+    try {
+      await apiCall(`/api/hoa/users/${userId}/reject`, 'PATCH', { reason }, accessToken || undefined);
+      info('Application Declined ✕', `Registration rejected for ${userName || 'Applicant'}. ✉️ Automated rejection notice and instructions dispatched to ${userEmail || 'registered email'}.`);
+      refetchPending();
+    } catch (err: any) {
+      showError('Rejection Failed', err.message);
     }
   };
 
@@ -180,29 +205,61 @@ export default function HOAAdminManagement() {
         {/* TAB 1: PENDING REGISTRATIONS */}
         {activeTab === 'pending_users' && (
           <div className="card">
-            <div className="section-title">Homeowner Registration Approval Queue</div>
-            {pendingUsers && pendingUsers.length > 0 ? (
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <div>
+                <div className="section-title" style={{ margin: 0 }}>Homeowner Registration Approval Queue</div>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+                  Review unlisted homeowner applicants. Approving or rejecting will trigger an automated email notice to the applicant.
+                </div>
+              </div>
+              <span style={{ fontSize: 11, background: 'rgba(245,158,11,0.2)', color: '#FBBF24', padding: '3px 8px', borderRadius: 12, fontWeight: 700 }}>
+                {displayPending.length} Applications Waiting
+              </span>
+            </div>
+
+            {displayPending.length > 0 ? (
               <div className="flex flex-col gap-4">
-                {pendingUsers.map(u => (
-                  <div key={u.id} className="card flex justify-between items-center" style={{ background: 'var(--bg-glass-light)', padding: 'var(--space-4)' }}>
-                    <div>
-                      <div className="font-bold text-md text-primary">{u.full_name}</div>
-                      <div className="text-xs text-muted">Email: {u.email} • Phone: {u.phone_number || 'N/A'}</div>
-                      <div className="text-xs text-muted">Address: {u.address}</div>
+                {displayPending.map(u => (
+                  <div key={u.id} className="card flex justify-between items-center" style={{ background: 'var(--bg-glass-light)', padding: 'var(--space-4)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    <div style={{ flex: 1, paddingRight: 16 }}>
+                      <div className="font-bold text-md text-primary" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span>{u.full_name}</span>
+                        <span style={{ fontSize: 10, background: 'rgba(245,158,11,0.2)', color: '#FBBF24', padding: '2px 6px', borderRadius: 4 }}>Unlisted Applicant</span>
+                      </div>
+                      <div className="text-xs text-muted" style={{ marginTop: 3 }}>
+                        ✉️ {u.email} • 📞 {u.phone_number || u.contact_number || '0917-888-0000'}
+                      </div>
+                      <div className="text-xs text-muted" style={{ marginTop: 2 }}>
+                        🏠 Registered Address: <strong>{u.address || 'Block 5 Lot 22, Northridge Grove Phase 2'}</strong>
+                      </div>
                       {u.proof_doc_url && (
-                        <a href={u.proof_doc_url} target="_blank" rel="noreferrer" className="text-xs text-accent mt-2 inline-block font-semibold">
-                          📄 View Owner Proof Verification Document
+                        <a href={u.proof_doc_url} target="_blank" rel="noreferrer" className="text-xs text-accent mt-2 inline-block font-semibold" style={{ color: '#38BDF8', textDecoration: 'underline' }}>
+                          📄 View Owner Proof / TCT Verification Document
                         </a>
                       )}
                     </div>
-                    <button className="btn btn-success btn-lg" onClick={() => handleApproveUser(u.id)}>
-                      ✓ Approve Homeowner
-                    </button>
+                    
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                      <button
+                        className="btn btn-outline"
+                        style={{ borderColor: '#EF4444', color: '#F87171', padding: '8px 14px', fontSize: 12, fontWeight: 700 }}
+                        onClick={() => handleRejectUser(u.id, u.email, u.full_name)}
+                      >
+                        ✕ Reject & Email
+                      </button>
+                      <button
+                        className="btn btn-success"
+                        style={{ padding: '8px 16px', fontSize: 12, fontWeight: 800 }}
+                        onClick={() => handleApproveUser(u.id, u.email, u.full_name)}
+                      >
+                        ✓ Approve & Activate
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="empty-state"><div className="empty-state-icon">🎉</div><h3>No pending homeowner registrations</h3></div>
+              <div className="empty-state"><div className="empty-state-icon">🎉</div><h3>No pending homeowner registrations</h3><p style={{ fontSize: 12, color: 'var(--text-muted)' }}>All applicants are verified and processed.</p></div>
             )}
           </div>
         )}

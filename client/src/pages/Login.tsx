@@ -7,7 +7,9 @@ const DEMO_ACCOUNTS = [
   { label: '🏢 Main Admin', email: 'treasurer@palmera-hoa.com', password: 'HOAAdmin@1234', color: '#F87171', bg: 'rgba(248, 113, 113, 0.15)' },
   { label: '🛡 Admin Staff', email: 'staff@palmera-hoa.com', password: 'Staff@1234', color: '#60A5FA', bg: 'rgba(96, 165, 250, 0.15)' },
   { label: '👮 Security Guard', email: 'guard@palmera-hoa.com', password: 'Guard@1234', color: '#FBBF24', bg: 'rgba(251, 191, 36, 0.15)' },
-  { label: '🏠 Homeowner', email: 'resident@palmera-hoa.com', password: 'Resident@1234', color: '#6EE7B7', bg: 'rgba(110, 231, 183, 0.15)' },
+  { label: '🏠 Verified Homeowner', email: 'resident@palmera-hoa.com', password: 'Resident@1234', color: '#6EE7B7', bg: 'rgba(110, 231, 183, 0.15)' },
+  { label: '⏳ Pending Applicant', email: 'pending.applicant@palmera-hoa.com', password: 'Pass123!', color: '#FDE047', bg: 'rgba(253, 224, 71, 0.15)' },
+  { label: '❌ Declined Applicant', email: 'rejected.applicant@palmera-hoa.com', password: 'Pass123!', color: '#FCA5A5', bg: 'rgba(252, 165, 165, 0.15)' },
 ];
 
 export default function Login() {

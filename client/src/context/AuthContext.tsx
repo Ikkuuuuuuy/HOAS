@@ -9,6 +9,11 @@ export interface User {
   tenantId: string;
   tenantName: string;
   tenantType: string;
+  status?: string;
+  rejectionReason?: string;
+  registeredBlock?: string;
+  registeredLot?: string;
+  isVerified?: boolean;
 }
 
 interface AuthContextValue {
@@ -30,6 +35,7 @@ const DEMO_USERS_MAP: Record<string, User> = {
     tenantId: 'tenant-brgy-174',
     tenantName: 'Barangay 174 & Bria HOA',
     tenantType: 'barangay',
+    status: 'active',
   },
   'treasurer@palmera-hoa.com': {
     id: 'usr-hoaadmin',
@@ -40,6 +46,7 @@ const DEMO_USERS_MAP: Record<string, User> = {
     tenantId: 'tenant-palmera-1',
     tenantName: 'Bria Northridge Grove HOA',
     tenantType: 'subdivision',
+    status: 'active',
   },
   'staff@palmera-hoa.com': {
     id: 'usr-staff',
@@ -50,6 +57,7 @@ const DEMO_USERS_MAP: Record<string, User> = {
     tenantId: 'tenant-palmera-1',
     tenantName: 'Bria Northridge Grove HOA',
     tenantType: 'subdivision',
+    status: 'active',
   },
   'guard@palmera-hoa.com': {
     id: 'usr-guard',
@@ -60,6 +68,7 @@ const DEMO_USERS_MAP: Record<string, User> = {
     tenantId: 'tenant-palmera-1',
     tenantName: 'Bria Northridge Grove HOA',
     tenantType: 'subdivision',
+    status: 'active',
   },
   'resident@palmera-hoa.com': {
     id: 'usr-resident',
@@ -70,6 +79,34 @@ const DEMO_USERS_MAP: Record<string, User> = {
     tenantId: 'tenant-palmera-1',
     tenantName: 'Bria Northridge Grove HOA',
     tenantType: 'subdivision',
+    status: 'active',
+  },
+  'pending.applicant@palmera-hoa.com': {
+    id: 'usr-pending-1',
+    email: 'pending.applicant@palmera-hoa.com',
+    fullName: 'Eduardo Ramos (Pending Unlisted Buyer)',
+    roleName: 'homeowner',
+    roleId: 5,
+    tenantId: 'tenant-palmera-1',
+    tenantName: 'Bria Northridge Grove HOA',
+    tenantType: 'subdivision',
+    status: 'pending_approval',
+    registeredBlock: 'Block 5',
+    registeredLot: 'Lot 22',
+  },
+  'rejected.applicant@palmera-hoa.com': {
+    id: 'usr-rejected-1',
+    email: 'rejected.applicant@palmera-hoa.com',
+    fullName: 'Carlos Manalo (Declined Applicant)',
+    roleName: 'homeowner',
+    roleId: 5,
+    tenantId: 'tenant-palmera-1',
+    tenantName: 'Bria Northridge Grove HOA',
+    tenantType: 'subdivision',
+    status: 'rejected',
+    rejectionReason: 'Uploaded document is unreadable and lot number (Block 9 Lot 99) does not match developer turnover records.',
+    registeredBlock: 'Block 9',
+    registeredLot: 'Lot 99',
   },
 };
 

@@ -4,6 +4,7 @@ import PageContainer from '../../components/layout/PageContainer';
 import { useAuth } from '../../context/AuthContext';
 import { useApi, apiCall } from '../../hooks/useApi';
 import { useToast } from '../../context/ToastContext';
+import PendingApprovalWelcomePage from './PendingApprovalWelcomePage';
 
 const DEFAULT_ACCOMPLISHMENTS = [
   {
@@ -81,6 +82,10 @@ export default function HomeownerPortal() {
   const { user, accessToken } = useAuth();
   const { success, error: showError } = useToast();
   const navigate = useNavigate();
+
+  if (user?.status === 'pending_approval' || user?.status === 'pending' || user?.status === 'rejected') {
+    return <PendingApprovalWelcomePage />;
+  }
 
   const [activeTab, setActiveTab] = useState<'financials' | 'events'>('financials');
   const tabsRef = useRef<HTMLDivElement>(null);
