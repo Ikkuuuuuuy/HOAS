@@ -444,4 +444,40 @@ router.post('/users/admin-staff', authenticate, requireRole('hoa_admin', 'super_
   }
 });
 
+// ============================================================
+// 10. OFFICIAL HOA OFFICERS & DIRECTORY
+// ============================================================
+router.get('/officers', (req, res) => {
+  const officers = [
+    // Executive Board
+    { name: 'Rey Mar Villanueva', role: 'HOA President', category: 'executive', blockOrDept: 'Executive Board', phone: '0917-882-9401', email: 'president.reymar@nrgph2.org', facebookUrl: 'https://facebook.com/reymar.villanueva.nrgph2' },
+    { name: 'Cezar Climaco', role: 'HOA Vice President', category: 'executive', blockOrDept: 'Executive Board', phone: '0918-554-1102', email: 'vp.cezar@nrgph2.org', facebookUrl: 'https://facebook.com/cezar.climaco.nrgph2' },
+    { name: 'Alma Valdezco', role: 'HOA Treasurer', category: 'executive', blockOrDept: 'Finance & Treasury', phone: '0917-123-4567', email: 'treasurer.alma@nrgph2.org', facebookUrl: 'https://facebook.com/alma.valdezco.nrgph2' },
+    { name: 'Ronilo Villagantol', role: 'HOA Auditor', category: 'executive', blockOrDept: 'Internal Audit', phone: '0922-778-9904', email: 'auditor.ronilo@nrgph2.org', facebookUrl: 'https://facebook.com/ronilo.villagantol.nrgph2' },
+    { name: 'Josaphat Aguiman', role: 'HOA Secretary', category: 'executive', blockOrDept: 'Secretariat & Records', phone: '0905-667-2205', email: 'secretary.josaphat@nrgph2.org', facebookUrl: 'https://facebook.com/josaphat.aguiman.nrgph2' },
+    // Block Leaders
+    { name: 'Anne Gregori / Ronalyn Villarte', role: 'Block 1 Leader', category: 'block_leader', blockOrDept: 'Block 1 Community', phone: '0919-334-8811', email: 'block1.leader@nrgph2.org', facebookUrl: 'https://facebook.com/nrgph2.block1.coordinators' },
+    { name: 'Jemma Alamillo', role: 'Block 2 Leader', category: 'block_leader', blockOrDept: 'Block 2 Community', phone: '0917-445-9922', email: 'block2.leader@nrgph2.org', facebookUrl: 'https://facebook.com/jemma.alamillo.nrgph2' },
+    { name: 'Jocelyn Selanova', role: 'Block 3 Leader', category: 'block_leader', blockOrDept: 'Block 3 Community', phone: '0920-881-2233', email: 'block3.leader@nrgph2.org', facebookUrl: 'https://facebook.com/jocelyn.selanova.nrgph2' },
+    { name: 'Melinda Domingo', role: 'Block 4 Leader', category: 'block_leader', blockOrDept: 'Block 4 Community', phone: '0918-662-7744', email: 'block4.leader@nrgph2.org', facebookUrl: 'https://facebook.com/melinda.domingo.nrgph2' },
+    { name: 'Alma Miralles', role: 'Block 5 Leader', category: 'block_leader', blockOrDept: 'Block 5 Community', phone: '0922-339-4455', email: 'block5.leader@nrgph2.org', facebookUrl: 'https://facebook.com/alma.miralles.nrgph2' },
+    { name: 'Ofelia Esloyo', role: 'Block 6 Leader', category: 'block_leader', blockOrDept: 'Block 6 Community', phone: '0917-551-8866', email: 'block6.leader@nrgph2.org', facebookUrl: 'https://facebook.com/ofelia.esloyo.nrgph2' },
+    { name: 'Rina Dorate', role: 'Block 7 Leader', category: 'block_leader', blockOrDept: 'Block 7 Community', phone: '0906-443-1177', email: 'block7.leader@nrgph2.org', facebookUrl: 'https://facebook.com/rina.dorate.nrgph2' },
+    { name: 'Rina Dorate', role: 'Block 8 Leader', category: 'block_leader', blockOrDept: 'Block 8 Community', phone: '0906-443-1177', email: 'block8.leader@nrgph2.org', facebookUrl: 'https://facebook.com/rina.dorate.nrgph2' },
+    { name: 'Jennerfer Barlaan', role: 'Block 9 Leader', category: 'block_leader', blockOrDept: 'Block 9 Community', phone: '0918-994-5599', email: 'block9.leader@nrgph2.org', facebookUrl: 'https://facebook.com/jennerfer.barlaan.nrgph2' },
+    // Committees
+    { name: 'Melody Matienzo', role: 'Chairperson — Grievance Committee', category: 'committee', blockOrDept: 'Dispute Resolution', phone: '0917-881-3301', email: 'grievance.melody@nrgph2.org', facebookUrl: 'https://facebook.com/melody.matienzo.nrgph2' },
+    { name: 'Patrick Gariando', role: 'Chairperson — Inventory Committee', category: 'committee', blockOrDept: 'Asset Management', phone: '0922-114-8802', email: 'inventory.patrick@nrgph2.org', facebookUrl: 'https://facebook.com/patrick.gariando.nrgph2' },
+    { name: 'Xandrix Pagligaran', role: 'Chairperson — Committee on Election (COMELEC)', category: 'committee', blockOrDept: 'Electoral Board', phone: '0919-445-6603', email: 'comelec.xandrix@nrgph2.org', facebookUrl: 'https://facebook.com/xandrix.pagligaran.nrgph2' },
+    { name: 'Jhon Magdaluyo', role: 'Chairperson — Disaster Risk Reduction Management (DRRM)', category: 'committee', blockOrDept: 'Emergency Management', phone: '0917-911-0004', email: 'drrm.jhon@nrgph2.org', facebookUrl: 'https://facebook.com/jhon.magdaluyo.nrgph2' },
+    { name: 'Wennie Arago', role: 'Chairperson — Peace and Order Committee', category: 'committee', blockOrDept: 'Security & Gate', phone: '0918-223-7705', email: 'peaceorder.wennie@nrgph2.org', facebookUrl: 'https://facebook.com/wennie.arago.nrgph2' },
+    { name: 'Ronald Balbin', role: 'Chairperson — Sports & Recreation Committee', category: 'committee', blockOrDept: 'Court & Sports', phone: '0920-556-8806', email: 'sports.ronald@nrgph2.org', facebookUrl: 'https://facebook.com/ronald.balbin.nrgph2' },
+    { name: 'Allen Tabasa', role: 'Chairperson — Facilities & Improvement Committee', category: 'committee', blockOrDept: 'Infrastructure & Permits', phone: '0917-334-1107', email: 'facilities.allen@nrgph2.org', facebookUrl: 'https://facebook.com/allen.tabasa.nrgph2' },
+    { name: 'Alan Talaba', role: 'Chairperson — Gender and Development (GAD)', category: 'committee', blockOrDept: 'Community Welfare', phone: '0922-887-2208', email: 'gad.alan@nrgph2.org', facebookUrl: 'https://facebook.com/alan.talaba.nrgph2' },
+    { name: 'Clemente Sibayan, Ferdinand Lazo, and Nicanor Lasac', role: 'Committee Heads — Livelihood Programs', category: 'committee', blockOrDept: 'Livelihood & Skills', phone: '0919-665-4409', email: 'livelihood.leads@nrgph2.org', facebookUrl: 'https://facebook.com/nrgph2.livelihood.committee' },
+    { name: 'Conrado Laoang', role: 'Chairperson — Maintenance Committee', category: 'committee', blockOrDept: 'Maintenance & Repairs', phone: '0917-772-5510', email: 'maintenance.conrado@nrgph2.org', facebookUrl: 'https://facebook.com/conrado.laoang.nrgph2' },
+  ];
+  res.json(officers);
+});
+
 export default router;

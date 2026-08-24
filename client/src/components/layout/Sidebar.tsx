@@ -16,6 +16,7 @@ const ROLE_CONFIG: Record<string, {
     nav: [
       { path: '/dashboard', icon: '⊞', label: 'Overview' },
       { path: '/homeowner-portal', icon: '🏠', label: 'Homeowner Portal' },
+      { path: '/officers', icon: '🏛️', label: 'HOA Officers' },
       { path: '/household', icon: '👨‍👩‍👧‍👦', label: 'Household Members' },
       { path: '/events', icon: '📅', label: 'Calendar Events' },
       { path: '/documents', icon: '📋', label: 'Service Requests' },
@@ -35,6 +36,7 @@ const ROLE_CONFIG: Record<string, {
     gradient: 'linear-gradient(135deg, #7F1D1D, #DC2626)',
     nav: [
       { path: '/dashboard', icon: '⊞', label: 'Dashboard' },
+      { path: '/officers', icon: '🏛️', label: 'HOA Officers' },
       { path: '/household', icon: '👨‍👩‍👧‍👦', label: 'Household Members' },
       { path: '/events', icon: '📅', label: 'Calendar Events' },
       { path: '/documents', icon: '📋', label: 'Service Requests' },
@@ -53,6 +55,7 @@ const ROLE_CONFIG: Record<string, {
     gradient: 'linear-gradient(135deg, #1D4ED8, #3B82F6)',
     nav: [
       { path: '/dashboard', icon: '⊞', label: 'Dashboard' },
+      { path: '/officers', icon: '🏛️', label: 'HOA Officers' },
       { path: '/household', icon: '👨‍👩‍👧‍👦', label: 'Household Members' },
       { path: '/events', icon: '📅', label: 'Calendar Events' },
       { path: '/documents', icon: '📋', label: 'Service Requests' },
@@ -70,6 +73,7 @@ const ROLE_CONFIG: Record<string, {
     gradient: 'linear-gradient(135deg, #78350F, #D97706)',
     nav: [
       { path: '/dashboard', icon: '⊞', label: 'Dashboard' },
+      { path: '/officers', icon: '🏛️', label: 'HOA Officers' },
       { path: '/events', icon: '📅', label: 'Calendar Events' },
       { path: '/documents', icon: '📋', label: 'Service Requests' },
       { path: '/visitors', icon: '🚗', label: 'Visitor Log' },
@@ -82,6 +86,7 @@ const ROLE_CONFIG: Record<string, {
     gradient: 'linear-gradient(135deg, #164E63, #0891B2)',
     nav: [
       { path: '/homeowner-portal', icon: '🏠', label: 'Homeowner Portal' },
+      { path: '/officers', icon: '🏛️', label: 'HOA Officers' },
       { path: '/household', icon: '👨‍👩‍👧‍👦', label: 'Household Members' },
       { path: '/events', icon: '📅', label: 'Calendar Events' },
       { path: '/dashboard', icon: '⊞', label: 'My Dashboard' },

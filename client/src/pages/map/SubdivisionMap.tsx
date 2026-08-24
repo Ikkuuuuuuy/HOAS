@@ -77,8 +77,8 @@ export default function SubdivisionMap() {
     if (!mapRef.current || !window.L) return;
 
     if (!leafletInstance.current) {
-      // Center at B7 Maagap St, SJDM, 3023 Bulacan
-      const map = window.L.map(mapRef.current).setView([14.7939, 121.0832], 16);
+      // Center at Northridge Grove Phase 2
+      const map = window.L.map(mapRef.current).setView([14.7946, 121.0800], 16);
 
       // Tile Layer Providers
       const streetLayer = window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -89,24 +89,84 @@ export default function SubdivisionMap() {
       streetLayer.addTo(map);
       leafletInstance.current = map;
 
-      // Draw Subdivision Polygon Boundary (B7 Maagap St / Phase 2)
+      // Draw Accurate Subdivision Polygon Boundary (Northridge Grove Phase 2, Blocks 1–9)
       const polygonCoords = [
-        [14.7960, 121.0812],
-        [14.7968, 121.0842],
-        [14.7952, 121.0862],
-        [14.7925, 121.0855],
-        [14.7915, 121.0828],
-        [14.7926, 121.0805],
-        [14.7948, 121.0808],
+        // ── 1. West Sector: Left Edge & Southwest Entrance Corner ──
+        [14.79250, 121.07580], // Southwest Corner (near La Bonita Cosmetics & Main Gate)
+        [14.79350, 121.07540], // Western Edge lower (south of Chancezz)
+        [14.79460, 121.07530], // Western Edge middle (beside Chancezz / B7 Maagap St)
+        [14.79560, 121.07560], // Northwest Flank
+        [14.79600, 121.07590], // Northwest Corner (Amy Ella Panaderia area)
+
+        // ── 2. West Sector: Northern Perimeter with BCCCP Inset ──
+        [14.79610, 121.07680], // Top boundary lot line
+        [14.79570, 121.07760], // Inward dip/cove near BCCCP lot line
+        [14.79540, 121.07820], // Inset boundary corner
+        [14.79580, 121.07900], // Climbs back to Northern lot line
+        [14.79610, 121.07990], // North perimeter of middle block
+        [14.79630, 121.08060], // Central spine junction / neck
+
+        // ── 3. Northeast Sector: Fan-Shaped Arch (Top Dome & Parang Rd) ──
+        [14.79690, 121.08040], // Neck transition into right lobe
+        [14.79770, 121.08030], // Western apex of upper fan (near nathan sari-sari)
+        [14.79810, 121.08080], // Topmost northern apex (L&A Laundry Home)
+        [14.79800, 121.08180], // Parang Rd upper bend
+        [14.79750, 121.08280], // Upper Parang Rd frontage
+        [14.79720, 121.08360], // Eastern approach (Bakery area)
+        [14.79660, 121.08430], // Near Susana's Kitchen / North-East Corner
+        [14.79590, 121.08450], // Far East Corner (Goumn / Casa Resort boundary)
+
+        // ── 4. Northeast Sector: Southeastern Perimeter ──
+        [14.79520, 121.08370], // South-east diagonal boundary
+        [14.79450, 121.08270], // Lower east lot lines (near Plk A Book)
+        [14.79390, 121.08180], // Approach to southern neck (near Tea Alley Station)
+        [14.79340, 121.08100], // Inner neck bottom cusp
+
+        // ── 5. West Sector: Southern Perimeter ──
+        [14.79290, 121.08120], // Bottom road corner (below JCS Pandes)
+        [14.79250, 121.08060], // Southern road curve
+        [14.79220, 121.07970], // Southern perimeter road (Farm Fresh)
+        [14.79170, 121.07860], // Southernmost bottom dip
+        [14.79150, 121.07770], // Southern road curve (Mabuti St south)
+        [14.79190, 121.07670], // Southwest perimeter road
+        [14.79230, 121.07610], // Curve back to Southwest corner
       ];
 
+      // Golden outer glow
       window.L.polygon(polygonCoords, {
-        color: '#166534',
-        fillColor: '#22C55E',
-        fillOpacity: 0.2,
-        weight: 3,
-        dashArray: '6, 6',
-      }).addTo(map).bindTooltip('🏠 NRG PH2 HOA INC — Phase 2 Subdivision Border (B7 Maagap St)', { permanent: true, direction: 'center' });
+        color: '#F59E0B',
+        weight: 6,
+        opacity: 0.5,
+        fillOpacity: 0,
+      }).addTo(map);
+
+      // Main crisp golden boundary polygon
+      const polygonLayer = window.L.polygon(polygonCoords, {
+        color: '#EAB308',
+        fillColor: '#F59E0B',
+        fillOpacity: 0.16,
+        weight: 3.5,
+        dashArray: '8, 5',
+      }).addTo(map);
+
+      polygonLayer.bindPopup(`
+        <div style="font-family:sans-serif;padding:6px;min-width:240px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <div style="background:#F59E0B;color:#FFF;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:900;">OFFICIAL BOUNDARY</div>
+            <div style="font-size:11px;color:#DC2626;font-weight:800;">312 HOUSING UNITS</div>
+          </div>
+          <div style="font-weight:900;font-size:15px;color:#111827;">Northridge Grove Phase 2</div>
+          <div style="font-size:12px;color:#B45309;font-weight:700;margin-top:2px;">NRG PH2 HOA INC Jurisdiction</div>
+          <div style="font-size:12px;color:#4B5563;margin-top:6px;line-height:1.4;">
+            📍 B7 Maagap St, Barangay Tungkong Mangga, San Jose del Monte, Bulacan 3023
+          </div>
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid #E5E7EB;font-size:11.5px;color:#374151;">
+            • <strong>Coverage:</strong> Blocks 1, 2, 3, 4, 5, 6, 7, 8, and 9<br/>
+            • <strong>Streets:</strong> Maagap St, Mabuti St, Mapayapa St, Magiting St<br/>
+            • <strong>Key Amenities:</strong> Clubhouse, Covered Basketball Court, Swimming Pools, Playground, 24/7 RFID Gate
+          </div>
+        </div>
+      `);
     }
 
     return () => {

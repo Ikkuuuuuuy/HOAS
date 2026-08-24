@@ -19,6 +19,7 @@ import EmergencyAlerts from './pages/alerts/EmergencyAlerts';
 import ResidentsPage from './pages/residents/ResidentsPage';
 import HouseholdMembers from './pages/household/HouseholdMembers';
 import CalendarEvents from './pages/events/CalendarEvents';
+import HOAOfficersDirectory from './pages/admin/HOAOfficersDirectory';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -64,6 +65,9 @@ export default function App() {
       <Route path="/visitors" element={<ProtectedRoute><VisitorLogbook /></ProtectedRoute>} />
       <Route path="/alerts" element={<ProtectedRoute><EmergencyAlerts /></ProtectedRoute>} />
       <Route path="/residents" element={<ProtectedRoute><ResidentsPage /></ProtectedRoute>} />
+      <Route path="/officers" element={<ProtectedRoute><HOAOfficersDirectory /></ProtectedRoute>} />
+      <Route path="/hoa-officers" element={<ProtectedRoute><HOAOfficersDirectory /></ProtectedRoute>} />
+      <Route path="/directory" element={<ProtectedRoute><HOAOfficersDirectory /></ProtectedRoute>} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

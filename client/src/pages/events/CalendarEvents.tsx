@@ -89,7 +89,7 @@ const getEventCategory = (ev: HoaEvent) => {
 };
 
 export default function CalendarEvents() {
-  const { user, accessToken } = useAuth();
+  const { user, accessToken, hasRole } = useAuth();
   const { success, error: showError } = useToast();
 
   const { data: apiEvents, isLoading: loading, refetch } = useApi<HoaEvent[]>('/api/hoa/meetings');
@@ -109,6 +109,7 @@ export default function CalendarEvents() {
 
   // Modal State
   const [showModal, setShowModal] = useState(false);
+  const [viewingDayModal, setViewingDayModal] = useState<{ day: number; dateStr: string; events: HoaEvent[] } | null>(null);
   const [editingEvent, setEditingEvent] = useState<HoaEvent | null>(null);
   const [formTitle, setFormTitle] = useState('');
   const [formCategory, setFormCategory] = useState('meeting');
@@ -462,8 +463,8 @@ export default function CalendarEvents() {
               </div>
             </div>
 
-            {/* Days of Week Header */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 8, textAlign: 'center', marginBottom: 8 }}>
+            {/* Days of Week Header — Guaranteed Equal 1fr Column Widths */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: 8, textAlign: 'center', marginBottom: 8 }}>
               {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
                 <div key={d} style={{ fontSize: 12, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', padding: '6px 0', letterSpacing: '0.05em' }}>
                   {d}
@@ -471,11 +472,11 @@ export default function CalendarEvents() {
               ))}
             </div>
 
-            {/* Month Day Cells */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 8 }}>
+            {/* Month Day Cells — Guaranteed Equal 1fr Column Widths */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: 8 }}>
               {/* Empty leading padding days */}
               {Array.from({ length: firstDayOfWeek }).map((_, i) => (
-                <div key={`empty-${i}`} style={{ minHeight: 96, background: 'rgba(0,0,0,0.02)', borderRadius: 10, border: '1px dashed rgba(100,116,139,0.1)' }} />
+                <div key={`empty-${i}`} style={{ minHeight: 110, height: 115, minWidth: 0, overflow: 'hidden', background: 'rgba(0,0,0,0.02)', borderRadius: 10, border: '1px dashed rgba(100,116,139,0.1)' }} />
               ))}
 
               {/* Days of Month */}
@@ -488,10 +489,22 @@ export default function CalendarEvents() {
                 return (
                   <div
                     key={`day-${dayNum}`}
-                    onClick={() => setSelectedDay(prev => prev === dayNum ? null : dayNum)}
+                    onClick={() => {
+                      setSelectedDay(prev => prev === dayNum ? null : dayNum);
+                      if (dayEvents.length > 0) {
+                        setViewingDayModal({
+                          day: dayNum,
+                          dateStr: `${monthName} ${dayNum}, ${year}`,
+                          events: dayEvents,
+                        });
+                      }
+                    }}
                     style={{
-                      minHeight: 104,
-                      padding: '8px 10px',
+                      minHeight: 110,
+                      height: 115,
+                      minWidth: 0,
+                      overflow: 'hidden',
+                      padding: '8px 8px',
                       background: isSelected ? 'rgba(22, 101, 52, 0.08)' : (isToday ? 'rgba(220, 38, 38, 0.05)' : 'var(--bg-hover)'),
                       border: isSelected
                         ? '2px solid #166534'
@@ -502,11 +515,12 @@ export default function CalendarEvents() {
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'space-between',
+                      boxSizing: 'border-box',
                     }}
                     onMouseEnter={e => { if (!isSelected) (e.currentTarget as HTMLDivElement).style.borderColor = '#166534'; }}
                     onMouseLeave={e => { if (!isSelected) (e.currentTarget as HTMLDivElement).style.borderColor = isToday ? '#DC2626' : 'var(--border)'; }}
                   >
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center" style={{ minWidth: 0 }}>
                       <span
                         style={{
                           fontSize: 13,
@@ -517,29 +531,32 @@ export default function CalendarEvents() {
                         {dayNum}
                       </span>
                       {isToday && (
-                        <span style={{ fontSize: 9, fontWeight: 900, background: '#DC2626', color: '#FFF', padding: '1px 5px', borderRadius: 8 }}>
+                        <span style={{ fontSize: 8.5, fontWeight: 900, background: '#DC2626', color: '#FFF', padding: '1px 4px', borderRadius: 6, letterSpacing: '0.02em' }}>
                           TODAY
                         </span>
                       )}
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 3, marginTop: 4 }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 3, marginTop: 4, minWidth: 0, overflow: 'hidden' }}>
                       {dayEvents.slice(0, 2).map(ev => {
                         const cat = getEventCategory(ev);
                         return (
                           <div
                             key={ev.id}
+                            title={`${ev.title} (${ev.meeting_date})`}
                             style={{
-                              fontSize: 10.5,
+                              fontSize: 10,
                               fontWeight: 800,
                               background: cat.bg,
                               color: cat.text,
-                              padding: '2px 6px',
-                              borderRadius: 5,
+                              padding: '2px 5px',
+                              borderRadius: 4,
                               whiteSpace: 'nowrap',
                               overflow: 'hidden',
                               textOverflow: 'ellipsis',
                               lineHeight: 1.2,
+                              minWidth: 0,
+                              display: 'block',
                             }}
                           >
                             {cat.icon} {ev.title}
@@ -547,9 +564,32 @@ export default function CalendarEvents() {
                         );
                       })}
                       {dayEvents.length > 2 && (
-                        <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 700 }}>
-                          +{dayEvents.length - 2} more
-                        </span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedDay(dayNum);
+                            setViewingDayModal({
+                              day: dayNum,
+                              dateStr: `${monthName} ${dayNum}, ${year}`,
+                              events: dayEvents,
+                            });
+                          }}
+                          style={{
+                            fontSize: 9.5,
+                            fontWeight: 800,
+                            background: 'rgba(22, 101, 52, 0.12)',
+                            color: '#166534',
+                            border: '1px solid rgba(22, 101, 52, 0.25)',
+                            padding: '2px 4px',
+                            borderRadius: 4,
+                            cursor: 'pointer',
+                            textAlign: 'center',
+                            width: '100%',
+                            lineHeight: 1.1,
+                          }}
+                        >
+                          +{dayEvents.length - 2} more →
+                        </button>
                       )}
                     </div>
                   </div>
@@ -879,6 +919,123 @@ export default function CalendarEvents() {
                   <button className="btn btn-primary" onClick={handleDelete} style={{ background: '#DC2626', border: 'none', fontWeight: 800 }}>
                     Confirm Delete
                   </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── DAY EVENTS EXPANDED MODAL ── */}
+        {viewingDayModal && (
+          <div className="modal-overlay" onClick={() => setViewingDayModal(null)}>
+            <div className="modal-box" onClick={e => e.stopPropagation()} style={{ maxWidth: 640, width: '100%', animation: 'scaleIn 0.2s ease', maxHeight: '90vh', overflowY: 'auto' }}>
+              <div className="modal-header">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{ width: 38, height: 38, borderRadius: 8, background: 'rgba(22, 101, 52, 0.12)', color: '#166534', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
+                    📅
+                  </div>
+                  <div>
+                    <div className="modal-title">Events for {viewingDayModal.dateStr}</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                      {viewingDayModal.events.length} event{viewingDayModal.events.length !== 1 ? 's' : ''} scheduled on this date
+                    </div>
+                  </div>
+                </div>
+                <button onClick={() => setViewingDayModal(null)} className="modal-close">✕</button>
+              </div>
+
+              <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                {viewingDayModal.events.map(ev => {
+                  const cat = getEventCategory(ev);
+                  const time = (ev.meeting_date || '').split(' ')[1] || '09:00';
+                  return (
+                    <div
+                      key={ev.id}
+                      className="card"
+                      style={{
+                        border: `1.5px solid ${cat.text}40`,
+                        background: 'var(--bg-surface)',
+                        padding: 16,
+                        borderRadius: 12,
+                      }}
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="badge" style={{ background: cat.bg, color: cat.text, fontWeight: 800 }}>
+                            {cat.icon} {cat.label}
+                          </span>
+                          <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>⏰ {time}</span>
+                        </div>
+                        <span className={`badge badge-${ev.status === 'completed' ? 'success' : ev.status === 'cancelled' ? 'danger' : 'primary'}`}>
+                          {ev.status.toUpperCase()}
+                        </span>
+                      </div>
+
+                      <h4 style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', margin: '4px 0' }}>
+                        {ev.title}
+                      </h4>
+                      <div style={{ fontSize: 12.5, color: 'var(--text-muted)', marginBottom: 8 }}>
+                        📍 {ev.location}
+                      </div>
+                      <div style={{ fontSize: 13, color: 'var(--text-secondary)', background: 'var(--bg-hover)', padding: 10, borderRadius: 8, lineHeight: 1.5, whiteSpace: 'pre-line' }}>
+                        {ev.agenda}
+                      </div>
+
+                      {ev.minutes && (
+                        <div style={{ marginTop: 8, padding: 10, borderRadius: 8, background: 'rgba(22,101,52,0.06)', borderLeft: '3px solid #166534', fontSize: 12, color: 'var(--text-primary)' }}>
+                          <strong>📋 Minutes / Outcome:</strong> {ev.minutes}
+                        </div>
+                      )}
+
+                      {hasRole('super_admin', 'hoa_admin', 'admin_staff') && (
+                        <div className="flex justify-end gap-2 mt-3 pt-2" style={{ borderTop: '1px solid var(--border)' }}>
+                          <button
+                            className="btn btn-sm btn-secondary"
+                            onClick={() => {
+                              setViewingDayModal(null);
+                              openEditModal(ev);
+                            }}
+                          >
+                            ✏️ Edit
+                          </button>
+                          <button
+                            className="btn btn-sm"
+                            style={{ background: 'rgba(220,38,38,0.1)', color: '#DC2626', border: '1px solid rgba(220,38,38,0.25)' }}
+                            onClick={() => {
+                              setViewingDayModal(null);
+                              setDeleteTarget(ev);
+                            }}
+                          >
+                            🗑️ Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+
+                <div className="flex justify-between items-center mt-2 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => setViewingDayModal(null)}
+                  >
+                    Close
+                  </button>
+                  {hasRole('super_admin', 'hoa_admin', 'admin_staff') && (
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => {
+                        const dayPadded = String(viewingDayModal.day).padStart(2, '0');
+                        const monthPadded = String(month + 1).padStart(2, '0');
+                        const dateIso = `${year}-${monthPadded}-${dayPadded}`;
+                        setViewingDayModal(null);
+                        openAddModal(dateIso);
+                      }}
+                      style={{ background: 'linear-gradient(135deg, #166534, #15803D)', border: 'none', fontWeight: 800 }}
+                    >
+                      + Add Event on This Date
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

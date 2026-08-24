@@ -3,13 +3,15 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
+import { HOA_OFFICERS_DATA, FacebookIcon } from './admin/HOAOfficersDirectory';
+
 declare global {
   interface Window {
     L: any;
   }
 }
 
-const NAV_LINKS = ['Home', 'About', 'Map & Amenities', 'Events', 'Contact'];
+const NAV_LINKS = ['Home', 'About', 'Map & Amenities', 'Events', 'HOA Officers', 'Contact'];
 
 const NEWS = [
   {
@@ -122,10 +124,10 @@ interface POI {
 
 const POI_DATA: POI[] = [
   // HOA Facilities inside Northridge Grove Phase 2 (B7 Maagap St)
-  { id: '1', name: 'NRG PH2 Main Entrance & Guardhouse', category: 'hoa', lat: 14.7939, lng: 121.0832, distance: 'B7 Maagap St (Main Gate)', address: 'B7 Maagap St, Northridge Grove Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🚪', notes: '24/7 Security Guardhouse & Automated RFID Boom Barrier Gate', googleSearchQuery: 'B7 Maagap St SJDM 3023 Bulacan' },
-  { id: '2', name: 'Phase 2 Clubhouse & Function Hall', category: 'hoa', lat: 14.7946, lng: 121.0838, distance: 'Inside Phase 2', address: 'Block 2, Maagap St, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏛', notes: 'NRG PH2 HOA Admin Office & Multipurpose Event Center', googleSearchQuery: 'Northridge Grove Phase 2 Maagap St San Jose del Monte Bulacan' },
-  { id: '3', name: 'Phase 2 Swimming Pools & Gazebo', category: 'hoa', lat: 14.7952, lng: 121.0844, distance: 'Phase 2 Amenities', address: 'Block 3, Poolside Area, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏊', notes: 'Adult Lap Pool & Kiddie Wading Pool with Gazebo', googleSearchQuery: 'Northridge Grove Phase 2 Swimming Pool Bulacan' },
-  { id: '4', name: 'Covered Basketball & Sports Court', category: 'hoa', lat: 14.7930, lng: 121.0820, distance: 'Inside Phase 2', address: 'Block 7, Maagap St Park, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏀', notes: 'Full-court basketball, nightly sports & General Assemblies', googleSearchQuery: 'B7 Maagap St Northridge Grove San Jose del Monte' },
+  { id: '1', name: 'NRG PH2 Main Entrance & Guardhouse', category: 'hoa', lat: 14.7936, lng: 121.0758, distance: 'B7 Maagap St (Main Gate)', address: 'B7 Maagap St, Northridge Grove Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🚪', notes: '24/7 Security Guardhouse & Automated RFID Boom Barrier Gate', googleSearchQuery: 'B7 Maagap St SJDM 3023 Bulacan' },
+  { id: '2', name: 'Phase 2 Clubhouse & Function Hall', category: 'hoa', lat: 14.7940, lng: 121.0778, distance: 'Inside Phase 2', address: 'Block 2, Maagap St, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏛', notes: 'NRG PH2 HOA Admin Office & Multipurpose Event Center', googleSearchQuery: 'Northridge Grove Phase 2 Maagap St San Jose del Monte Bulacan' },
+  { id: '3', name: 'Phase 2 Swimming Pools & Gazebo', category: 'hoa', lat: 14.7948, lng: 121.0788, distance: 'Phase 2 Amenities', address: 'Block 3, Poolside Area, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏊', notes: 'Adult Lap Pool & Kiddie Wading Pool with Gazebo', googleSearchQuery: 'Northridge Grove Phase 2 Swimming Pool Bulacan' },
+  { id: '4', name: 'Covered Basketball & Sports Court', category: 'hoa', lat: 14.7930, lng: 121.0768, distance: 'Inside Phase 2', address: 'Block 7, Maagap St Park, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏀', notes: 'Full-court basketball, nightly sports & General Assemblies', googleSearchQuery: 'B7 Maagap St Northridge Grove San Jose del Monte' },
 
   // Commercial & Convenience Landmarks
   { id: '5', name: 'SM City San Jose del Monte', category: 'grocery', lat: 14.7985, lng: 121.0510, distance: '3.2 km (8 mins)', address: 'Quirino Hwy, Tungkong Mangga, CSJDM, Bulacan', iconEmoji: '🛒', notes: 'SM Supermarket, Department Store, Cinemas & Shops', googleSearchQuery: 'SM City San Jose del Monte Bulacan' },
@@ -223,10 +225,27 @@ export default function PublicLandingPage() {
     return () => obs.disconnect();
   }, []);
 
+  const SECTION_MAP: Record<string, string> = {
+    'Home': 'home',
+    'About': 'about',
+    'Map & Amenities': 'map-amenities',
+    'Events': 'events',
+    'HOA Officers': 'hoa-officers',
+    'Contact': 'contact',
+  };
+
   const scrollTo = (id: string) => {
-    const targetId = id.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '-').replace(/--/g, '-');
-    const el = document.getElementById(targetId) || document.getElementById(id.toLowerCase().replace(/\s+/g, '-'));
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    const targetId = SECTION_MAP[id] || id.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+    const el = document.getElementById(targetId);
+    if (el) {
+      const headerOffset = 70;
+      const elementPosition = el.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth',
+      });
+    }
     setActiveSection(id);
     setMobileOpen(false);
   };
@@ -246,10 +265,16 @@ export default function PublicLandingPage() {
         className="glass-nav"
         style={{
           position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-          background: scrolled ? 'rgba(255,255,255,0.98)' : 'rgba(15,23,41,0.95)',
-          backdropFilter: 'blur(12px)',
-          boxShadow: scrolled ? '0 2px 16px rgba(0,0,0,0.1)' : 'none',
-          borderBottom: scrolled ? '1px solid #E5E7EB' : '1px solid rgba(255,255,255,0.1)',
+          background: scrolled
+            ? (isDark ? 'rgba(15, 23, 42, 0.96)' : 'rgba(255, 255, 255, 0.98)')
+            : 'rgba(15, 23, 42, 0.85)',
+          backdropFilter: 'blur(16px)',
+          boxShadow: scrolled
+            ? (isDark ? '0 4px 20px rgba(0, 0, 0, 0.35)' : '0 4px 20px rgba(0, 0, 0, 0.08)')
+            : 'none',
+          borderBottom: scrolled
+            ? (isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #E2E8F0')
+            : '1px solid rgba(255, 255, 255, 0.12)',
           transition: 'all 0.3s ease',
         }}
       >
@@ -263,11 +288,26 @@ export default function PublicLandingPage() {
             <div style={{ width: 44, height: 44, borderRadius: '50%', overflow: 'hidden', border: '2px solid #F59E0B', boxShadow: '0 0 12px rgba(245,158,11,0.35)', flexShrink: 0 }}>
               <img src="/nrg-ph2-logo.png" alt="NRG PH2 HOA INC Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
-            <div style={{ textAlign: 'left', borderLeft: scrolled ? '1px solid #D1D5DB' : '1px solid rgba(255,255,255,0.2)', paddingLeft: 10 }}>
-              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 16, color: scrolled ? '#111827' : '#FFFFFF', lineHeight: 1.1, letterSpacing: '-0.02em' }}>
+            <div style={{ textAlign: 'left', borderLeft: scrolled && !isDark ? '1px solid #E2E8F0' : '1px solid rgba(255,255,255,0.2)', paddingLeft: 10 }}>
+              <div style={{
+                fontFamily: 'var(--font-display)',
+                fontWeight: 800,
+                fontSize: 16,
+                color: scrolled && !isDark ? '#0F172A' : '#FFFFFF',
+                lineHeight: 1.1,
+                letterSpacing: '-0.02em',
+                transition: 'color 0.2s ease',
+              }}>
                 NRG PH2 HOA INC
               </div>
-              <div style={{ fontSize: 10, color: scrolled ? '#166534' : '#F59E0B', letterSpacing: '0.07em', textTransform: 'uppercase', fontWeight: 800 }}>
+              <div style={{
+                fontSize: 10,
+                color: scrolled && !isDark ? '#166534' : '#F59E0B',
+                letterSpacing: '0.07em',
+                textTransform: 'uppercase',
+                fontWeight: 800,
+                transition: 'color 0.2s ease',
+              }}>
                 Northridge Grove Phase 2
               </div>
             </div>
@@ -275,26 +315,42 @@ export default function PublicLandingPage() {
 
           {/* Desktop Nav */}
           <nav className="public-nav-desktop" style={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-            {NAV_LINKS.map(link => (
-              <button
-                key={link}
-                onClick={() => scrollTo(link)}
-                style={{
-                  background: activeSection === link
-                    ? (scrolled ? 'rgba(220,38,38,0.08)' : 'rgba(255,255,255,0.15)')
-                    : 'transparent',
-                  border: 'none', cursor: 'pointer',
-                  padding: '8px 14px', borderRadius: 8,
-                  fontSize: 14, fontWeight: activeSection === link ? 700 : 500,
-                  color: scrolled
-                    ? (activeSection === link ? '#DC2626' : '#1F2937')
-                    : (activeSection === link ? '#FFFFFF' : 'rgba(255,255,255,0.9)'),
-                  transition: 'all 0.18s',
-                }}
-              >
-                {link}
-              </button>
-            ))}
+            {NAV_LINKS.map(link => {
+              const isSelected = activeSection === link;
+              const isLightScrolled = scrolled && !isDark;
+
+              let linkColor = 'rgba(255, 255, 255, 0.88)';
+              let linkBg = 'transparent';
+              let linkBorder = '1px solid transparent';
+
+              if (isLightScrolled) {
+                linkColor = isSelected ? '#DC2626' : '#334155';
+                linkBg = isSelected ? 'rgba(220, 38, 38, 0.08)' : 'transparent';
+                linkBorder = isSelected ? '1px solid rgba(220, 38, 38, 0.2)' : '1px solid transparent';
+              } else {
+                linkColor = isSelected ? '#FFFFFF' : 'rgba(255, 255, 255, 0.88)';
+                linkBg = isSelected ? 'rgba(220, 38, 38, 0.25)' : 'transparent';
+                linkBorder = isSelected ? '1px solid rgba(220, 38, 38, 0.4)' : '1px solid transparent';
+              }
+
+              return (
+                <button
+                  key={link}
+                  onClick={() => scrollTo(link)}
+                  style={{
+                    background: linkBg,
+                    border: linkBorder,
+                    cursor: 'pointer',
+                    padding: '8px 14px', borderRadius: 8,
+                    fontSize: 14, fontWeight: isSelected ? 700 : 500,
+                    color: linkColor,
+                    transition: 'all 0.18s',
+                  }}
+                >
+                  {link}
+                </button>
+              );
+            })}
 
             {/* Action Buttons */}
             <div style={{ display: 'flex', gap: 8, marginLeft: 10, alignItems: 'center' }}>
@@ -304,12 +360,13 @@ export default function PublicLandingPage() {
                 title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
                 style={{
                   width: 36, height: 36, borderRadius: '50%',
-                  background: scrolled ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.12)',
-                  border: scrolled ? '1px solid rgba(0,0,0,0.1)' : '1px solid rgba(255,255,255,0.2)',
+                  background: scrolled && !isDark ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.12)',
+                  border: scrolled && !isDark ? '1px solid rgba(0, 0, 0, 0.1)' : '1px solid rgba(255, 255, 255, 0.2)',
                   cursor: 'pointer', fontSize: 15,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   transition: 'all 0.22s ease',
                   flexShrink: 0,
+                  color: scrolled && !isDark ? '#0F172A' : '#FFFFFF',
                 }}
               >
                 {isDark ? '☀️' : '🌙'}
@@ -355,7 +412,19 @@ export default function PublicLandingPage() {
             style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', padding: 4, flexShrink: 0 }}
             className="mobile-menu-btn"
           >
-            {[0,1,2].map(i => <div key={i} style={{ width: 22, height: 2, background: scrolled ? '#111827' : '#fff', marginBottom: i < 2 ? 5 : 0, borderRadius: 2 }} />)}
+            {[0,1,2].map(i => (
+              <div
+                key={i}
+                style={{
+                  width: 22,
+                  height: 2,
+                  background: scrolled && !isDark ? '#0F172A' : '#FFFFFF',
+                  marginBottom: i < 2 ? 5 : 0,
+                  borderRadius: 2,
+                  transition: 'background 0.2s ease',
+                }}
+              />
+            ))}
           </button>
         </div>
 
@@ -364,28 +433,34 @@ export default function PublicLandingPage() {
           <div
             className="landing-mobile-menu"
             style={{
-              background: isDark ? '#0B1120' : '#FFFFFF',
-              borderTop: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid #E5E7EB',
+              background: isDark ? 'rgba(15, 23, 42, 0.98)' : '#FFFFFF',
+              backdropFilter: 'blur(16px)',
+              borderTop: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #E2E8F0',
               padding: '12px 24px 20px',
               animation: 'fadeInUp 0.2s ease',
             }}
           >
-            {NAV_LINKS.map(link => (
-              <button
-                key={link}
-                onClick={() => scrollTo(link)}
-                className="landing-mobile-link"
-                style={{
-                  display: 'block', width: '100%', textAlign: 'left',
-                  background: 'none', border: 'none', cursor: 'pointer',
-                  padding: '11px 0', fontSize: 15, fontWeight: 600,
-                  color: isDark ? '#F8FAFC' : '#111827',
-                  borderBottom: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid #F3F4F6',
-                }}
-              >
-                {link}
-              </button>
-            ))}
+            {NAV_LINKS.map(link => {
+              const isSelected = activeSection === link;
+              return (
+                <button
+                  key={link}
+                  onClick={() => scrollTo(link)}
+                  className="landing-mobile-link"
+                  style={{
+                    display: 'block', width: '100%', textAlign: 'left',
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    padding: '11px 0', fontSize: 15, fontWeight: 600,
+                    color: isDark
+                      ? (isSelected ? '#F87171' : '#FFFFFF')
+                      : (isSelected ? '#DC2626' : '#1E293B'),
+                    borderBottom: isDark ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid #F1F5F9',
+                  }}
+                >
+                  {link}
+                </button>
+              );
+            })}
             <div style={{ display: 'flex', gap: 8, marginTop: 16, alignItems: 'center' }}>
               <button
                 onClick={toggleTheme}
@@ -672,6 +747,218 @@ export default function PublicLandingPage() {
         </div>
       </section>
 
+      {/* ── HOA OFFICERS & DIRECTORY SECTION ── */}
+      <section id="hoa-officers" style={{ padding: '90px 24px', background: 'var(--landing-section-warm)', transition: 'background 0.3s ease' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <div className="reveal" style={{ textAlign: 'center', marginBottom: 48 }}>
+            <p style={{ fontSize: 11.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#166534', fontWeight: 800, marginBottom: 10 }}>Official Association Leadership</p>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 3vw, 2.7rem)', fontWeight: 900, color: 'var(--landing-text)', lineHeight: 1.15, marginBottom: 14, letterSpacing: '-0.02em' }}>
+              NRG PH2 HOA Officers & Committee Chairs
+            </h2>
+            <p style={{ color: 'var(--landing-text-sub)', fontSize: 15.5, maxWidth: 680, margin: '0 auto', lineHeight: 1.7 }}>
+              Meet the duly elected Executive Board of Directors, dedicated Block Leaders (Blocks 1–9), and Working Committee Chairs serving Northridge Grove Phase 2.
+            </p>
+          </div>
+
+          {/* 1. EXECUTIVE BOARD CARDS */}
+          <div style={{ marginBottom: 40 }}>
+            <div style={{ fontSize: 13, fontWeight: 800, color: '#DC2626', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 16 }}>
+              👑 Executive Board of Directors
+            </div>
+            <div className="grid grid-3" style={{ gap: 16 }}>
+              {HOA_OFFICERS_DATA.filter(o => o.category === 'executive').map((off, i) => (
+                <div
+                  key={i}
+                  className="card hover-lift"
+                  style={{
+                    background: 'var(--landing-card-bg)',
+                    border: `1.5px solid ${off.color}40`,
+                    padding: 20,
+                    borderRadius: 14,
+                    boxShadow: isDark ? '0 4px 20px rgba(0,0,0,0.3)' : '0 4px 16px rgba(0,0,0,0.04)',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <div style={{ height: 4, background: off.color, position: 'absolute', top: 0, left: 0, right: 0 }} />
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div style={{ width: 44, height: 44, borderRadius: '50%', background: `${off.color}15`, color: off.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 800 }}>
+                        {off.avatarIcon}
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 10, fontWeight: 900, color: off.color, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{off.badge}</div>
+                        <div style={{ fontSize: 16, fontWeight: 900, color: 'var(--landing-text)' }}>{off.name}</div>
+                      </div>
+                    </div>
+                    <div style={{ fontSize: 13, fontWeight: 800, color: off.color, marginTop: 4 }}>{off.role}</div>
+                    <div style={{ fontSize: 11.5, color: 'var(--landing-text-muted)', marginTop: 2 }}>{off.blockOrDept}</div>
+                  </div>
+
+                  <div style={{ fontSize: 11.5, color: 'var(--landing-text-sub)', marginTop: 12, paddingTop: 10, borderTop: `1px solid var(--landing-card-border)`, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <div className="flex items-center gap-2">
+                      <span>📞</span>
+                      <a href={`tel:${off.phone}`} style={{ color: 'var(--landing-text)', fontWeight: 700, textDecoration: 'none' }}>{off.phone}</a>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span>✉️</span>
+                      <a href={`mailto:${off.email}`} style={{ color: '#2563EB', fontWeight: 600, textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{off.email}</a>
+                    </div>
+                    <div className="mt-2 pt-2 flex items-center justify-between" style={{ borderTop: `1px dashed var(--landing-card-border)` }}>
+                      <a
+                        href={off.facebookUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn btn-sm"
+                        style={{
+                          background: '#1877F2',
+                          color: '#FFFFFF',
+                          fontWeight: 700,
+                          fontSize: 11,
+                          padding: '3px 8px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 5,
+                          borderRadius: 6,
+                          textDecoration: 'none',
+                        }}
+                      >
+                        <FacebookIcon size={12} color="#FFF" />
+                        <span>Facebook</span>
+                      </a>
+                      <span style={{ fontSize: 10, color: 'var(--landing-text-muted)' }}>Officer Profile</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 2. BLOCK LEADERS */}
+          <div style={{ marginBottom: 40 }}>
+            <div style={{ fontSize: 13, fontWeight: 800, color: '#0891B2', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 16 }}>
+              🏘️ Block Coordinators (Blocks 1 to 9)
+            </div>
+            <div className="grid grid-3" style={{ gap: 14 }}>
+              {HOA_OFFICERS_DATA.filter(o => o.category === 'block_leader').map((off, i) => (
+                <div
+                  key={i}
+                  className="card hover-lift"
+                  style={{
+                    background: 'var(--landing-card-bg)',
+                    border: `1px solid var(--landing-card-border)`,
+                    padding: 16,
+                    borderRadius: 12,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <div>
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="badge" style={{ background: '#ECFEFF', color: '#0891B2', fontWeight: 800, fontSize: 11 }}>{off.badge}</span>
+                      <span style={{ fontSize: 16 }}>🏘️</span>
+                    </div>
+                    <div style={{ fontSize: 14.5, fontWeight: 800, color: 'var(--landing-text)' }}>{off.name}</div>
+                    <div style={{ fontSize: 11.5, color: '#0891B2', fontWeight: 700, marginTop: 2 }}>{off.role}</div>
+                  </div>
+
+                  <div style={{ fontSize: 11, color: 'var(--landing-text-sub)', marginTop: 10, paddingTop: 8, borderTop: `1px solid var(--landing-card-border)`, display: 'flex', flexDirection: 'column', gap: 3 }}>
+                    <div>📞 <strong>{off.phone}</strong></div>
+                    <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>✉️ {off.email}</div>
+                    <div className="mt-1 pt-1 flex items-center justify-between" style={{ borderTop: `1px dashed var(--landing-card-border)` }}>
+                      <a
+                        href={off.facebookUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                          color: '#1877F2',
+                          fontWeight: 700,
+                          fontSize: 11,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 4,
+                          textDecoration: 'none',
+                        }}
+                      >
+                        <FacebookIcon size={12} color="#1877F2" />
+                        <span>Facebook</span>
+                      </a>
+                      <span style={{ fontSize: 9.5, color: 'var(--landing-text-muted)' }}>Block Lead</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 3. WORKING COMMITTEES */}
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: '#166534', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 16 }}>
+              🛡️ Working Committees & Special Taskforces (10 Committees)
+            </div>
+            <div className="grid grid-2" style={{ gap: 14 }}>
+              {HOA_OFFICERS_DATA.filter(o => o.category === 'committee').map((off, i) => (
+                <div
+                  key={i}
+                  className="card hover-lift"
+                  style={{
+                    background: 'var(--landing-card-bg)',
+                    border: `1px solid var(--landing-card-border)`,
+                    padding: 16,
+                    borderRadius: 12,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <div>
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="badge" style={{ background: `${off.color}15`, color: off.color, fontWeight: 800, fontSize: 10 }}>{off.badge.toUpperCase()}</span>
+                      <span style={{ fontSize: 18 }}>{off.avatarIcon}</span>
+                    </div>
+                    <div style={{ fontSize: 14.5, fontWeight: 800, color: 'var(--landing-text)' }}>{off.name}</div>
+                    <div style={{ fontSize: 12.5, fontWeight: 700, color: off.color, marginTop: 2 }}>{off.role}</div>
+                    <div style={{ fontSize: 11, color: 'var(--landing-text-muted)', marginTop: 3 }}>Scope: {off.blockOrDept}</div>
+                  </div>
+
+                  <div style={{ fontSize: 11, color: 'var(--landing-text-sub)', marginTop: 10, paddingTop: 8, borderTop: `1px solid var(--landing-card-border)`, display: 'flex', flexDirection: 'column', gap: 3 }}>
+                    <div className="flex justify-between items-center">
+                      <span>📞 <strong>{off.phone}</strong></span>
+                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>✉️ {off.email}</span>
+                    </div>
+                    <div className="mt-1 pt-1 flex items-center justify-between" style={{ borderTop: `1px dashed var(--landing-card-border)` }}>
+                      <a
+                        href={off.facebookUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                          color: '#1877F2',
+                          fontWeight: 700,
+                          fontSize: 11,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 4,
+                          textDecoration: 'none',
+                        }}
+                      >
+                        <FacebookIcon size={12} color="#1877F2" />
+                        <span>Committee Facebook</span>
+                      </a>
+                      <span style={{ fontSize: 9.5, color: 'var(--landing-text-muted)' }}>Taskforce</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </section>
+
       {/* ── CONTACT SECTION ── */}
       <section id="contact" style={{ padding: '90px 24px', background: 'var(--landing-bg)', transition: 'background 0.3s ease' }}>
         <div className="contact-grid" style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 72 }}>
@@ -827,23 +1114,88 @@ function GoogleSubdivisionMapSection({ isDark }: { isDark: boolean }) {
   useEffect(() => {
     if (!mapRef.current || !window.L) return;
     if (!leafletInstance.current) {
-      const map = window.L.map(mapRef.current).setView([14.7939, 121.0832], 16);
+      const map = window.L.map(mapRef.current).setView([14.7946, 121.0800], 16);
       window.L.tileLayer('http://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, attribution: '© Google Maps | NRG PH2 HOA INC Boundary' }).addTo(map);
       leafletInstance.current = map;
 
+      // EXACT NORTHRIDGE GROVE PHASE 2 SUBDIVISION PERIMETER BORDER
       const borderPolygonCoords = [
-        [14.7960, 121.0812],
-        [14.7968, 121.0842],
-        [14.7952, 121.0862],
-        [14.7925, 121.0855],
-        [14.7915, 121.0828],
-        [14.7926, 121.0805],
-        [14.7948, 121.0808],
+        // ── 1. West Sector: Left Edge & Southwest Entrance Corner ──
+        [14.79250, 121.07580], // Southwest Corner (near La Bonita Cosmetics & Main Gate)
+        [14.79350, 121.07540], // Western Edge lower (south of Chancezz)
+        [14.79460, 121.07530], // Western Edge middle (beside Chancezz / B7 Maagap St)
+        [14.79560, 121.07560], // Northwest Flank
+        [14.79600, 121.07590], // Northwest Corner (Amy Ella Panaderia area)
+
+        // ── 2. West Sector: Northern Perimeter with BCCCP Inset ──
+        [14.79610, 121.07680], // Top boundary lot line
+        [14.79570, 121.07760], // Inward dip/cove near BCCCP lot line
+        [14.79540, 121.07820], // Inset boundary corner
+        [14.79580, 121.07900], // Climbs back to Northern lot line
+        [14.79610, 121.07990], // North perimeter of middle block
+        [14.79630, 121.08060], // Central spine junction / neck
+
+        // ── 3. Northeast Sector: Fan-Shaped Arch (Top Dome & Parang Rd) ──
+        [14.79690, 121.08040], // Neck transition into right lobe
+        [14.79770, 121.08030], // Western apex of upper fan (near nathan sari-sari)
+        [14.79810, 121.08080], // Topmost northern apex (L&A Laundry Home)
+        [14.79800, 121.08180], // Parang Rd upper bend
+        [14.79750, 121.08280], // Upper Parang Rd frontage
+        [14.79720, 121.08360], // Eastern approach (Bakery area)
+        [14.79660, 121.08430], // Near Susana's Kitchen / North-East Corner
+        [14.79590, 121.08450], // Far East Corner (Goumn / Casa Resort boundary)
+
+        // ── 4. Northeast Sector: Southeastern Perimeter ──
+        [14.79520, 121.08370], // South-east diagonal boundary
+        [14.79450, 121.08270], // Lower east lot lines (near Plk A Book)
+        [14.79390, 121.08180], // Approach to southern neck (near Tea Alley Station)
+        [14.79340, 121.08100], // Inner neck bottom cusp
+
+        // ── 5. West Sector: Southern Perimeter ──
+        [14.79290, 121.08120], // Bottom road corner (below JCS Pandes)
+        [14.79250, 121.08060], // Southern road curve
+        [14.79220, 121.07970], // Southern perimeter road (Farm Fresh)
+        [14.79170, 121.07860], // Southernmost bottom dip
+        [14.79150, 121.07770], // Southern road curve (Mabuti St south)
+        [14.79190, 121.07670], // Southwest perimeter road
+        [14.79230, 121.07610], // Curve back to Southwest corner
       ];
-      const polygonLayer = window.L.polygon(borderPolygonCoords, {
-        color: '#166534', fillColor: '#22C55E', fillOpacity: 0.22, weight: 3, dashArray: '6, 6',
+
+      // Outer glow line (Golden Amber)
+      window.L.polygon(borderPolygonCoords, {
+        color: '#F59E0B',
+        weight: 6,
+        opacity: 0.5,
+        fillOpacity: 0,
       }).addTo(map);
-      polygonLayer.bindTooltip('🏠 NRG PH2 HOA INC — Phase 2 Subdivision Border (B7 Maagap St)', { permanent: true, direction: 'center', className: 'subdivision-border-tooltip' });
+
+      // Main crisp boundary polygon (Matching exact golden satellite border)
+      const polygonLayer = window.L.polygon(borderPolygonCoords, {
+        color: '#EAB308',
+        fillColor: '#F59E0B',
+        fillOpacity: 0.16,
+        weight: 3.5,
+        dashArray: '8, 5',
+      }).addTo(map);
+
+      polygonLayer.bindPopup(`
+        <div style="font-family:sans-serif;padding:6px;min-width:240px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <div style="background:#F59E0B;color:#FFF;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:900;">OFFICIAL BOUNDARY</div>
+            <div style="font-size:11px;color:#DC2626;font-weight:800;">312 HOUSING UNITS</div>
+          </div>
+          <div style="font-weight:900;font-size:15px;color:#111827;">Northridge Grove Phase 2</div>
+          <div style="font-size:12px;color:#B45309;font-weight:700;margin-top:2px;">NRG PH2 HOA INC Jurisdiction</div>
+          <div style="font-size:12px;color:#4B5563;margin-top:6px;line-height:1.4;">
+            📍 B7 Maagap St, Barangay Tungkong Mangga, San Jose del Monte, Bulacan 3023
+          </div>
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid #E5E7EB;font-size:11.5px;color:#374151;">
+            • <strong>Coverage:</strong> Blocks 1, 2, 3, 4, 5, 6, 7, 8, and 9<br/>
+            • <strong>Streets:</strong> Maagap St, Mabuti St, Mapayapa St, Magiting St<br/>
+            • <strong>Key Amenities:</strong> Clubhouse, Covered Basketball Court, Swimming Pools, Playground, 24/7 RFID Gate
+          </div>
+        </div>
+      `);
     }
   }, []);
 

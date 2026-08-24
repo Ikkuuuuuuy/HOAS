@@ -562,6 +562,42 @@ export default function HomeownerPortal() {
               </div>
             </div>
 
+            {/* HOA Officers & Leadership Roster Quick Card */}
+            <div className="card mb-4 hover-lift" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 14 }}>
+              <div className="flex items-center justify-between mb-3">
+                <div className="section-title" style={{ color: 'var(--text-primary)', margin: 0 }}>🏛️ HOA Officers & Leaders</div>
+                <button
+                  className="btn btn-sm btn-primary"
+                  style={{ background: '#166534', borderColor: '#166534', fontSize: 11, fontWeight: 800, padding: '4px 8px', borderRadius: 6 }}
+                  onClick={() => navigate('/officers')}
+                >
+                  Directory →
+                </button>
+              </div>
+              <div className="flex flex-col gap-2">
+                <div style={{ padding: '8px 10px', background: 'rgba(220,38,38,0.06)', borderRadius: 8, border: '1px solid rgba(220,38,38,0.2)' }}>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: '#DC2626' }}>👑 HOA PRESIDENT</div>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-primary)' }}>Rey Mar Villanueva</div>
+                </div>
+                <div style={{ padding: '8px 10px', background: 'rgba(37,99,235,0.06)', borderRadius: 8, border: '1px solid rgba(37,99,235,0.2)' }}>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: '#2563EB' }}>🏛️ VICE PRESIDENT</div>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-primary)' }}>Cezar Climaco</div>
+                </div>
+                <div style={{ padding: '8px 10px', background: 'rgba(22,101,52,0.06)', borderRadius: 8, border: '1px solid rgba(22,101,52,0.2)' }}>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: '#166534' }}>💰 TREASURER</div>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-primary)' }}>Alma Valdezco</div>
+                </div>
+              </div>
+              <div style={{ marginTop: 10, textAlign: 'center' }}>
+                <button
+                  onClick={() => navigate('/officers')}
+                  style={{ background: 'none', border: 'none', color: '#166534', fontSize: 11.5, fontWeight: 800, cursor: 'pointer', textDecoration: 'underline' }}
+                >
+                  View all 24 Officers, Block Leaders & Committees →
+                </button>
+              </div>
+            </div>
+
             {/* Quick Links */}
             <div className="card mb-4 hover-lift" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 14 }}>
               <div className="section-title" style={{ color: 'var(--text-primary)', marginBottom: 12 }}>🔗 Quick Links</div>
