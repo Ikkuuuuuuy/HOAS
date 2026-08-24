@@ -1915,3 +1915,67 @@ input[type="time"] {
 [data-theme="dark"] .notification-footer span {
   color: #94A3B8 !important;
 }
+
+/* ============================================================
+   Global Application Footer & Privacy Links
+   ============================================================ */
+.global-app-footer {
+  padding: 14px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 11.5px;
+  margin-top: auto;
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+.privacy-footer-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 11.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: underline;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+/* Dark Mode Footer */
+[data-theme="dark"] .global-app-footer,
+:root:not([data-theme="light"]) .global-app-footer {
+  background: rgba(15, 23, 42, 0.75) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .privacy-footer-link,
+:root:not([data-theme="light"]) .privacy-footer-link {
+  color: #38BDF8 !important;
+}
+
+[data-theme="dark"] .privacy-footer-link:hover,
+:root:not([data-theme="light"]) .privacy-footer-link:hover {
+  color: #7DD3FC !important;
+}
+
+/* Light Mode Footer - Crisp Clean Pure White with Slate-200 Border */
+[data-theme="light"] .global-app-footer {
+  background: #FFFFFF !important;
+  border-top: 1px solid #E2E8F0 !important;
+  color: #64748B !important;
+  box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.03) !important;
+}
+
+[data-theme="light"] .privacy-footer-link {
+  color: #2563EB !important;
+}
+
+[data-theme="light"] .privacy-footer-link:hover {
+  color: #1D4ED8 !important;
+}
+

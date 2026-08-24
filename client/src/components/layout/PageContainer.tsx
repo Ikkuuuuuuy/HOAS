@@ -25,19 +25,7 @@ export default function PageContainer({ title, subtitle, children }: PageContain
         </div>
 
         {/* Global Data Privacy Footer */}
-        <footer style={{
-          padding: '16px 24px',
-          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 10,
-          fontSize: 11.5,
-          color: 'var(--text-muted)',
-          background: 'rgba(15, 23, 42, 0.4)',
-          marginTop: 'auto'
-        }}>
+        <footer className="global-app-footer">
           <div>
             © {new Date().getFullYear()} Northridge Grove Phase 2 HOA Inc. & Barangay 174. All rights reserved.
           </div>
@@ -45,18 +33,7 @@ export default function PageContainer({ title, subtitle, children }: PageContain
             <button
               type="button"
               onClick={() => setShowPrivacyModal(true)}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#38BDF8',
-                cursor: 'pointer',
-                fontSize: 11.5,
-                fontWeight: 700,
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 4,
-                textDecoration: 'underline'
-              }}
+              className="privacy-footer-link"
             >
               <span>🛡️</span> Data Privacy & Protection Policy (R.A. 10173)
             </button>
