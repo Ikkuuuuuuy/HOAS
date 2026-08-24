@@ -14,10 +14,12 @@ export default function DashboardRouter() {
 
   switch (user.roleName) {
     case 'super_admin': return <SuperAdminDashboard />;
+    case 'barangay_official': return <BarangayDashboard />;
     case 'hoa_admin': return <HOAAdminDashboard />;
     case 'admin_staff': return <HOAAdminDashboard />;
     case 'security_guard': return <SecurityDashboard />;
-    case 'resident': return <ResidentDashboard />;
+    case 'resident':
+    case 'homeowner': return <ResidentDashboard />;
     default: return <HOAAdminDashboard />;
   }
 }
