@@ -134,8 +134,8 @@ export default function Login() {
               <img src="/nrg-ph2-logo.png" alt="NRG PH2 Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div>
-              <h2 className="login-brand-name" style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827' }}>NRG PH2 HOA INC</h2>
-              <p className="login-brand-tagline" style={{ fontSize: '0.82rem', color: '#4B5563' }}>Phase 2 Resident & Staff Sign In</p>
+              <h2 className="login-brand-name" style={{ fontSize: '1.35rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.01em', margin: 0 }}>NRG PH2 HOA INC</h2>
+              <p className="login-brand-tagline" style={{ fontSize: '0.84rem', color: '#F59E0B', fontWeight: 600, margin: '2px 0 0 0' }}>Phase 2 Resident & Staff Sign In</p>
             </div>
           </div>
 
