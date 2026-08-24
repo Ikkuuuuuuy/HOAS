@@ -194,6 +194,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setAccessToken(mockToken);
         setUser(matchedDemoUser);
         try {
+          if (typeof window !== 'undefined' && window.sessionStorage) {
+            window.sessionStorage.removeItem(`hoa_privacy_advisory_${matchedDemoUser.email}`);
+          }
           if (typeof window !== 'undefined' && window.localStorage) {
             window.localStorage.setItem('hoa_portal_session', JSON.stringify({
               token: mockToken,
@@ -215,6 +218,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       if (typeof window !== 'undefined' && window.localStorage) {
         window.localStorage.removeItem('hoa_portal_session');
+      }
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        Object.keys(window.sessionStorage).forEach(k => {
+          if (k.startsWith('hoa_privacy_advisory_')) {
+            window.sessionStorage.removeItem(k);
+          }
+        });
       }
     } catch { /* ignore */ }
   }, []);

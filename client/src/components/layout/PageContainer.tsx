@@ -4,6 +4,7 @@ import Navbar from './Navbar';
 import EmergencyBanner from '../ui/EmergencyBanner';
 import ToastContainer from '../ui/ToastContainer';
 import PrivacyPolicyModal from '../common/PrivacyPolicyModal';
+import LoginPrivacyAdvisoryModal from '../common/LoginPrivacyAdvisoryModal';
 
 interface PageContainerProps {
   title: string;
@@ -47,6 +48,8 @@ export default function PageContainer({ title, subtitle, children }: PageContain
         isOpen={showPrivacyModal}
         onClose={() => setShowPrivacyModal(false)}
       />
+
+      <LoginPrivacyAdvisoryModal />
 
       <ToastContainer />
     </div>
