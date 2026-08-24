@@ -547,11 +547,22 @@ export default function Register() {
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#FBBF24', fontSize: 13.5, fontWeight: 800, marginBottom: 4 }}>
                   <span>🛡️</span>
-                  <span>Mandatory Government ID Verification</span>
+                  <span>Valid Government ID Verification (Name, Birthdate & Age)</span>
                 </div>
                 <p style={{ fontSize: 12, color: '#E2E8F0', margin: 0, lineHeight: 1.5 }}>
-                  To ensure community safety and prevent unauthorized registrations, please upload a clear, unblurred picture of a government-issued ID matching your full name: <strong>{fullName || 'Applicant'}</strong>.
+                  Please upload a clear, unblurred photo of your government-issued ID to verify your legal identity: <strong>{fullName || 'Applicant'}</strong> ({birthDate ? `Born ${birthDate}` : ''}).
                 </p>
+                <div style={{
+                  background: 'rgba(56, 189, 248, 0.12)',
+                  border: '1px solid rgba(56, 189, 248, 0.25)',
+                  padding: '8px 12px',
+                  borderRadius: 6,
+                  marginTop: 8,
+                  fontSize: 11.5,
+                  color: '#BAE6FD'
+                }}>
+                  💡 <strong>Address Exemption Notice:</strong> The address printed on your valid ID does <u>not</u> need to match your new Northridge Grove Phase 2 property. We only verify your <strong>Legal Name</strong>, <strong>Birthdate</strong>, and <strong>Age</strong>.
+                </div>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 12 }}>

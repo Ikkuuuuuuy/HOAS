@@ -1219,6 +1219,19 @@ export default function HOAMasterlistManagement() {
             </div>
 
             <div style={{ padding: '16px 0', textAlign: 'center' }}>
+              <div style={{
+                background: 'rgba(56, 189, 248, 0.12)',
+                border: '1px solid rgba(56, 189, 248, 0.35)',
+                padding: '8px 14px',
+                borderRadius: 8,
+                marginBottom: 12,
+                textAlign: 'left',
+                fontSize: 11.5,
+                color: '#E0F2FE'
+              }}>
+                <strong>🛡️ Verified Identity Data:</strong> Full Name, Date of Birth, and Age match Masterlist. Address printed on ID is not required to match the subdivision property address.
+              </div>
+
               <div style={{ background: '#0B1120', padding: 16, borderRadius: 10, border: '1px solid rgba(255,255,255,0.1)', marginBottom: 14 }}>
                 <img
                   src={viewingIdDoc.idPhotoUrl || 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600'}

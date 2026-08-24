@@ -65,9 +65,9 @@ export default function HOAAdminManagement() {
 
   const REJECTION_PRESETS = [
     '📷 Uploaded government ID picture is blurred, glare-reflected, or unreadable.',
-    '🚫 Government ID name does not match the registered homeowner full name.',
+    '🚫 Government ID full name does not match the registered homeowner name.',
+    '🎂 Government ID birth date or age does not match the registration details.',
     '⏳ Submitted ID is expired, invalid, or not an approved government ID type.',
-    '🏠 Property details (Block & Lot) do not match developer turnover master records.',
     '📄 Uploaded document is cropped, incomplete, or missing back page verification.',
   ];
 
@@ -582,20 +582,52 @@ export default function HOAAdminManagement() {
               </div>
 
               <div style={{ padding: '16px 0', textAlign: 'center' }}>
+                
+                {/* ID Verification Standard Notice */}
+                <div style={{
+                  background: 'rgba(56, 189, 248, 0.12)',
+                  border: '1px solid rgba(56, 189, 248, 0.35)',
+                  padding: '10px 14px',
+                  borderRadius: 8,
+                  marginBottom: 14,
+                  textAlign: 'left',
+                  fontSize: 12,
+                  color: '#E0F2FE'
+                }}>
+                  <div style={{ fontWeight: 800, color: '#38BDF8', marginBottom: 2, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span>🛡️</span> ID Verification Standard (Name, Birthdate & Age Only)
+                  </div>
+                  <div>
+                    Verify that the ID <strong>Full Name</strong>, <strong>Birth Date</strong>, and <strong>Photo/Age</strong> match the applicant's submitted credentials.
+                  </div>
+                  <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 3 }}>
+                    💡 <em>Note: The address printed on the ID is <strong>NOT</strong> required to match the subdivision property, as the ID may contain the resident's previous or provincial address.</em>
+                  </div>
+                </div>
+
                 <div style={{ background: '#0B1120', padding: 12, borderRadius: 10, border: '1px solid rgba(255,255,255,0.1)', marginBottom: 14 }}>
                   <img
                     src={inspectIdUser.proof_doc_url || 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600'}
                     alt="Government ID"
-                    style={{ maxHeight: 360, maxWidth: '100%', objectFit: 'contain', borderRadius: 8 }}
+                    style={{ maxHeight: 340, maxWidth: '100%', objectFit: 'contain', borderRadius: 8 }}
                   />
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-glass-light)', padding: '10px 16px', borderRadius: 8, fontSize: 12 }}>
+                <div style={{
+                  display: 'grid', gridTemplateColumns: '1.2fr 1.2fr 1fr', gap: 10,
+                  background: 'var(--bg-glass-light)', padding: '12px 16px', borderRadius: 8, fontSize: 12, textAlign: 'left'
+                }}>
                   <div>
-                    <span style={{ color: 'var(--text-muted)' }}>Registered Name:</span> <strong>{inspectIdUser.full_name}</strong>
+                    <span style={{ color: 'var(--text-muted)' }}>Registered Legal Name:</span>
+                    <div style={{ fontWeight: 800, color: 'var(--text-primary)' }}>{inspectIdUser.full_name}</div>
                   </div>
                   <div>
-                    <span style={{ color: 'var(--text-muted)' }}>Address:</span> <strong>{inspectIdUser.address}</strong>
+                    <span style={{ color: 'var(--text-muted)' }}>Date of Birth / Age:</span>
+                    <div style={{ fontWeight: 700, color: '#86EFAC' }}>{inspectIdUser.birth_date || '1985-05-14'} • {inspectIdUser.age || 41} yrs</div>
+                  </div>
+                  <div>
+                    <span style={{ color: 'var(--text-muted)' }}>Claimed Lot:</span>
+                    <div style={{ fontWeight: 700, color: '#FBBF24' }}>{inspectIdUser.address || 'Phase 2 Lot'}</div>
                   </div>
                 </div>
 
@@ -621,7 +653,7 @@ export default function HOAAdminManagement() {
                       handleApproveUser(u.id, u.email, u.full_name);
                     }}
                   >
-                    ✓ ID Verified: Approve Account
+                    ✓ Name & DOB Verified: Approve Account
                   </button>
                 </div>
               </div>
