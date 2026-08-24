@@ -112,42 +112,42 @@
   --landing-input-border: rgba(255,255,255,0.12);
 }
 
-/* ── Light Mode Custom Theme Tokens (Ultra-Crisp Modern Slate & Pure White) ── */
+/* ── Light Mode Custom Theme Tokens (Modern Minimalist Clean & Airy) ── */
 [data-theme="light"] {
-  --bg-base:        #F8FAFC; /* Crisp Slate-50 background */
-  --bg-surface:     #FFFFFF; /* Pure White surface for cards and containers */
+  --bg-base:        #F9FAFB; /* Minimalist neutral off-white background */
+  --bg-surface:     #FFFFFF; /* Pure white card surfaces */
   --bg-elevated:    #FFFFFF;
-  --bg-glass:       rgba(255, 255, 255, 0.95);
+  --bg-glass:       rgba(255, 255, 255, 0.98);
   --bg-glass-light: rgba(0, 0, 0, 0.02);
-  --bg-hover:       #F1F5F9; /* Slate-100 hover */
+  --bg-hover:       #F3F4F6; /* Soft gray hover */
   --bg-input:       #FFFFFF;
 
-  --border:         #E2E8F0; /* Slate-200 border */
-  --border-focus:   #DC2626;
-  --border-light:   #CBD5E1;
+  --border:         #E5E7EB; /* Minimalist clean 1px border */
+  --border-focus:   #16A34A;
+  --border-light:   #E5E7EB;
 
-  --text-primary:   #0F172A; /* Slate 900 - Sharp high contrast */
-  --text-secondary: #334155; /* Slate 700 */
-  --text-muted:     #64748B; /* Slate 500 */
+  --text-primary:   #111827; /* Deep Slate 900 */
+  --text-secondary: #4B5563; /* Refined Slate 600 */
+  --text-muted:     #6B7280; /* Slate 500 */
   --text-inverse:   #FFFFFF;
 
-  /* Modern Clean Slate (#F8FAFC) & Crisp White (#FFFFFF) Theme Variables */
-  --sidebar-bg:          #F8FAFC; /* Clean Light Slate Sidebar */
-  --sidebar-border:      #E2E8F0; /* Crisp Slate Border */
-  --sidebar-text-title:  #0F172A; /* High Contrast Charcoal Heading */
-  --sidebar-text-sub:    #166534; /* Forest Green Accent Tagline */
-  --sidebar-nav-color:   #334155; /* Slate 700 Nav Item Text */
-  --sidebar-nav-hover:   #F1F5F9; /* Clean Light Hover */
-  --sidebar-nav-hover-t: #0F172A; /* Bold Charcoal Hover Label */
-  --sidebar-nav-act-bg:  linear-gradient(135deg, #DC2626, #B91C1C); /* Vibrant BRIA Red Active Pill */
-  --sidebar-nav-act-t:   #FFFFFF; /* Crisp White Active Text */
-  --sidebar-card-bg:     #FFFFFF; /* Pure White User Card */
-  --sidebar-card-bdr:    #E2E8F0; /* Subtle Card Divider */
+  /* Modern Clean Slate (#F9FAFB) & Pure White (#FFFFFF) Minimalist Sidebar */
+  --sidebar-bg:          #FFFFFF; /* Clean Pure White Sidebar */
+  --sidebar-border:      #E5E7EB; /* Subtle 1px Divider */
+  --sidebar-text-title:  #111827; /* Clean Heading */
+  --sidebar-text-sub:    #15803D; /* Subtle Green Accent */
+  --sidebar-nav-color:   #4B5563; /* Clean Nav Label */
+  --sidebar-nav-hover:   #F3F4F6; /* Minimalist Hover */
+  --sidebar-nav-hover-t: #111827;
+  --sidebar-nav-act-bg:  #DC2626; /* Clean Solid BRIA Red Active Pill */
+  --sidebar-nav-act-t:   #FFFFFF;
+  --sidebar-card-bg:     #F9FAFB; /* Subtle User Container */
+  --sidebar-card-bdr:    #E5E7EB;
 
-  --navbar-bg:           #FFFFFF; /* Crisp Clean White Top Bar */
-  --navbar-border:       #E2E8F0; /* Subtle 1px Bottom Border */
-  --navbar-text-title:   #0F172A; /* Charcoal Page Title */
-  --navbar-text-sub:     #64748B; /* Slate Subtitle */
+  --navbar-bg:           #FFFFFF; /* Clean Top Bar */
+  --navbar-border:       #E5E7EB; /* Subtle Bottom Border */
+  --navbar-text-title:   #111827;
+  --navbar-text-sub:     #6B7280;
 
   /* Backwards compatibility aliases */
   --shell-bg:            var(--sidebar-bg);
@@ -162,10 +162,10 @@
   --shell-card-bg:       var(--sidebar-card-bg);
   --shell-card-bdr:      var(--sidebar-card-bdr);
 
-  --popover-bg:          #FFFFFF; /* Pure White popover menus */
-  --popover-border:      #E2E8F0;
-  --popover-text:        #0F172A;
-  --popover-sub:         #64748B;
+  --popover-bg:          #FFFFFF;
+  --popover-border:      #E5E7EB;
+  --popover-text:        #111827;
+  --popover-sub:         #6B7280;
 }
 
 :root, [data-theme="dark"] {
@@ -179,13 +179,13 @@
   --sidebar-nav-hover-t: #FFFFFF;
   --sidebar-nav-act-bg:  linear-gradient(135deg, #DC2626, #B91C1C);
   --sidebar-nav-act-t:   #FFFFFF;
-  --sidebar-card-bg:     rgba(255, 255, 255, 0.04);
-  --sidebar-card-bdr:    rgba(255, 255, 255, 0.08);
+  --sidebar-card-bg:     #1E293B;
+  --sidebar-card-bdr:    rgba(255, 255, 255, 0.1);
 
   --navbar-bg:           #0B1120;
   --navbar-border:       rgba(255, 255, 255, 0.1);
   --navbar-text-title:   #FFFFFF;
-  --navbar-text-sub:     #9CA3AF;
+  --navbar-text-sub:     #94A3B8;
 
   --shell-bg:            var(--sidebar-bg);
   --shell-border:        var(--sidebar-border);
@@ -211,48 +211,68 @@
 }
 
 [data-theme="light"] .text-muted {
-  color: #64748B !important;
+  color: #6B7280 !important;
 }
 
 [data-theme="light"] .stat-label {
-  color: #475569 !important;
-  font-weight: 700 !important;
+  color: #4B5563 !important;
+  font-weight: 600 !important;
 }
 
 [data-theme="light"] .card,
 [data-theme="light"] .modal-box,
 [data-theme="light"] .stat-card {
   background: #FFFFFF !important;
-  border-color: #E2E8F0 !important;
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+  border: 1px solid #E5E7EB !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="light"] .card:hover {
+  border-color: #D1D5DB !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05) !important;
 }
 
 [data-theme="light"] .section-title,
 [data-theme="light"] .modal-title {
-  color: #0F172A !important;
+  color: #111827 !important;
+  font-weight: 700 !important;
 }
 
 [data-theme="light"] .data-table th {
-  background: #F8FAFC !important;
-  color: #475569 !important;
-  border-bottom-color: #E2E8F0 !important;
+  background: #F9FAFB !important;
+  color: #4B5563 !important;
+  border-bottom: 1px solid #E5E7EB !important;
+  font-weight: 600 !important;
+  font-size: 11.5px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
 }
 
 [data-theme="light"] .data-table td {
-  border-bottom-color: #F1F5F9 !important;
-  color: #0F172A !important;
+  border-bottom: 1px solid #F3F4F6 !important;
+  color: #111827 !important;
 }
 
 [data-theme="light"] .data-table tr:hover {
-  background: #F8FAFC !important;
+  background: #F9FAFB !important;
 }
 
 [data-theme="light"] .form-input,
 [data-theme="light"] .form-select,
 [data-theme="light"] .form-textarea {
   background: #FFFFFF !important;
-  border-color: #E2E8F0 !important;
-  color: #0F172A !important;
+  border: 1px solid #D1D5DB !important;
+  color: #111827 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .form-input:focus,
+[data-theme="light"] .form-select:focus,
+[data-theme="light"] .form-textarea:focus {
+  border-color: #15803D !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.15) !important;
 }
 
 [data-theme="light"] input[type="date"] {
@@ -308,80 +328,87 @@
 }
 
 [data-theme="light"] .sidebar {
-  background: #F8FAFC !important;
-  border-right: 1px solid #E2E8F0 !important;
-  box-shadow: 4px 0 16px rgba(15, 23, 42, 0.04);
+  background: #FFFFFF !important;
+  border-right: 1px solid #E5E7EB !important;
+  box-shadow: 1px 0 3px rgba(0, 0, 0, 0.02) !important;
 }
 
 [data-theme="light"] .sidebar-brand {
-  background: #F8FAFC !important;
-  border-bottom: 1px solid #E2E8F0 !important;
+  background: #FFFFFF !important;
+  border-bottom: 1px solid #E5E7EB !important;
 }
 
 [data-theme="light"] .sidebar-brand-title {
-  color: #0F172A !important;
+  color: #111827 !important;
+  font-weight: 700 !important;
 }
 
 [data-theme="light"] .sidebar-brand-sub {
-  color: #166534 !important;
+  color: #15803D !important;
+  font-weight: 600 !important;
 }
 
 [data-theme="light"] .sidebar-divider {
-  background: #E2E8F0 !important;
+  background: #E5E7EB !important;
 }
 
 [data-theme="light"] .sidebar-nav-item {
-  color: #334155 !important;
+  color: #4B5563 !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  transition: all 0.15s ease !important;
 }
 
 [data-theme="light"] .sidebar-nav-item:hover {
-  background: #F1F5F9 !important;
-  color: #0F172A !important;
+  background: #F3F4F6 !important;
+  color: #111827 !important;
 }
 
 [data-theme="light"] .sidebar-nav-item.active {
-  background: linear-gradient(135deg, #DC2626, #B91C1C) !important;
+  background: #DC2626 !important;
   color: #FFFFFF !important;
-  font-weight: 800 !important;
-  border-left: 3px solid #F59E0B !important;
-  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25) !important;
+  font-weight: 600 !important;
+  border-left: none !important;
+  box-shadow: 0 1px 3px rgba(220, 38, 38, 0.2) !important;
 }
 
 [data-theme="light"] .sidebar-user-clickable {
-  background: #FFFFFF !important;
-  border-color: #E2E8F0 !important;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
+  background: #F9FAFB !important;
+  border: 1px solid #E5E7EB !important;
+  box-shadow: none !important;
 }
 
 [data-theme="light"] .sidebar-user-clickable:hover {
-  background: #F8FAFC !important;
-  border-color: #CBD5E1 !important;
+  background: #F3F4F6 !important;
+  border-color: #D1D5DB !important;
 }
 
 [data-theme="light"] .sidebar-user-name {
-  color: #0F172A !important;
+  color: #111827 !important;
+  font-weight: 600 !important;
 }
 
 [data-theme="light"] .sidebar-user-tenant {
-  color: #64748B !important;
+  color: #6B7280 !important;
 }
 
 [data-theme="light"] .sidebar-user-chevron {
-  color: #94A3B8 !important;
+  color: #9CA3AF !important;
 }
 
 [data-theme="light"] .navbar {
   background: #FFFFFF !important;
-  border-bottom: 1px solid #E2E8F0 !important;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04) !important;
+  border-bottom: 1px solid #E5E7EB !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
 }
 
 [data-theme="light"] .navbar-title {
-  color: #0F172A !important;
+  color: #111827 !important;
+  font-weight: 700 !important;
 }
 
 [data-theme="light"] .navbar-subtitle {
-  color: #64748B !important;
+  color: #6B7280 !important;
 }
 
 [data-theme="light"] .btn-theme-toggle,

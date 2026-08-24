@@ -300,24 +300,24 @@ export default function Navbar({ title, subtitle }: NavbarProps) {
 
       <style>{`
         .navbar {
-          height: 76px;
-          min-height: 76px;
+          height: 64px;
+          min-height: 64px;
           box-sizing: border-box;
           background: var(--navbar-bg);
           border-bottom: 1px solid var(--navbar-border);
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 0 var(--space-8);
+          padding: 0 var(--space-6);
           position: sticky;
           top: 0;
           z-index: 40;
-          transition: background 0.25s ease, border-color 0.25s ease;
+          transition: background 0.2s ease, border-color 0.2s ease;
         }
-        .navbar-left { display: flex; align-items: center; gap: var(--space-4); }
-        .navbar-title { font-size: var(--font-xl); font-weight: 800; color: var(--navbar-text-title); margin: 0; }
+        .navbar-left { display: flex; align-items: center; gap: var(--space-3); }
+        .navbar-title { font-size: var(--font-lg); font-weight: 700; color: var(--navbar-text-title); margin: 0; letter-spacing: -0.01em; }
         .navbar-subtitle { font-size: var(--font-xs); color: var(--navbar-text-sub); margin-top: 1px; }
-        .navbar-right { display: flex; align-items: center; gap: var(--space-4); }
+        .navbar-right { display: flex; align-items: center; gap: var(--space-3); }
         .navbar-alert-badge {
           display: flex;
           align-items: center;
