@@ -188,11 +188,11 @@ export default function PendingApprovalWelcomePage() {
               Available Community Resources:
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 12 }}>
               <Link
                 to="/"
                 style={{
-                  padding: '14px',
+                  padding: '14px 18px',
                   borderRadius: 10,
                   background: 'rgba(255,255,255,0.04)',
                   border: '1px solid rgba(255,255,255,0.1)',
@@ -200,36 +200,14 @@ export default function PendingApprovalWelcomePage() {
                   color: '#FFF',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 10,
+                  gap: 12,
                   transition: 'all 0.2s ease'
                 }}
               >
-                <span style={{ fontSize: 24 }}>🏠</span>
+                <span style={{ fontSize: 26 }}>🏠</span>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 700 }}>Public Homepage</div>
-                  <div style={{ fontSize: 11, color: '#9CA3AF' }}>Amenities & GIS Map</div>
-                </div>
-              </Link>
-
-              <Link
-                to="/officers"
-                style={{
-                  padding: '14px',
-                  borderRadius: 10,
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  textDecoration: 'none',
-                  color: '#FFF',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 10,
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                <span style={{ fontSize: 24 }}>🏛️</span>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 700 }}>HOA Officers</div>
-                  <div style={{ fontSize: 11, color: '#9CA3AF' }}>Board & Block Leaders</div>
+                  <div style={{ fontSize: 13, fontWeight: 700 }}>Public Homepage & Amenities</div>
+                  <div style={{ fontSize: 11, color: '#9CA3AF' }}>Explore Subdivision Amenities, Map & Guidelines</div>
                 </div>
               </Link>
             </div>
