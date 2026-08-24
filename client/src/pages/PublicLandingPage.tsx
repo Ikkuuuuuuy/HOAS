@@ -179,19 +179,24 @@ function useCountUp(target: string, duration = 1600, triggered = false) {
 /* ── Scroll Reveal Hook ──────────────────────────────────── */
 function useScrollReveal() {
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
-    );
-    const els = document.querySelectorAll('.reveal');
-    els.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+    if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') return;
+    try {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('revealed');
+            }
+          });
+        },
+        { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+      );
+      const els = document.querySelectorAll('.reveal');
+      els.forEach((el) => observer.observe(el));
+      return () => observer.disconnect();
+    } catch {
+      // Fallback for older browsers
+    }
   });
 }
 
@@ -209,20 +214,28 @@ export default function PublicLandingPage() {
   useScrollReveal();
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const handleScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Trigger stat counters when hero stats come into view
   useEffect(() => {
-    if (!heroStatsRef.current) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setStatsTriggered(true); },
-      { threshold: 0.5 }
-    );
-    obs.observe(heroStatsRef.current);
-    return () => obs.disconnect();
+    if (!heroStatsRef.current || typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') {
+      setStatsTriggered(true);
+      return;
+    }
+    try {
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry && entry.isIntersecting) setStatsTriggered(true); },
+        { threshold: 0.5 }
+      );
+      obs.observe(heroStatsRef.current);
+      return () => obs.disconnect();
+    } catch {
+      setStatsTriggered(true);
+    }
   }, []);
 
   const SECTION_MAP: Record<string, string> = {
@@ -1112,117 +1125,133 @@ function GoogleSubdivisionMapSection({ isDark }: { isDark: boolean }) {
   });
 
   useEffect(() => {
-    if (!mapRef.current || !window.L) return;
-    if (!leafletInstance.current) {
-      const map = window.L.map(mapRef.current).setView([14.7946, 121.0800], 16);
-      window.L.tileLayer('http://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, attribution: '© Google Maps | NRG PH2 HOA INC Boundary' }).addTo(map);
-      leafletInstance.current = map;
+    if (!mapRef.current || typeof window === 'undefined' || !window.L) return;
+    try {
+      if (!leafletInstance.current) {
+        const map = window.L.map(mapRef.current).setView([14.7946, 121.0800], 16);
+        window.L.tileLayer('https://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, attribution: '© Google Maps | NRG PH2 HOA INC Boundary' }).addTo(map);
+        leafletInstance.current = map;
 
-      // EXACT NORTHRIDGE GROVE PHASE 2 SUBDIVISION PERIMETER BORDER
-      const borderPolygonCoords = [
-        // ── 1. West Sector: Left Edge & Southwest Entrance Corner ──
-        [14.79250, 121.07580], // Southwest Corner (near La Bonita Cosmetics & Main Gate)
-        [14.79350, 121.07540], // Western Edge lower (south of Chancezz)
-        [14.79460, 121.07530], // Western Edge middle (beside Chancezz / B7 Maagap St)
-        [14.79560, 121.07560], // Northwest Flank
-        [14.79600, 121.07590], // Northwest Corner (Amy Ella Panaderia area)
+        // EXACT NORTHRIDGE GROVE PHASE 2 SUBDIVISION PERIMETER BORDER
+        const borderPolygonCoords = [
+          // ── 1. West Sector: Left Edge & Southwest Entrance Corner ──
+          [14.79250, 121.07580], // Southwest Corner (near La Bonita Cosmetics & Main Gate)
+          [14.79350, 121.07540], // Western Edge lower (south of Chancezz)
+          [14.79460, 121.07530], // Western Edge middle (beside Chancezz / B7 Maagap St)
+          [14.79560, 121.07560], // Northwest Flank
+          [14.79600, 121.07590], // Northwest Corner (Amy Ella Panaderia area)
 
-        // ── 2. West Sector: Northern Perimeter with BCCCP Inset ──
-        [14.79610, 121.07680], // Top boundary lot line
-        [14.79570, 121.07760], // Inward dip/cove near BCCCP lot line
-        [14.79540, 121.07820], // Inset boundary corner
-        [14.79580, 121.07900], // Climbs back to Northern lot line
-        [14.79610, 121.07990], // North perimeter of middle block
-        [14.79630, 121.08060], // Central spine junction / neck
+          // ── 2. West Sector: Northern Perimeter with BCCCP Inset ──
+          [14.79610, 121.07680], // Top boundary lot line
+          [14.79570, 121.07760], // Inward dip/cove near BCCCP lot line
+          [14.79540, 121.07820], // Inset boundary corner
+          [14.79580, 121.07900], // Climbs back to Northern lot line
+          [14.79610, 121.07990], // North perimeter of middle block
+          [14.79630, 121.08060], // Central spine junction / neck
 
-        // ── 3. Northeast Sector: Fan-Shaped Arch (Top Dome & Parang Rd) ──
-        [14.79690, 121.08040], // Neck transition into right lobe
-        [14.79770, 121.08030], // Western apex of upper fan (near nathan sari-sari)
-        [14.79810, 121.08080], // Topmost northern apex (L&A Laundry Home)
-        [14.79800, 121.08180], // Parang Rd upper bend
-        [14.79750, 121.08280], // Upper Parang Rd frontage
-        [14.79720, 121.08360], // Eastern approach (Bakery area)
-        [14.79660, 121.08430], // Near Susana's Kitchen / North-East Corner
-        [14.79590, 121.08450], // Far East Corner (Goumn / Casa Resort boundary)
+          // ── 3. Northeast Sector: Fan-Shaped Arch (Top Dome & Parang Rd) ──
+          [14.79690, 121.08040], // Neck transition into right lobe
+          [14.79770, 121.08030], // Western apex of upper fan (near nathan sari-sari)
+          [14.79810, 121.08080], // Topmost northern apex (L&A Laundry Home)
+          [14.79800, 121.08180], // Parang Rd upper bend
+          [14.79750, 121.08280], // Upper Parang Rd frontage
+          [14.79720, 121.08360], // Eastern approach (Bakery area)
+          [14.79660, 121.08430], // Near Susana's Kitchen / North-East Corner
+          [14.79590, 121.08450], // Far East Corner (Goumn / Casa Resort boundary)
 
-        // ── 4. Northeast Sector: Southeastern Perimeter ──
-        [14.79520, 121.08370], // South-east diagonal boundary
-        [14.79450, 121.08270], // Lower east lot lines (near Plk A Book)
-        [14.79390, 121.08180], // Approach to southern neck (near Tea Alley Station)
-        [14.79340, 121.08100], // Inner neck bottom cusp
+          // ── 4. Northeast Sector: Southeastern Perimeter ──
+          [14.79520, 121.08370], // South-east diagonal boundary
+          [14.79450, 121.08270], // Lower east lot lines (near Plk A Book)
+          [14.79390, 121.08180], // Approach to southern neck (near Tea Alley Station)
+          [14.79340, 121.08100], // Inner neck bottom cusp
 
-        // ── 5. West Sector: Southern Perimeter ──
-        [14.79290, 121.08120], // Bottom road corner (below JCS Pandes)
-        [14.79250, 121.08060], // Southern road curve
-        [14.79220, 121.07970], // Southern perimeter road (Farm Fresh)
-        [14.79170, 121.07860], // Southernmost bottom dip
-        [14.79150, 121.07770], // Southern road curve (Mabuti St south)
-        [14.79190, 121.07670], // Southwest perimeter road
-        [14.79230, 121.07610], // Curve back to Southwest corner
-      ];
+          // ── 5. West Sector: Southern Perimeter ──
+          [14.79290, 121.08120], // Bottom road corner (below JCS Pandes)
+          [14.79250, 121.08060], // Southern road curve
+          [14.79220, 121.07970], // Southern perimeter road (Farm Fresh)
+          [14.79170, 121.07860], // Southernmost bottom dip
+          [14.79150, 121.07770], // Southern road curve (Mabuti St south)
+          [14.79190, 121.07670], // Southwest perimeter road
+          [14.79230, 121.07610], // Curve back to Southwest corner
+        ];
 
-      // Outer glow line (Golden Amber)
-      window.L.polygon(borderPolygonCoords, {
-        color: '#F59E0B',
-        weight: 6,
-        opacity: 0.5,
-        fillOpacity: 0,
-      }).addTo(map);
+        // Outer glow line (Golden Amber)
+        window.L.polygon(borderPolygonCoords, {
+          color: '#F59E0B',
+          weight: 6,
+          opacity: 0.5,
+          fillOpacity: 0,
+        }).addTo(map);
 
-      // Main crisp boundary polygon (Matching exact golden satellite border)
-      const polygonLayer = window.L.polygon(borderPolygonCoords, {
-        color: '#EAB308',
-        fillColor: '#F59E0B',
-        fillOpacity: 0.16,
-        weight: 3.5,
-        dashArray: '8, 5',
-      }).addTo(map);
+        // Main crisp boundary polygon (Matching exact golden satellite border)
+        const polygonLayer = window.L.polygon(borderPolygonCoords, {
+          color: '#EAB308',
+          fillColor: '#F59E0B',
+          fillOpacity: 0.16,
+          weight: 3.5,
+          dashArray: '8, 5',
+        }).addTo(map);
 
-      polygonLayer.bindPopup(`
-        <div style="font-family:sans-serif;padding:6px;min-width:240px;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-            <div style="background:#F59E0B;color:#FFF;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:900;">OFFICIAL BOUNDARY</div>
-            <div style="font-size:11px;color:#DC2626;font-weight:800;">312 HOUSING UNITS</div>
+        polygonLayer.bindPopup(`
+          <div style="font-family:sans-serif;padding:6px;min-width:240px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+              <div style="background:#F59E0B;color:#FFF;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:900;">OFFICIAL BOUNDARY</div>
+              <div style="font-size:11px;color:#DC2626;font-weight:800;">312 HOUSING UNITS</div>
+            </div>
+            <div style="font-weight:900;font-size:15px;color:#111827;">Northridge Grove Phase 2</div>
+            <div style="font-size:12px;color:#B45309;font-weight:700;margin-top:2px;">NRG PH2 HOA INC Jurisdiction</div>
+            <div style="font-size:12px;color:#4B5563;margin-top:6px;line-height:1.4;">
+              📍 B7 Maagap St, Barangay Tungkong Mangga, San Jose del Monte, Bulacan 3023
+            </div>
+            <div style="margin-top:8px;padding-top:8px;border-top:1px solid #E5E7EB;font-size:11.5px;color:#374151;">
+              • <strong>Coverage:</strong> Blocks 1, 2, 3, 4, 5, 6, 7, 8, and 9<br/>
+              • <strong>Streets:</strong> Maagap St, Mabuti St, Mapayapa St, Magiting St<br/>
+              • <strong>Key Amenities:</strong> Clubhouse, Covered Basketball Court, Swimming Pools, Playground, 24/7 RFID Gate
+            </div>
           </div>
-          <div style="font-weight:900;font-size:15px;color:#111827;">Northridge Grove Phase 2</div>
-          <div style="font-size:12px;color:#B45309;font-weight:700;margin-top:2px;">NRG PH2 HOA INC Jurisdiction</div>
-          <div style="font-size:12px;color:#4B5563;margin-top:6px;line-height:1.4;">
-            📍 B7 Maagap St, Barangay Tungkong Mangga, San Jose del Monte, Bulacan 3023
-          </div>
-          <div style="margin-top:8px;padding-top:8px;border-top:1px solid #E5E7EB;font-size:11.5px;color:#374151;">
-            • <strong>Coverage:</strong> Blocks 1, 2, 3, 4, 5, 6, 7, 8, and 9<br/>
-            • <strong>Streets:</strong> Maagap St, Mabuti St, Mapayapa St, Magiting St<br/>
-            • <strong>Key Amenities:</strong> Clubhouse, Covered Basketball Court, Swimming Pools, Playground, 24/7 RFID Gate
-          </div>
-        </div>
-      `);
+        `);
+      }
+    } catch {
+      // Map error fallback
     }
   }, []);
 
   useEffect(() => {
-    if (!leafletInstance.current || !window.L) return;
-    const map = leafletInstance.current;
-    map.eachLayer((layer: any) => { if (layer instanceof window.L.TileLayer) map.removeLayer(layer); });
-    window.L.tileLayer(`http://mt0.google.com/vt/lyrs=${mapType}&x={x}&y={y}&z={z}`, { maxZoom: 20, attribution: '© Google Maps' }).addTo(map);
+    if (!leafletInstance.current || typeof window === 'undefined' || !window.L) return;
+    try {
+      const map = leafletInstance.current;
+      if (window.L.TileLayer) {
+        map.eachLayer((layer: any) => { if (layer instanceof window.L.TileLayer) map.removeLayer(layer); });
+      }
+      window.L.tileLayer(`https://mt0.google.com/vt/lyrs=${mapType}&x={x}&y={y}&z={z}`, { maxZoom: 20, attribution: '© Google Maps' }).addTo(map);
+    } catch {
+      // Ignore tile switch error
+    }
   }, [mapType]);
 
   useEffect(() => {
-    if (!leafletInstance.current || !window.L) return;
-    const map = leafletInstance.current;
-    markersRef.current.forEach(m => map.removeLayer(m));
-    markersRef.current = [];
-    filteredPois.forEach(poi => {
-      const bg = poi.category === 'hoa' ? '#DC2626' : poi.category === 'grocery' ? '#2563EB' : poi.category === 'hospital' ? '#EF4444' : poi.category === 'school' ? '#D97706' : '#166534';
-      const customIcon = window.L.divIcon({
-        className: 'custom-map-pin',
-        html: `<div style="background:${bg};color:#FFF;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 12px rgba(0,0,0,0.4);border:2px solid #FFF;">${poi.iconEmoji}</div>`,
-        iconSize: [36, 36], iconAnchor: [18, 18],
+    if (!leafletInstance.current || typeof window === 'undefined' || !window.L) return;
+    try {
+      const map = leafletInstance.current;
+      markersRef.current.forEach(m => {
+        try { map.removeLayer(m); } catch { /* ignore */ }
       });
-      const marker = window.L.marker([poi.lat, poi.lng], { icon: customIcon }).addTo(map);
-      marker.bindPopup(`<div style="font-family:sans-serif;padding:4px"><div style="font-weight:800;font-size:15px;color:#111827">${poi.iconEmoji} ${poi.name}</div><div style="font-size:12px;color:#DC2626;font-weight:700;margin-top:2px">📍 ${poi.distance}</div><div style="font-size:12px;color:#4B5563;margin-top:4px">${poi.address}</div><div style="font-size:11px;color:#6B7280;margin-top:4px;font-style:italic">${poi.notes}</div><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(poi.googleSearchQuery)}" target="_blank" rel="noreferrer" style="display:inline-block;margin-top:8px;font-size:12px;color:#2563EB;font-weight:700;text-decoration:underline">🗺 Open Directions in Google Maps →</a></div>`);
-      marker.on('click', () => setActivePoi(poi));
-      markersRef.current.push(marker);
-    });
+      markersRef.current = [];
+      filteredPois.forEach(poi => {
+        const bg = poi.category === 'hoa' ? '#DC2626' : poi.category === 'grocery' ? '#2563EB' : poi.category === 'hospital' ? '#EF4444' : poi.category === 'school' ? '#D97706' : '#166534';
+        const customIcon = window.L.divIcon({
+          className: 'custom-map-pin',
+          html: `<div style="background:${bg};color:#FFF;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 12px rgba(0,0,0,0.4);border:2px solid #FFF;">${poi.iconEmoji}</div>`,
+          iconSize: [36, 36], iconAnchor: [18, 18],
+        });
+        const marker = window.L.marker([poi.lat, poi.lng], { icon: customIcon }).addTo(map);
+        marker.bindPopup(`<div style="font-family:sans-serif;padding:4px"><div style="font-weight:800;font-size:15px;color:#111827">${poi.iconEmoji} ${poi.name}</div><div style="font-size:12px;color:#DC2626;font-weight:700;margin-top:2px">📍 ${poi.distance}</div><div style="font-size:12px;color:#4B5563;margin-top:4px">${poi.address}</div><div style="font-size:11px;color:#6B7280;margin-top:4px;font-style:italic">${poi.notes}</div><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(poi.googleSearchQuery)}" target="_blank" rel="noreferrer" style="display:inline-block;margin-top:8px;font-size:12px;color:#2563EB;font-weight:700;text-decoration:underline">🗺 Open Directions in Google Maps →</a></div>`);
+        marker.on('click', () => setActivePoi(poi));
+        markersRef.current.push(marker);
+      });
+    } catch {
+      // Map marker safety
+    }
   }, [filteredPois]);
 
   return (

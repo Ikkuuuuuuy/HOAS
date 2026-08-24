@@ -10,15 +10,30 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+const getSafeStorageTheme = (): Theme => {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const saved = window.localStorage.getItem('hoa_portal_theme');
+      if (saved === 'light' || saved === 'dark') return saved;
+    }
+  } catch {
+    // Safari private mode or restricted storage fallback
+  }
+  return 'dark';
+};
+
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setThemeState] = useState<Theme>(() => {
-    const saved = localStorage.getItem('hoa_portal_theme');
-    return (saved === 'light' || saved === 'dark') ? saved : 'dark';
-  });
+  const [theme, setThemeState] = useState<Theme>(getSafeStorageTheme);
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('hoa_portal_theme', theme);
+    try {
+      document.documentElement.setAttribute('data-theme', theme);
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.setItem('hoa_portal_theme', theme);
+      }
+    } catch {
+      // Ignore storage errors on iOS Safari
+    }
   }, [theme]);
 
   const toggleTheme = () => {
@@ -43,3 +58,4 @@ export const useTheme = () => {
   }
   return context;
 };
+

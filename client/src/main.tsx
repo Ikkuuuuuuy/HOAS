@@ -6,20 +6,24 @@ import { AuthProvider } from './context/AuthContext'
 import { AlertProvider } from './context/AlertContext'
 import { ToastProvider } from './context/ToastContext'
 import { ThemeProvider } from './context/ThemeContext'
+import { ErrorBoundary } from './components/common/ErrorBoundary'
 import './styles/index.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <ThemeProvider>
-        <AuthProvider>
-          <AlertProvider>
-            <ToastProvider>
-              <App />
-            </ToastProvider>
-          </AlertProvider>
-        </AuthProvider>
-      </ThemeProvider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <ThemeProvider>
+          <AuthProvider>
+            <AlertProvider>
+              <ToastProvider>
+                <App />
+              </ToastProvider>
+            </AlertProvider>
+          </AuthProvider>
+        </ThemeProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   </React.StrictMode>,
 )
+

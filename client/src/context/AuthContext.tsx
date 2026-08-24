@@ -80,15 +80,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Try to restore session from localStorage
+  // Try to restore session from localStorage safely
   useEffect(() => {
-    const stored = localStorage.getItem('hoa_portal_session');
-    if (stored) {
-      try {
-        const { token, userData } = JSON.parse(stored);
-        setAccessToken(token);
-        setUser(userData);
-      } catch { /* ignore */ }
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const stored = window.localStorage.getItem('hoa_portal_session');
+        if (stored) {
+          const { token, userData } = JSON.parse(stored);
+          setAccessToken(token);
+          setUser(userData);
+        }
+      }
+    } catch {
+      // Ignore private browsing or malformed session errors
     }
     setIsLoading(false);
   }, []);
@@ -114,11 +118,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (res.ok && data && data.accessToken && data.user) {
         setAccessToken(data.accessToken);
         setUser(data.user);
-        localStorage.setItem('hoa_portal_session', JSON.stringify({
-          token: data.accessToken,
-          refreshToken: data.refreshToken,
-          userData: data.user,
-        }));
+        try {
+          if (typeof window !== 'undefined' && window.localStorage) {
+            window.localStorage.setItem('hoa_portal_session', JSON.stringify({
+              token: data.accessToken,
+              refreshToken: data.refreshToken,
+              userData: data.user,
+            }));
+          }
+        } catch { /* storage fallback */ }
         apiSuccess = true;
         return;
       }
@@ -141,11 +149,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const mockToken = `demo-jwt-${matchedDemoUser.roleName}-${Date.now()}`;
         setAccessToken(mockToken);
         setUser(matchedDemoUser);
-        localStorage.setItem('hoa_portal_session', JSON.stringify({
-          token: mockToken,
-          refreshToken: mockToken,
-          userData: matchedDemoUser,
-        }));
+        try {
+          if (typeof window !== 'undefined' && window.localStorage) {
+            window.localStorage.setItem('hoa_portal_session', JSON.stringify({
+              token: mockToken,
+              refreshToken: mockToken,
+              userData: matchedDemoUser,
+            }));
+          }
+        } catch { /* storage fallback */ }
         return;
       }
 
@@ -156,7 +168,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = useCallback(() => {
     setUser(null);
     setAccessToken(null);
-    localStorage.removeItem('hoa_portal_session');
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.removeItem('hoa_portal_session');
+      }
+    } catch { /* ignore */ }
   }, []);
 
   const hasRole = useCallback((...roles: string[]) => {
