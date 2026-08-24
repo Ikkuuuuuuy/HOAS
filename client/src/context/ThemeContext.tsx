@@ -19,7 +19,7 @@ const getSafeStorageTheme = (): Theme => {
   } catch {
     // Safari private mode or restricted storage fallback
   }
-  return 'dark';
+  return 'light'; // Always start in light mode by default
 };
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
