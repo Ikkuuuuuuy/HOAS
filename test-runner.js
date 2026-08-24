@@ -69,6 +69,7 @@ const routes = [
   '/alerts',
   '/residents',
   '/officers',
+  '/masterlist',
 ];
 
 let allRoutesPresent = true;

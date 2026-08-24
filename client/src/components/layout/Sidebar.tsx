@@ -15,6 +15,7 @@ const ROLE_CONFIG: Record<string, {
     gradient: 'linear-gradient(135deg, #4C1D95, #7C3AED)',
     nav: [
       { path: '/dashboard', icon: '⊞', label: 'Overview' },
+      { path: '/masterlist', icon: '📜', label: 'HOA Masterlist & Excel' },
       { path: '/homeowner-portal', icon: '🏠', label: 'Homeowner Portal' },
       { path: '/officers', icon: '🏛️', label: 'HOA Officers' },
       { path: '/household', icon: '👨‍👩‍👧‍👦', label: 'Household Members' },
@@ -36,6 +37,7 @@ const ROLE_CONFIG: Record<string, {
     gradient: 'linear-gradient(135deg, #7F1D1D, #DC2626)',
     nav: [
       { path: '/dashboard', icon: '⊞', label: 'Dashboard' },
+      { path: '/masterlist', icon: '📜', label: 'HOA Masterlist & Excel' },
       { path: '/officers', icon: '🏛️', label: 'HOA Officers' },
       { path: '/household', icon: '👨‍👩‍👧‍👦', label: 'Household Members' },
       { path: '/events', icon: '📅', label: 'Calendar Events' },
@@ -55,6 +57,7 @@ const ROLE_CONFIG: Record<string, {
     gradient: 'linear-gradient(135deg, #1D4ED8, #3B82F6)',
     nav: [
       { path: '/dashboard', icon: '⊞', label: 'Dashboard' },
+      { path: '/masterlist', icon: '📜', label: 'HOA Masterlist & Excel' },
       { path: '/officers', icon: '🏛️', label: 'HOA Officers' },
       { path: '/household', icon: '👨‍👩‍👧‍👦', label: 'Household Members' },
       { path: '/events', icon: '📅', label: 'Calendar Events' },
