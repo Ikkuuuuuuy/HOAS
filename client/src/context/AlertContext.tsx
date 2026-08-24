@@ -24,42 +24,60 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
   const eventSourceRef = useRef<EventSource | null>(null);
 
   useEffect(() => {
-    // Connect to SSE stream
-    const es = new EventSource('/api/alerts/stream');
-    eventSourceRef.current = es;
+    // Connect to SSE stream if supported and in browser
+    if (typeof window === 'undefined') return;
 
-    es.onmessage = (event) => {
+    if (typeof EventSource !== 'undefined') {
       try {
-        const data = JSON.parse(event.data);
-        if (data.type === 'emergency_alert') {
-          setActiveAlerts(prev => {
-            const exists = prev.some(a => a.id === data.alert.id);
-            if (exists) return prev;
-            return [data.alert, ...prev].slice(0, 5); // max 5 active banners
-          });
-          // Browser notification if supported
-          if (Notification.permission === 'granted') {
-            new Notification(`🚨 Emergency Alert: ${data.alert.alertType.toUpperCase()}`, {
-              body: data.alert.message,
-            });
-          }
-        } else if (data.type === 'alert_resolved') {
-          setActiveAlerts(prev => prev.filter(a => a.id !== data.alertId));
-        }
-      } catch { /* ignore parse errors */ }
-    };
+        const es = new EventSource('/api/alerts/stream');
+        eventSourceRef.current = es;
 
-    es.onerror = () => {
-      // Auto-reconnect handled by browser
-    };
+        es.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            if (data.type === 'emergency_alert') {
+              setActiveAlerts(prev => {
+                const exists = prev.some(a => a.id === data.alert.id);
+                if (exists) return prev;
+                return [data.alert, ...prev].slice(0, 5); // max 5 active banners
+              });
+              // Browser notification if supported
+              try {
+                if (typeof window !== 'undefined' && 'Notification' in window && window.Notification && window.Notification.permission === 'granted') {
+                  new window.Notification(`🚨 Emergency Alert: ${data.alert.alertType.toUpperCase()}`, {
+                    body: data.alert.message,
+                  });
+                }
+              } catch { /* ignore notification errors */ }
+            } else if (data.type === 'alert_resolved') {
+              setActiveAlerts(prev => prev.filter(a => a.id !== data.alertId));
+            }
+          } catch { /* ignore parse errors */ }
+        };
 
-    // Request notification permission
-    if (Notification.permission === 'default') {
-      Notification.requestPermission();
+        es.onerror = () => {
+          // Auto-reconnect handled by browser or serverless fallback
+        };
+      } catch {
+        // SSE not supported or network blocked
+      }
+    }
+
+    // Safely request notification permission only if API is supported
+    try {
+      if (typeof window !== 'undefined' && 'Notification' in window && window.Notification && window.Notification.permission === 'default') {
+        window.Notification.requestPermission().catch(() => {});
+      }
+    } catch {
+      // Ignore unsupported Notification errors on iOS Safari / WebViews
     }
 
     return () => {
-      es.close();
+      try {
+        if (eventSourceRef.current) {
+          eventSourceRef.current.close();
+        }
+      } catch { /* ignore */ }
     };
   }, []);
 

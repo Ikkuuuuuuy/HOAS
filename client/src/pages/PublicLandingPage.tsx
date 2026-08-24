@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-
 import { HOA_OFFICERS_DATA, FacebookIcon } from './admin/HOAOfficersDirectory';
 
 declare global {

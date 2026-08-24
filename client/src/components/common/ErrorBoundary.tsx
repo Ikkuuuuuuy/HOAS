@@ -76,9 +76,27 @@ export class ErrorBoundary extends Component<Props, State> {
             <h2 style={{ fontSize: 20, fontWeight: 800, margin: '0 0 8px 0', color: '#FFF' }}>
               Portal Notice
             </h2>
-            <p style={{ fontSize: 14, color: '#94A3B8', margin: '0 0 24px 0', lineHeight: 1.5 }}>
-              The portal encountered an unexpected display issue. Please refresh or reset the session to proceed.
+            <p style={{ fontSize: 14, color: '#94A3B8', margin: '0 0 16px 0', lineHeight: 1.5 }}>
+              The portal encountered an unexpected display issue:
             </p>
+            {this.state.error && (
+              <div style={{
+                background: 'rgba(0,0,0,0.5)',
+                border: '1px solid rgba(220,38,38,0.3)',
+                borderRadius: 8,
+                padding: '10px 14px',
+                marginBottom: 20,
+                textAlign: 'left',
+                fontSize: 12,
+                color: '#FCA5A5',
+                fontFamily: 'monospace',
+                wordBreak: 'break-word',
+                maxHeight: 120,
+                overflowY: 'auto',
+              }}>
+                {this.state.error.message || String(this.state.error)}
+              </div>
+            )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <button
                 onClick={this.handleReload}
