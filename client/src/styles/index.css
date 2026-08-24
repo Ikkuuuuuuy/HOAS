@@ -1217,6 +1217,30 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   transition: all 0.2s ease;
 }
 
+.login-page .form-input,
+.login-page .form-select,
+.login-page input:not([type="checkbox"]):not([type="radio"]),
+.login-page select {
+  background: rgba(15, 23, 42, 0.85) !important;
+  color: #FFFFFF !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 8px;
+}
+
+.login-page .form-input:focus,
+.login-page .form-select:focus,
+.login-page input:focus,
+.login-page select:focus {
+  border-color: #F59E0B !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25) !important;
+  background: rgba(15, 23, 42, 0.95) !important;
+}
+
+.login-page select option {
+  background: #0F172A !important;
+  color: #FFFFFF !important;
+}
+
 .form-input::placeholder {
   color: #9CA3AF;
 }

@@ -227,20 +227,21 @@ export default function Register() {
             </div>
           </div>
 
-          {/* 1-Click Fast Demo Pre-Fill Helper */}
+            {/* 1-Click Fast Demo Pre-Fill Helper */}
           {step === 1 && (
             <div style={{
-              background: 'rgba(15, 23, 42, 0.75)',
-              border: '1px dashed rgba(245, 158, 11, 0.4)',
-              borderRadius: 10,
-              padding: '12px 16px',
-              marginBottom: 20
+              background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.75), rgba(15, 23, 42, 0.85))',
+              border: '1px solid rgba(245, 158, 11, 0.35)',
+              borderRadius: 12,
+              padding: '14px 18px',
+              marginBottom: 22,
+              boxShadow: '0 4px 16px rgba(0,0,0,0.25)'
             }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <span style={{ fontSize: 12, fontWeight: 700, color: '#FBBF24', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                <span style={{ fontSize: 12.5, fontWeight: 800, color: '#FBBF24', display: 'flex', alignItems: 'center', gap: 6 }}>
                   ⚡ Quick Demo: Test Instant Auto-Accept
                 </span>
-                <span style={{ fontSize: 11, color: '#9CA3AF' }}>1-Click fill verified masterlist resident</span>
+                <span style={{ fontSize: 11, color: '#94A3B8' }}>1-Click pre-fill verified resident</span>
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                 {HOA_MASTERLIST_DATABASE.slice(0, 4).map(rec => (
@@ -249,29 +250,31 @@ export default function Register() {
                     type="button"
                     onClick={() => handleQuickPreFill(rec)}
                     style={{
-                      padding: '5px 10px',
-                      borderRadius: 6,
-                      background: 'rgba(255,255,255,0.06)',
-                      border: '1px solid rgba(255,255,255,0.15)',
-                      color: '#E5E7EB',
-                      fontSize: 11,
+                      padding: '7px 12px',
+                      borderRadius: 8,
+                      background: 'rgba(15, 23, 42, 0.9)',
+                      border: '1px solid rgba(255, 255, 255, 0.16)',
+                      color: '#FFFFFF',
+                      fontSize: 12,
+                      fontWeight: 600,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 4,
-                      transition: 'all 0.15s ease'
+                      gap: 6,
+                      transition: 'all 0.2s ease',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
                     }}
                     onMouseEnter={e => {
-                      e.currentTarget.style.background = 'rgba(220, 38, 38, 0.3)';
-                      e.currentTarget.style.borderColor = '#DC2626';
+                      e.currentTarget.style.background = '#166534';
+                      e.currentTarget.style.borderColor = '#22C55E';
                     }}
                     onMouseLeave={e => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
-                      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)';
+                      e.currentTarget.style.background = 'rgba(15, 23, 42, 0.9)';
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.16)';
                     }}
                   >
-                    <span>👤 {rec.ownerName}</span>
-                    <span style={{ color: '#FBBF24', fontSize: 10 }}>({rec.block} {rec.lot})</span>
+                    <span style={{ color: '#F8FAFC' }}>👤 {rec.ownerName}</span>
+                    <span style={{ color: '#FBBF24', fontSize: 11, fontWeight: 700 }}>({rec.block} {rec.lot})</span>
                   </button>
                 ))}
               </div>
@@ -279,23 +282,33 @@ export default function Register() {
           )}
 
           {/* Stepper Header */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(17, 24, 39, 0.8)', padding: '10px 16px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.1)', marginBottom: 20 }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            background: 'rgba(15, 23, 42, 0.7)',
+            padding: '12px 18px',
+            borderRadius: 10,
+            border: '1px solid rgba(255,255,255,0.1)',
+            marginBottom: 22
+          }}>
             {[
               { num: 1, label: 'Owner & Property Info' },
               { num: 2, label: liveMatch ? 'Instant Approval ⚡' : 'TCT Document (Optional)' },
               { num: 3, label: 'SMS / OTP' },
               { num: 4, label: 'Account Ready' },
             ].map(s => (
-              <div key={s.num} style={{ display: 'flex', alignItems: 'center', gap: 6, opacity: step >= s.num ? 1 : 0.4 }}>
+              <div key={s.num} style={{ display: 'flex', alignItems: 'center', gap: 6, opacity: step >= s.num ? 1 : 0.45 }}>
                 <div style={{
-                  width: 22, height: 22, borderRadius: '50%',
-                  background: step >= s.num ? '#166534' : 'rgba(255,255,255,0.2)',
-                  color: '#fff', fontSize: 11, fontWeight: 700,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center'
+                  width: 24, height: 24, borderRadius: '50%',
+                  background: step >= s.num ? '#16A34A' : 'rgba(255,255,255,0.15)',
+                  color: '#fff', fontSize: 11, fontWeight: 800,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: step >= s.num ? '0 0 8px rgba(34,197,94,0.4)' : 'none'
                 }}>
                   {s.num}
                 </div>
-                <span style={{ fontSize: 11, fontWeight: 600, color: '#F3F4F6' }}>{s.label}</span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: step >= s.num ? '#F8FAFC' : '#94A3B8' }}>{s.label}</span>
               </div>
             ))}
           </div>
