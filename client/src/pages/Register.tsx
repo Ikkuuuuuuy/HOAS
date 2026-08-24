@@ -19,6 +19,8 @@ export default function Register() {
   
   // Registration Inputs
   const [fullName, setFullName] = useState('');
+  const [birthDate, setBirthDate] = useState('1985-05-14');
+  const [gender, setGender] = useState<'Male' | 'Female'>('Male');
   const [selectedBlock, setSelectedBlock] = useState('Block 3');
   const [selectedLot, setSelectedLot] = useState('Lot 12');
   const [contactNumber, setContactNumber] = useState('');
@@ -26,9 +28,13 @@ export default function Register() {
   const [accountNo, setAccountNo] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  
+  // Valid ID Verification State
+  const [idType, setIdType] = useState("National ID");
+  const [idNumber, setIdNumber] = useState('');
   const [proofDocUrl, setProofDocUrl] = useState('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600');
   const [attachedFile, setAttachedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [previewUrl, setPreviewUrl] = useState<string>('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600');
   const [otpCode, setOtpCode] = useState('123456');
 
   // UI state
@@ -40,33 +46,16 @@ export default function Register() {
 
   const navigate = useNavigate();
 
+  // Calculated Age from Birth Date
+  const computedAge = useMemo(() => {
+    if (!birthDate) return 0;
+    const diff = new Date().getTime() - new Date(birthDate).getTime();
+    return Math.max(0, Math.floor(diff / (365.25 * 24 * 3600 * 1000)));
+  }, [birthDate]);
+
   // Calculated Street & Full Address
   const currentStreet = BLOCK_STREET_MAP[selectedBlock] || 'Maagap Street';
   const fullAddress = `${selectedBlock} ${selectedLot}, ${currentStreet}, Northridge Grove Phase 2, Brgy. Tungkong Mangga, CSJDM, Bulacan`;
-
-  // Real-time live masterlist match detector
-  const liveMatch = useMemo(() => {
-    return matchMasterlistRecord({
-      fullName,
-      block: selectedBlock,
-      lot: selectedLot,
-      accountNo,
-      phone: contactNumber,
-    });
-  }, [fullName, selectedBlock, selectedLot, accountNo, contactNumber]);
-
-  // Demo 1-Click Fast Pre-Fill helper
-  const handleQuickPreFill = (rec: MasterlistRecord) => {
-    setFullName(rec.ownerName);
-    setSelectedBlock(rec.block);
-    setSelectedLot(rec.lot);
-    setContactNumber(rec.phone);
-    setEmail(rec.email);
-    setAccountNo(rec.accountNo);
-    setPassword('Pass123!');
-    setConfirmPassword('Pass123!');
-    setError('');
-  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -83,7 +72,24 @@ export default function Register() {
     }
   };
 
-  const handleNextStep1 = async (e: React.FormEvent) => {
+  const handleQuickPreFill = (rec: MasterlistRecord) => {
+    setFullName(rec.ownerName);
+    setSelectedBlock(rec.block);
+    setSelectedLot(rec.lot);
+    setBirthDate(rec.birthDate || '1985-05-14');
+    setGender((rec.gender as any) || 'Male');
+    setContactNumber(rec.phone);
+    setEmail(rec.email);
+    setPassword('Resident@1234');
+    setConfirmPassword('Resident@1234');
+    setAccountNo(rec.accountNo);
+    setIdType(rec.idType || 'National ID');
+    setProofDocUrl(rec.idPhotoUrl || 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600');
+    setPreviewUrl(rec.idPhotoUrl || 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600');
+    setError('');
+  };
+
+  const handleNextStep1 = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -92,19 +98,40 @@ export default function Register() {
       return;
     }
 
-    // Check if user has an instant masterlist match
-    if (liveMatch) {
-      // Direct Instant Auto-Approval!
-      await performRegistrationSubmit(true, liveMatch);
-    } else {
-      // Unlisted / New Buyer -> Proceed to TCT upload for manual HOA review
-      setStep(2);
+    if (computedAge < 18) {
+      setError('Homeowner applicant must be at least 18 years old to register.');
+      return;
     }
+
+    // Move to Mandatory ID Upload Step
+    setStep(2);
   };
 
-  const handleNextStep2 = (e: React.FormEvent) => {
+  const handleNextStep2 = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStep(3);
+    setError('');
+
+    if (!proofDocUrl && !attachedFile) {
+      setError('Please attach a clear picture of your valid Government ID for verification.');
+      return;
+    }
+
+    // Multi-factor verification against masterlist upon secure submission
+    const verifiedMatch = matchMasterlistRecord({
+      fullName,
+      block: selectedBlock,
+      lot: selectedLot,
+      birthDate,
+      gender,
+      phone: contactNumber,
+      accountNo,
+    });
+
+    if (verifiedMatch) {
+      await performRegistrationSubmit(true, verifiedMatch);
+    } else {
+      await performRegistrationSubmit(false, null);
+    }
   };
 
   const performRegistrationSubmit = async (autoApproveExpected: boolean, match?: MasterlistRecord | null) => {
@@ -117,53 +144,49 @@ export default function Register() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           fullName,
+          birthDate,
+          gender,
+          age: computedAge,
+          idType,
+          idNumber,
           address: fullAddress,
-          block: selectedBlock,
-          lot: selectedLot,
           contactNumber,
           email,
-          accountNo,
+          accountNo: match ? match.accountNo : accountNo,
           password,
-          proofDocUrl,
-          otpCode: otpCode || '123456',
+          proofDocUrl: previewUrl || proofDocUrl,
+          isAutoAccepted: autoApproveExpected,
         }),
       });
 
-      const text = await res.text();
-      let data: any = null;
-      try { data = text ? JSON.parse(text) : null; } catch { data = null; }
-
-      if (res.ok && data) {
-        setSuccessMsg(data.message);
-        setIsAutoAccepted(data.autoAccepted || autoApproveExpected);
-        setMatchedRecord(data.matchedRecord || match || null);
-        setStep(4);
-        return;
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || 'Registration failed.');
       }
 
-      // Fallback for client serverless mode
       setSuccessMsg(
         autoApproveExpected
-          ? '🎉 Instant Auto-Verification Successful! Verified against NRG PH2 HOA Official Masterlist. Your account is immediately activated!'
-          : 'Registration submitted! Your application is in the queue for manual HOA Board review.'
+          ? 'Identity & Property Confirmed! Your Homeowner Account has been immediately activated via HOA Masterlist Automated Sync.'
+          : 'Registration Submitted! Your account application and uploaded ID are now under review by the HOA Board.'
       );
       setIsAutoAccepted(autoApproveExpected);
       setMatchedRecord(match || null);
       setStep(4);
     } catch (err: any) {
       // Local fallback
-      setSuccessMsg('Registration successfully processed with Instant Auto-Accept!');
-      setIsAutoAccepted(true);
+      setSuccessMsg(
+        autoApproveExpected
+          ? 'Identity & Property Confirmed! Your Homeowner Account has been immediately activated.'
+          : 'Registration Submitted! Your account application and uploaded ID are now under review by the HOA Board.'
+      );
+      setIsAutoAccepted(autoApproveExpected);
+      setMatchedRecord(match || null);
       setStep(4);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleManualRegisterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await performRegistrationSubmit(false, null);
-  };
 
   return (
     <div className="login-page">
@@ -293,10 +316,9 @@ export default function Register() {
             marginBottom: 22
           }}>
             {[
-              { num: 1, label: 'Owner & Property Info' },
-              { num: 2, label: liveMatch ? 'Instant Approval ⚡' : 'TCT Document (Optional)' },
-              { num: 3, label: 'SMS / OTP' },
-              { num: 4, label: 'Account Ready' },
+              { num: 1, label: '1. Personal & Property Info' },
+              { num: 2, label: '2. Valid ID Verification' },
+              { num: 4, label: '3. Registration Status' },
             ].map(s => (
               <div key={s.num} style={{ display: 'flex', alignItems: 'center', gap: 6, opacity: step >= s.num ? 1 : 0.45 }}>
                 <div style={{
@@ -306,7 +328,7 @@ export default function Register() {
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   boxShadow: step >= s.num ? '0 0 8px rgba(34,197,94,0.4)' : 'none'
                 }}>
-                  {s.num}
+                  {s.num === 4 ? 3 : s.num}
                 </div>
                 <span style={{ fontSize: 12, fontWeight: 700, color: step >= s.num ? '#F8FAFC' : '#94A3B8' }}>{s.label}</span>
               </div>
@@ -320,7 +342,7 @@ export default function Register() {
             </div>
           )}
 
-          {/* ── STEP 1: PERSONAL & PROPERTY DETAILS ── */}
+          {/* ── STEP 1: PERSONAL, DEMOGRAPHICS & PROPERTY DETAILS ── */}
           {step === 1 && (
             <form onSubmit={handleNextStep1} className="login-form">
               
@@ -337,6 +359,51 @@ export default function Register() {
                   onChange={e => setFullName(e.target.value)}
                   required
                 />
+              </div>
+
+              {/* Birth Date, Age, Sex Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 0.8fr 1fr', gap: 12 }}>
+                <div>
+                  <label className="form-label">
+                    Date of Birth <span className="req-star">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    className="form-input"
+                    value={birthDate}
+                    onChange={e => setBirthDate(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="form-label">
+                    Age <span className="req-star">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    className="form-input"
+                    value={computedAge || ''}
+                    readOnly
+                    placeholder="18+"
+                    style={{ background: 'rgba(255,255,255,0.05)', color: '#9CA3AF', cursor: 'not-allowed' }}
+                  />
+                </div>
+
+                <div>
+                  <label className="form-label">
+                    Sex / Gender <span className="req-star">*</span>
+                  </label>
+                  <select
+                    className="form-input"
+                    value={gender}
+                    onChange={e => setGender(e.target.value as any)}
+                    required
+                  >
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </div>
               </div>
 
               {/* Block, Lot, Street Grid */}
@@ -383,57 +450,7 @@ export default function Register() {
                 </div>
               </div>
 
-              {/* LIVE MASTERLIST MATCH STATUS BANNER */}
-              {liveMatch ? (
-                <div style={{
-                  background: 'linear-gradient(135deg, rgba(22, 101, 52, 0.35), rgba(6, 78, 59, 0.25))',
-                  border: '1.5px solid #22C55E',
-                  borderRadius: 10,
-                  padding: '14px 16px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 14,
-                  boxShadow: '0 0 15px rgba(34, 197, 94, 0.2)',
-                  animation: 'fadeInUp 0.3s ease'
-                }}>
-                  <div style={{ fontSize: 32 }}>⚡</div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{ background: '#22C55E', color: '#052E16', fontSize: 10, fontWeight: 900, padding: '2px 6px', borderRadius: 4 }}>
-                        OFFICIAL HOA MASTERLIST MATCH
-                      </span>
-                      <span style={{ color: '#86EFAC', fontSize: 12, fontWeight: 700 }}>
-                        {liveMatch.accountNo}
-                      </span>
-                    </div>
-                    <div style={{ fontSize: 13, fontWeight: 800, color: '#FFFFFF', marginTop: 2 }}>
-                      Verified Property: {liveMatch.ownerName} ({liveMatch.block} {liveMatch.lot}, {liveMatch.street})
-                    </div>
-                    <div style={{ fontSize: 11, color: '#BBF7D0', marginTop: 2 }}>
-                      ✓ Auto-Accept Active: You will be <strong>immediately activated</strong> without waiting for manual admin approval!
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div style={{
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: 8,
-                  padding: '10px 14px',
-                  fontSize: 12,
-                  color: '#9CA3AF',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8
-                }}>
-                  <span>🔍</span>
-                  <span>
-                    Auto-Verification Active: Matching your Name + Block + Lot against 312 pre-synced Phase 2 property records.
-                  </span>
-                </div>
-              )}
-
-              {/* Contact, Email, HOA Account # */}
+              {/* Contact & Email */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
                   <label className="form-label">
@@ -496,29 +513,20 @@ export default function Register() {
                 </div>
               </div>
 
-              {/* Submit Button */}
+              {/* Next Button */}
               <button
                 type="submit"
-                disabled={isLoading}
                 style={{
                   width: '100%', padding: '14px', borderRadius: 8,
-                  background: liveMatch
-                    ? 'linear-gradient(135deg, #166534, #15803D)'
-                    : '#DC2626',
+                  background: 'linear-gradient(135deg, #DC2626, #B91C1C)',
                   color: '#FFFFFF',
                   border: 'none', cursor: 'pointer',
                   fontSize: 15, fontWeight: 800, marginTop: 10,
-                  boxShadow: liveMatch ? '0 4px 16px rgba(34,197,94,0.4)' : '0 4px 16px rgba(220,38,38,0.4)',
+                  boxShadow: '0 4px 16px rgba(220,38,38,0.4)',
                   display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8
                 }}
               >
-                {isLoading ? (
-                  <span>Processing...</span>
-                ) : liveMatch ? (
-                  <span>⚡ Instant Auto-Accept & Activate Account →</span>
-                ) : (
-                  <span>Proceed to Verification (Unlisted Owner / Tenant) →</span>
-                )}
+                <span>Proceed to Valid ID Verification →</span>
               </button>
 
               <div style={{ textAlign: 'center', marginTop: 12, fontSize: 13, color: '#9CA3AF' }}>
@@ -527,98 +535,159 @@ export default function Register() {
             </form>
           )}
 
-          {/* ── STEP 2: MANUAL TCT / PROOF UPLOAD (FOR UNLISTED OWNERS / TENANTS) ── */}
+          {/* ── STEP 2: MANDATORY VALID GOVERNMENT ID UPLOAD ── */}
           {step === 2 && (
             <form onSubmit={handleNextStep2} className="login-form">
-              <div style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)', padding: 14, borderRadius: 8, marginBottom: 16 }}>
-                <h3 style={{ fontSize: 14, fontWeight: 700, color: '#FBBF24', margin: '0 0 4px 0' }}>
-                  📋 Unlisted Property: Document Verification
-                </h3>
-                <p style={{ fontSize: 12, color: '#E5E7EB', margin: 0 }}>
-                  We could not find an exact match in the pre-verified masterlist. Please upload your Transfer Certificate of Title (TCT), Deed of Sale, or latest Utility Bill for 1-click review by the HOA Board.
+              <div style={{
+                background: 'rgba(30, 41, 59, 0.75)',
+                border: '1px solid rgba(245, 158, 11, 0.35)',
+                padding: '16px 18px',
+                borderRadius: 12,
+                marginBottom: 18
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#FBBF24', fontSize: 13.5, fontWeight: 800, marginBottom: 4 }}>
+                  <span>🛡️</span>
+                  <span>Mandatory Government ID Verification</span>
+                </div>
+                <p style={{ fontSize: 12, color: '#E2E8F0', margin: 0, lineHeight: 1.5 }}>
+                  To ensure community safety and prevent unauthorized registrations, please upload a clear, unblurred picture of a government-issued ID matching your full name: <strong>{fullName || 'Applicant'}</strong>.
                 </p>
               </div>
 
+              <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 12 }}>
+                <div>
+                  <label className="form-label">
+                    Valid Government ID Type <span className="req-star">*</span>
+                  </label>
+                  <select
+                    className="form-input"
+                    value={idType}
+                    onChange={e => setIdType(e.target.value)}
+                    required
+                  >
+                    <option value="National ID">National ID (PhilSys)</option>
+                    <option value="Driver's License">Driver's License (LTO)</option>
+                    <option value="Philippine Passport">Philippine Passport (DFA)</option>
+                    <option value="UMID / SSS">UMID / SSS Card</option>
+                    <option value="Postal ID">Postal ID (PhilPost)</option>
+                    <option value="Voter's ID">Voter's ID / Certificate (COMELEC)</option>
+                    <option value="PRC License">PRC Professional ID</option>
+                    <option value="Senior Citizen ID">Senior Citizen ID</option>
+                    <option value="Barangay ID">Barangay 174 Resident ID</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="form-label">ID Serial Number (Optional)</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="e.g. 1234-5678-9012"
+                    value={idNumber}
+                    onChange={e => setIdNumber(e.target.value)}
+                  />
+                </div>
+              </div>
+
               <div>
-                <label className="form-label">Attach Proof of Ownership / Tenancy</label>
+                <label className="form-label">
+                  Upload Clear Picture of Valid ID <span className="req-star">*</span>
+                </label>
                 <input
                   type="file"
-                  id="tct-file-upload"
-                  accept="image/*,.pdf,.doc,.docx"
+                  id="valid-id-file-upload"
+                  accept="image/*"
                   onChange={handleFileChange}
                   style={{ display: 'none' }}
                 />
+                
                 <label
-                  htmlFor="tct-file-upload"
+                  htmlFor="valid-id-file-upload"
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    padding: '28px 18px',
-                    borderRadius: 10,
+                    padding: '24px 18px',
+                    borderRadius: 12,
                     background: 'rgba(15, 23, 42, 0.9)',
-                    border: attachedFile ? '2px solid #22C55E' : '2px dashed rgba(220, 38, 38, 0.6)',
+                    border: previewUrl ? '2px solid #22C55E' : '2px dashed rgba(245, 158, 11, 0.5)',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
                     textAlign: 'center',
                   }}
                 >
-                  <div style={{ fontSize: 36, marginBottom: 8 }}>{attachedFile ? '✅' : '📁'}</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: '#FFF' }}>
-                    {attachedFile ? attachedFile.name : 'Click to Upload Document File'}
-                  </div>
-                  <div style={{ fontSize: 12, color: '#9CA3AF', marginTop: 4 }}>
-                    {attachedFile
-                      ? `${(attachedFile.size / 1024 / 1024).toFixed(2)} MB • File Ready for Admin Verification`
-                      : 'Upload TCT Title, Contract to Sell, or Meralco/Water Bill'}
-                  </div>
+                  {previewUrl ? (
+                    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <img
+                        src={previewUrl}
+                        alt="Valid ID Preview"
+                        style={{ maxHeight: 180, maxWidth: '100%', objectFit: 'contain', borderRadius: 8, border: '1px solid rgba(255,255,255,0.2)', marginBottom: 12 }}
+                      />
+                      <div style={{ fontSize: 13, fontWeight: 800, color: '#86EFAC' }}>
+                        ✓ {attachedFile ? attachedFile.name : 'Sample ID Attached'} — Click to Replace Picture
+                      </div>
+                      <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 3 }}>
+                        Ensure photo, full name, and birth date are crisp and clearly legible.
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div style={{ fontSize: 38, marginBottom: 8 }}>📷</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#FFF' }}>
+                        Click to Snap Photo or Upload Government ID
+                      </div>
+                      <div style={{ fontSize: 12, color: '#9CA3AF', marginTop: 4 }}>
+                        Supports JPG, PNG, WEBP (Max 10MB)
+                      </div>
+                    </>
+                  )}
                 </label>
               </div>
 
-              <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
-                <button type="button" onClick={() => setStep(1)} style={{ flex: 1, padding: 12, borderRadius: 8, background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', fontWeight: 600, cursor: 'pointer' }}>
-                  ← Back
-                </button>
-                <button type="submit" style={{ flex: 1, padding: 12, borderRadius: 8, background: '#DC2626', color: '#fff', border: 'none', fontWeight: 700, cursor: 'pointer' }}>
-                  Next: OTP Verification →
-                </button>
-              </div>
-            </form>
-          )}
-
-          {/* ── STEP 3: SMS/EMAIL OTP ── */}
-          {step === 3 && (
-            <form onSubmit={handleManualRegisterSubmit} className="login-form">
-              <div style={{ background: 'rgba(22,101,52,0.2)', border: '1px solid rgba(34,197,94,0.4)', padding: 14, borderRadius: 8, marginBottom: 16 }}>
-                <h3 style={{ fontSize: 14, fontWeight: 700, color: '#6EE7B7', margin: '0 0 4px 0' }}>📱 Security Verification OTP</h3>
-                <p style={{ fontSize: 12, color: '#E5E7EB', margin: 0 }}>
-                  A 6-digit confirmation PIN has been generated for <strong>{email}</strong> and <strong>{contactNumber}</strong>. Enter code <code>123456</code> to verify.
-                </p>
+              <div style={{
+                background: 'rgba(15, 23, 42, 0.6)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                padding: '10px 14px',
+                borderRadius: 8,
+                fontSize: 11.5,
+                color: '#94A3B8',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8
+              }}>
+                <span>🔒</span>
+                <span>
+                  <strong>Data Privacy Standard:</strong> Your ID photo is securely archived in the Super Admin Security Vault and used solely for homeowner verification.
+                </span>
               </div>
 
-              <div>
-                <label className="form-label">
-                  Enter 6-Digit Code <span className="req-star">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="form-input"
-                  style={{ textAlign: 'center', letterSpacing: '8px', fontSize: '20px', fontWeight: 800 }}
-                  maxLength={6}
-                  placeholder="123456"
-                  value={otpCode}
-                  onChange={e => setOtpCode(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
-                <button type="button" onClick={() => setStep(2)} style={{ flex: 1, padding: 12, borderRadius: 8, background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', fontWeight: 600, cursor: 'pointer' }}>
-                  ← Back
+              <div style={{ display: 'flex', gap: 12, marginTop: 12 }}>
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  style={{
+                    flex: 1, padding: 12, borderRadius: 8,
+                    background: 'rgba(255,255,255,0.1)', color: '#fff',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    fontWeight: 600, cursor: 'pointer'
+                  }}
+                >
+                  ← Back to Details
                 </button>
-                <button type="submit" disabled={isLoading} style={{ flex: 1, padding: 12, borderRadius: 8, background: '#DC2626', color: '#fff', border: 'none', fontWeight: 700, cursor: 'pointer' }}>
-                  {isLoading ? 'Submitting...' : '✓ Complete Registration'}
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  style={{
+                    flex: 2, padding: 12, borderRadius: 8,
+                    background: 'linear-gradient(135deg, #15803D, #16A34A)',
+                    color: '#fff', border: 'none',
+                    fontWeight: 800, cursor: isLoading ? 'not-allowed' : 'pointer',
+                    boxShadow: '0 4px 16px rgba(22,163,74,0.4)'
+                  }}
+                >
+                  {isLoading ? 'Verifying & Submitting...' : '✓ Complete Verification & Submit'}
                 </button>
               </div>
             </form>

@@ -675,6 +675,11 @@ export interface MasterlistRecord {
   lot: string;
   street: string;
   ownerName: string;
+  birthDate?: string;
+  gender?: 'Male' | 'Female';
+  age?: number;
+  idType?: string;
+  idPhotoUrl?: string;
   phone: string;
   email: string;
   ownershipType: 'Turned-over Owner' | 'Registered Buyer' | 'Co-Owner';
@@ -684,51 +689,53 @@ export interface MasterlistRecord {
 
 export const HOA_MASTERLIST_DATABASE: MasterlistRecord[] = [
   // ── Block 1 (Magiting Street) ──
-  { id: 'ml-01', accountNo: 'NRG2-B01L02', block: 'Block 1', lot: 'Lot 02', street: 'Magiting Street', ownerName: 'Pedro Penduko', phone: '0922-345-6789', email: 'pedro.penduko@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-03-15', status: 'verified_active' },
-  { id: 'ml-02', accountNo: 'NRG2-B01L08', block: 'Block 1', lot: 'Lot 08', street: 'Magiting Street', ownerName: 'Anne Gregori', phone: '0919-334-8811', email: 'anne.gregori@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-04-10', status: 'verified_active' },
-  { id: 'ml-03', accountNo: 'NRG2-B01L14', block: 'Block 1', lot: 'Lot 14', street: 'Magiting Street', ownerName: 'Ronalyn Villarte', phone: '0919-334-8812', email: 'ronalyn.villarte@gmail.com', ownershipType: 'Registered Buyer', turnoverDate: '2024-05-20', status: 'verified_active' },
+  { id: 'ml-01', accountNo: 'NRG2-B01L02', block: 'Block 1', lot: 'Lot 02', street: 'Magiting Street', ownerName: 'Pedro Penduko', birthDate: '1982-11-20', gender: 'Male', age: 43, idType: 'National ID', idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0922-345-6789', email: 'pedro.penduko@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-03-15', status: 'verified_active' },
+  { id: 'ml-02', accountNo: 'NRG2-B01L08', block: 'Block 1', lot: 'Lot 08', street: 'Magiting Street', ownerName: 'Anne Gregori', birthDate: '1990-08-22', gender: 'Female', age: 35, idType: 'Passport', idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0919-334-8811', email: 'anne.gregori@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-04-10', status: 'verified_active' },
+  { id: 'ml-03', accountNo: 'NRG2-B01L14', block: 'Block 1', lot: 'Lot 14', street: 'Magiting Street', ownerName: 'Ronalyn Villarte', birthDate: '1993-04-10', gender: 'Female', age: 33, idType: 'UMID', idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0919-334-8812', email: 'ronalyn.villarte@gmail.com', ownershipType: 'Registered Buyer', turnoverDate: '2024-05-20', status: 'verified_active' },
 
   // ── Block 2 (Maagap Street) ──
-  { id: 'ml-04', accountNo: 'NRG2-B02L01', block: 'Block 2', lot: 'Lot 01', street: 'Maagap Street', ownerName: 'Rey Mar Villanueva', phone: '0917-882-9401', email: 'president.reymar@nrgph2.org', ownershipType: 'Turned-over Owner', turnoverDate: '2023-11-01', status: 'verified_active' },
-  { id: 'ml-05', accountNo: 'NRG2-B02L06', block: 'Block 2', lot: 'Lot 06', street: 'Maagap Street', ownerName: 'Jemma Alamillo', phone: '0917-445-9922', email: 'jemma.alamillo@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-01-18', status: 'verified_active' },
+  { id: 'ml-04', accountNo: 'NRG2-B02L01', block: 'Block 2', lot: 'Lot 01', street: 'Maagap Street', ownerName: 'Rey Mar Villanueva', birthDate: '1979-06-15', gender: 'Male', age: 47, idType: "Driver's License", idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0917-882-9401', email: 'president.reymar@nrgph2.org', ownershipType: 'Turned-over Owner', turnoverDate: '2023-11-01', status: 'verified_active' },
+  { id: 'ml-05', accountNo: 'NRG2-B02L06', block: 'Block 2', lot: 'Lot 06', street: 'Maagap Street', ownerName: 'Jemma Alamillo', birthDate: '1988-12-05', gender: 'Female', age: 37, idType: 'SSS / UMID', idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0917-445-9922', email: 'jemma.alamillo@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-01-18', status: 'verified_active' },
 
   // ── Block 3 (Maagap Street) ──
-  { id: 'ml-06', accountNo: 'NRG2-B03L12', block: 'Block 3', lot: 'Lot 12', street: 'Maagap Street', ownerName: 'Juan Dela Cruz', phone: '0917-123-4567', email: 'juan.delacruz@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2023-12-10', status: 'verified_active' },
-  { id: 'ml-07', accountNo: 'NRG2-B03L18', block: 'Block 3', lot: 'Lot 18', street: 'Maagap Street', ownerName: 'Jocelyn Selanova', phone: '0920-881-2233', email: 'jocelyn.selanova@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-02-14', status: 'verified_active' },
+  { id: 'ml-06', accountNo: 'NRG2-B03L12', block: 'Block 3', lot: 'Lot 12', street: 'Maagap Street', ownerName: 'Juan Dela Cruz', birthDate: '1980-03-24', gender: 'Male', age: 46, idType: "Driver's License", idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0917-123-4567', email: 'juan.delacruz@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2023-12-10', status: 'verified_active' },
+  { id: 'ml-07', accountNo: 'NRG2-B03L18', block: 'Block 3', lot: 'Lot 18', street: 'Maagap Street', ownerName: 'Jocelyn Selanova', birthDate: '1986-09-18', gender: 'Female', age: 39, idType: 'Voter ID', idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0920-881-2233', email: 'jocelyn.selanova@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-02-14', status: 'verified_active' },
 
   // ── Block 4 (Mabuti Street) ──
-  { id: 'ml-08', accountNo: 'NRG2-B04L05', block: 'Block 4', lot: 'Lot 05', street: 'Mabuti Street', ownerName: 'Maria Santos', phone: '0918-234-5678', email: 'maria.santos@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-02-28', status: 'verified_active' },
-  { id: 'ml-09', accountNo: 'NRG2-B04L11', block: 'Block 4', lot: 'Lot 11', street: 'Mabuti Street', ownerName: 'Melinda Domingo', phone: '0918-662-7744', email: 'melinda.domingo@gmail.com', ownershipType: 'Registered Buyer', turnoverDate: '2024-06-05', status: 'verified_active' },
+  { id: 'ml-08', accountNo: 'NRG2-B04L05', block: 'Block 4', lot: 'Lot 05', street: 'Mabuti Street', ownerName: 'Maria Santos', birthDate: '1975-01-20', gender: 'Female', age: 51, idType: 'PRC ID', idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0918-234-5678', email: 'maria.santos@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-02-28', status: 'verified_active' },
+  { id: 'ml-09', accountNo: 'NRG2-B04L11', block: 'Block 4', lot: 'Lot 11', street: 'Mabuti Street', ownerName: 'Melinda Domingo', birthDate: '1992-07-14', gender: 'Female', age: 34, idType: 'National ID', idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0918-662-7744', email: 'melinda.domingo@gmail.com', ownershipType: 'Registered Buyer', turnoverDate: '2024-06-05', status: 'verified_active' },
 
   // ── Block 5 (Mabuti Street) ──
-  { id: 'ml-10', accountNo: 'NRG2-B05L09', block: 'Block 5', lot: 'Lot 09', street: 'Mabuti Street', ownerName: 'Cezar Climaco', phone: '0918-554-1102', email: 'vp.cezar@nrgph2.org', ownershipType: 'Turned-over Owner', turnoverDate: '2023-10-15', status: 'verified_active' },
-  { id: 'ml-11', accountNo: 'NRG2-B05L15', block: 'Block 5', lot: 'Lot 15', street: 'Mabuti Street', ownerName: 'Alma Miralles', phone: '0922-339-4455', email: 'alma.miralles@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-04-22', status: 'verified_active' },
+  { id: 'ml-10', accountNo: 'NRG2-B05L09', block: 'Block 5', lot: 'Lot 09', street: 'Mabuti Street', ownerName: 'Cezar Climaco', birthDate: '1981-10-30', gender: 'Male', age: 44, idType: 'Passport', idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0918-554-1102', email: 'vp.cezar@nrgph2.org', ownershipType: 'Turned-over Owner', turnoverDate: '2023-10-15', status: 'verified_active' },
+  { id: 'ml-11', accountNo: 'NRG2-B05L15', block: 'Block 5', lot: 'Lot 15', street: 'Mabuti Street', ownerName: 'Alma Miralles', birthDate: '1987-05-19', gender: 'Female', age: 39, idType: 'Postal ID', idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0922-339-4455', email: 'alma.miralles@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-04-22', status: 'verified_active' },
 
   // ── Block 6 (Magiting Street) ──
-  { id: 'ml-12', accountNo: 'NRG2-B06L03', block: 'Block 6', lot: 'Lot 03', street: 'Magiting Street', ownerName: 'Alma Valdezco', phone: '0917-123-4567', email: 'treasurer.alma@nrgph2.org', ownershipType: 'Turned-over Owner', turnoverDate: '2023-09-20', status: 'verified_active' },
-  { id: 'ml-13', accountNo: 'NRG2-B06L07', block: 'Block 6', lot: 'Lot 07', street: 'Magiting Street', ownerName: 'Ofelia Esloyo', phone: '0917-551-8866', email: 'ofelia.esloyo@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-03-01', status: 'verified_active' },
+  { id: 'ml-12', accountNo: 'NRG2-B06L03', block: 'Block 6', lot: 'Lot 03', street: 'Magiting Street', ownerName: 'Alma Valdezco', birthDate: '1978-08-08', gender: 'Female', age: 48, idType: 'UMID', idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0917-123-4567', email: 'treasurer.alma@nrgph2.org', ownershipType: 'Turned-over Owner', turnoverDate: '2023-09-20', status: 'verified_active' },
+  { id: 'ml-13', accountNo: 'NRG2-B06L07', block: 'Block 6', lot: 'Lot 07', street: 'Magiting Street', ownerName: 'Ofelia Esloyo', birthDate: '1983-02-14', gender: 'Female', age: 43, idType: 'National ID', idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0917-551-8866', email: 'ofelia.esloyo@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-03-01', status: 'verified_active' },
 
   // ── Block 7 (Maagap Street) ──
-  { id: 'ml-14', accountNo: 'NRG2-B07L08', block: 'Block 7', lot: 'Lot 08', street: 'Maagap Street', ownerName: 'Ricardo Dalisay', phone: '0917-888-9999', email: 'resident@palmera-hoa.com', ownershipType: 'Turned-over Owner', turnoverDate: '2023-08-12', status: 'verified_active' },
-  { id: 'ml-15', accountNo: 'NRG2-B07L14', block: 'Block 7', lot: 'Lot 14', street: 'Maagap Street', ownerName: 'Rina Dorate', phone: '0906-443-1177', email: 'rina.dorate@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-01-30', status: 'verified_active' },
+  { id: 'ml-14', accountNo: 'NRG2-B07L08', block: 'Block 7', lot: 'Lot 08', street: 'Maagap Street', ownerName: 'Ricardo Dalisay', birthDate: '1985-05-14', gender: 'Male', age: 41, idType: "Driver's License", idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0917-888-9999', email: 'resident@palmera-hoa.com', ownershipType: 'Turned-over Owner', turnoverDate: '2023-08-12', status: 'verified_active' },
+  { id: 'ml-15', accountNo: 'NRG2-B07L14', block: 'Block 7', lot: 'Lot 14', street: 'Maagap Street', ownerName: 'Rina Dorate', birthDate: '1991-11-25', gender: 'Female', age: 34, idType: 'Postal ID', idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0906-443-1177', email: 'rina.dorate@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-01-30', status: 'verified_active' },
 
   // ── Block 8 (Mapayapa Street) ──
-  { id: 'ml-16', accountNo: 'NRG2-B08L14', block: 'Block 8', lot: 'Lot 14', street: 'Mapayapa Street', ownerName: 'Ana Elena Reyes', phone: '0905-456-7890', email: 'ana.reyes@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-02-10', status: 'verified_active' },
-  { id: 'ml-17', accountNo: 'NRG2-B08L20', block: 'Block 8', lot: 'Lot 20', street: 'Mapayapa Street', ownerName: 'Patrick Gariando', phone: '0922-114-8802', email: 'patrick.gariando@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-05-11', status: 'verified_active' },
+  { id: 'ml-16', accountNo: 'NRG2-B08L14', block: 'Block 8', lot: 'Lot 14', street: 'Mapayapa Street', ownerName: 'Ana Elena Reyes', birthDate: '1984-04-03', gender: 'Female', age: 42, idType: 'PRC ID', idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0905-456-7890', email: 'ana.reyes@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-02-10', status: 'verified_active' },
+  { id: 'ml-17', accountNo: 'NRG2-B08L20', block: 'Block 8', lot: 'Lot 20', street: 'Mapayapa Street', ownerName: 'Patrick Gariando', birthDate: '1989-07-29', gender: 'Male', age: 37, idType: "Driver's License", idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0922-114-8802', email: 'patrick.gariando@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-05-11', status: 'verified_active' },
 
   // ── Block 9 (Mapayapa Street) ──
-  { id: 'ml-18', accountNo: 'NRG2-B09L05', block: 'Block 9', lot: 'Lot 05', street: 'Mapayapa Street', ownerName: 'Jennerfer Barlaan', phone: '0918-994-5599', email: 'jennerfer.barlaan@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-03-25', status: 'verified_active' },
-  { id: 'ml-19', accountNo: 'NRG2-B09L10', block: 'Block 9', lot: 'Lot 10', street: 'Mapayapa Street', ownerName: 'Melody Matienzo', phone: '0917-881-3301', email: 'melody.matienzo@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-06-18', status: 'verified_active' },
+  { id: 'ml-18', accountNo: 'NRG2-B09L05', block: 'Block 9', lot: 'Lot 05', street: 'Mapayapa Street', ownerName: 'Jennerfer Barlaan', birthDate: '1986-12-12', gender: 'Female', age: 39, idType: 'National ID', idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0918-994-5599', email: 'jennerfer.barlaan@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-03-25', status: 'verified_active' },
+  { id: 'ml-19', accountNo: 'NRG2-B09L10', block: 'Block 9', lot: 'Lot 10', street: 'Mapayapa Street', ownerName: 'Melody Matienzo', birthDate: '1994-03-17', gender: 'Female', age: 32, idType: 'Passport', idPhotoUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600', phone: '0917-881-3301', email: 'melody.matienzo@gmail.com', ownershipType: 'Turned-over Owner', turnoverDate: '2024-06-18', status: 'verified_active' },
 ];
 
 /**
- * Intelligent Masterlist Matcher Algorithm
- * Checks if applicant matches official HOA property records
+ * Intelligent Multi-Factor Masterlist Matcher Algorithm
+ * Checks if applicant matches official HOA property records securely
  */
 export function matchMasterlistRecord(params: {
   fullName: string;
   block?: string;
   lot?: string;
+  birthDate?: string;
+  gender?: string;
   accountNo?: string;
   phone?: string;
 }): MasterlistRecord | null {
@@ -737,6 +744,8 @@ export function matchMasterlistRecord(params: {
   const normLot = (params.lot || '').replace(/[^0-9]/g, '');
   const normAccount = (params.accountNo || '').trim().toLowerCase();
   const normPhone = (params.phone || '').replace(/[^0-9]/g, '');
+  const normGender = (params.gender || '').trim().toLowerCase();
+  const normDOB = (params.birthDate || '').trim();
 
   if (!normName && !normBlock && !normLot && !normAccount && !normPhone) return null;
 
@@ -750,8 +759,10 @@ export function matchMasterlistRecord(params: {
     const recordLot = record.lot.replace(/[^0-9]/g, '');
     const recordName = record.ownerName.trim().toLowerCase();
     const recordPhone = record.phone.replace(/[^0-9]/g, '');
+    const recordGender = (record.gender || '').trim().toLowerCase();
+    const recordDOB = (record.birthDate || '').trim();
 
-    // 2. Block + Lot + Name Match (Exact or Substring)
+    // 2. Multi-factor Check: Block + Lot match
     const blockMatch = normBlock && recordBlock === normBlock;
     const lotMatch = normLot && (recordLot === normLot || parseInt(recordLot) === parseInt(normLot));
     
@@ -763,15 +774,16 @@ export function matchMasterlistRecord(params: {
       normName.split(' ').filter(w => w.length > 2).every(w => recordName.includes(w))
     );
 
+    // Gender check (if provided in both, must match)
+    const genderMatch = !normGender || !recordGender || normGender === recordGender;
+
+    // Date of birth check (if provided in both, must match year or full date)
+    const dobMatch = !normDOB || !recordDOB || normDOB === recordDOB || normDOB.slice(0, 4) === recordDOB.slice(0, 4);
+
     // Phone match
     const phoneMatch = normPhone.length >= 7 && (recordPhone.includes(normPhone) || normPhone.includes(recordPhone));
 
-    if (blockMatch && lotMatch && (nameMatch || phoneMatch)) {
-      return true;
-    }
-
-    // 3. Exact Name + Block Match
-    if (nameMatch && blockMatch) {
+    if (blockMatch && lotMatch && (nameMatch || phoneMatch) && genderMatch && dobMatch) {
       return true;
     }
 

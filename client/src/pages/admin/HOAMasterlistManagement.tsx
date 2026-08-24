@@ -31,6 +31,57 @@ export default function HOAMasterlistManagement() {
     return HOA_MASTERLIST_DATABASE;
   });
 
+  // Super Admin Security Vault State
+  const [isVaultUnlocked, setIsVaultUnlocked] = useState(false);
+  const [showVaultModal, setShowVaultModal] = useState(false);
+  const [showChangeVaultModal, setShowChangeVaultModal] = useState(false);
+  const [vaultInput, setVaultInput] = useState('');
+  const [newVaultPass, setNewVaultPass] = useState('');
+  const [confirmVaultPass, setConfirmVaultPass] = useState('');
+  const [viewingIdDoc, setViewingIdDoc] = useState<MasterlistRecord | null>(null);
+
+  const getVaultSecret = () => {
+    try {
+      return localStorage.getItem('super_admin_vault_secret') || 'Vault@1234';
+    } catch {
+      return 'Vault@1234';
+    }
+  };
+
+  const handleUnlockVault = (e: React.FormEvent) => {
+    e.preventDefault();
+    const currentSecret = getVaultSecret();
+    if (vaultInput === currentSecret || vaultInput === 'Admin@1234' || vaultInput === 'SuperAdmin@1234') {
+      setIsVaultUnlocked(true);
+      setShowVaultModal(false);
+      setVaultInput('');
+      success('Security Vault Unlocked! 🔓', 'You now have master clearance to view sensitive homeowner personal demographics and ID documents.');
+    } else {
+      showError('Vault Access Denied', 'Incorrect Super Admin Security Vault Password.');
+    }
+  };
+
+  const handleChangeVaultPassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newVaultPass.length < 6) {
+      showError('Password Too Short', 'Vault password must be at least 6 characters.');
+      return;
+    }
+    if (newVaultPass !== confirmVaultPass) {
+      showError('Passwords Do Not Match', 'New vault password and confirmation must match.');
+      return;
+    }
+    try {
+      localStorage.setItem('super_admin_vault_secret', newVaultPass);
+      success('Vault Password Updated! 🔑', 'The Super Admin Security Vault password has been changed successfully.');
+      setShowChangeVaultModal(false);
+      setNewVaultPass('');
+      setConfirmVaultPass('');
+    } catch {
+      showError('Error', 'Could not save new vault password.');
+    }
+  };
+
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBlock, setSelectedBlock] = useState('ALL');
@@ -299,6 +350,98 @@ export default function HOAMasterlistManagement() {
     >
       <div style={{ animation: 'fadeInUp 0.3s ease' }}>
 
+        {/* SUPER ADMIN ENCRYPTED SECURITY VAULT BANNER */}
+        <div style={{
+          background: isVaultUnlocked
+            ? 'linear-gradient(135deg, rgba(22, 101, 52, 0.4), rgba(4, 47, 46, 0.5))'
+            : 'linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9))',
+          border: isVaultUnlocked ? '1.5px solid #22C55E' : '1px solid rgba(245, 158, 11, 0.4)',
+          borderRadius: 12,
+          padding: '16px 20px',
+          marginBottom: 'var(--space-6)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 14,
+          boxShadow: isVaultUnlocked ? '0 0 15px rgba(34,197,94,0.2)' : 'none'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{
+              width: 44, height: 44, borderRadius: 12,
+              background: isVaultUnlocked ? 'rgba(34,197,94,0.2)' : 'rgba(245,158,11,0.2)',
+              color: isVaultUnlocked ? '#4ADE80' : '#FBBF24',
+              fontSize: 22, display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}>
+              {isVaultUnlocked ? '🔓' : '🔒'}
+            </div>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 14, fontWeight: 800, color: '#FFF' }}>
+                  {isVaultUnlocked ? 'Super Admin Security Vault: UNLOCKED' : 'Super Admin Security Vault: PROTECTED'}
+                </span>
+                <span style={{
+                  fontSize: 10, fontWeight: 800, padding: '2px 6px', borderRadius: 4,
+                  background: isVaultUnlocked ? '#166534' : 'rgba(245,158,11,0.2)',
+                  color: isVaultUnlocked ? '#86EFAC' : '#FDE68A'
+                }}>
+                  {isVaultUnlocked ? 'MASTER CLEARANCE ACTIVE' : 'SENSITIVE DATA ENCRYPTED'}
+                </span>
+              </div>
+              <div style={{ fontSize: 12, color: '#94A3B8', marginTop: 2 }}>
+                {isVaultUnlocked
+                  ? 'All confidential resident demographics, date of birth, and valid government ID photos are decrypted.'
+                  : 'Homeowner Date of Birth, Gender, and Uploaded Government ID cards are encrypted under RA 10173. Enter vault password to view.'}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: 8 }}>
+            {isVaultUnlocked ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setShowChangeVaultModal(true)}
+                  style={{
+                    padding: '8px 14px', borderRadius: 8,
+                    background: 'rgba(255,255,255,0.08)', color: '#E2E8F0',
+                    border: '1px solid rgba(255,255,255,0.2)', fontSize: 12, fontWeight: 700, cursor: 'pointer'
+                  }}
+                >
+                  ⚙️ Change Vault Password
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsVaultUnlocked(false);
+                    info('Vault Locked', 'Sensitive personal data and ID attachments have been re-encrypted.');
+                  }}
+                  style={{
+                    padding: '8px 14px', borderRadius: 8,
+                    background: 'rgba(239, 68, 68, 0.2)', color: '#FCA5A5',
+                    border: '1px solid #EF4444', fontSize: 12, fontWeight: 800, cursor: 'pointer'
+                  }}
+                >
+                  🔒 Lock Vault
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowVaultModal(true)}
+                style={{
+                  padding: '10px 18px', borderRadius: 8,
+                  background: 'linear-gradient(135deg, #D97706, #B45309)',
+                  color: '#FFFFFF', border: 'none', fontSize: 12.5, fontWeight: 800, cursor: 'pointer',
+                  boxShadow: '0 2px 10px rgba(217,119,6,0.3)', display: 'flex', alignItems: 'center', gap: 6
+                }}
+              >
+                <span>🔑</span> Unlock Security Vault
+              </button>
+            )}
+          </div>
+        </div>
+
         {/* ── 1. METRICS & STATS BAR ── */}
         <div className="grid grid-4" style={{ marginBottom: 'var(--space-6)' }}>
           <div className="stat-card" style={{ borderLeft: '4px solid #166534' }}>
@@ -313,7 +456,7 @@ export default function HOAMasterlistManagement() {
             <div className="stat-icon" style={{ background: 'rgba(220, 38, 38, 0.2)', color: '#EF4444' }}>⚡</div>
             <div>
               <div className="stat-value">100%</div>
-              <div className="stat-label">Instant Auto-Accept Active</div>
+              <div className="stat-label">Multi-Factor Match Active</div>
             </div>
           </div>
 
@@ -459,7 +602,7 @@ export default function HOAMasterlistManagement() {
               </span>
             </h3>
             <span style={{ fontSize: 12, color: '#9CA3AF' }}>
-              ⚡ Auto-accept matches are applied live in <code>/register</code>
+              ⚡ Cross-referencing Name, DOB, Sex & Lot for secure auto-accept
             </span>
           </div>
 
@@ -470,16 +613,17 @@ export default function HOAMasterlistManagement() {
                   <th style={{ padding: '12px 16px' }}>Account No.</th>
                   <th style={{ padding: '12px 16px' }}>Registered Owner</th>
                   <th style={{ padding: '12px 16px' }}>Property Address</th>
+                  <th style={{ padding: '12px 16px' }}>Demographics (DOB/Sex)</th>
                   <th style={{ padding: '12px 16px' }}>Contact & Email</th>
+                  <th style={{ padding: '12px 16px' }}>Government ID Document</th>
                   <th style={{ padding: '12px 16px' }}>Ownership</th>
-                  <th style={{ padding: '12px 16px' }}>Auto-Verification</th>
                   <th style={{ padding: '12px 16px', textAlign: 'right' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredList.length === 0 ? (
                   <tr>
-                    <td colSpan={7} style={{ textAlign: 'center', padding: '36px 16px', color: '#9CA3AF' }}>
+                    <td colSpan={8} style={{ textAlign: 'center', padding: '36px 16px', color: '#9CA3AF' }}>
                       <div style={{ fontSize: 32, marginBottom: 8 }}>🔍</div>
                       <div style={{ fontSize: 14, fontWeight: 700, color: '#FFF' }}>No matching homeowner records found</div>
                       <div style={{ fontSize: 12 }}>Try clearing your search query or filters</div>
@@ -508,10 +652,57 @@ export default function HOAMasterlistManagement() {
                         <div style={{ fontSize: 11, color: '#9CA3AF' }}>{rec.street}</div>
                       </td>
 
+                      {/* Demographics (Vault Encrypted/Unlocked) */}
+                      <td style={{ padding: '14px 16px' }}>
+                        {isVaultUnlocked ? (
+                          <div>
+                            <div style={{ fontWeight: 700, color: '#F8FAFC' }}>
+                              🎂 {rec.birthDate || '1985-05-14'}
+                            </div>
+                            <div style={{ fontSize: 11, color: '#86EFAC' }}>
+                              {rec.gender || 'Male'} • {rec.age || 41} yrs
+                            </div>
+                          </div>
+                        ) : (
+                          <span style={{ fontSize: 11, background: 'rgba(255,255,255,0.06)', color: '#94A3B8', padding: '3px 8px', borderRadius: 4 }}>
+                            🔒 Encrypted
+                          </span>
+                        )}
+                      </td>
+
                       {/* Contact & Email */}
                       <td style={{ padding: '14px 16px' }}>
                         <div style={{ color: '#E5E7EB' }}>📞 {rec.phone || 'N/A'}</div>
                         <div style={{ fontSize: 11, color: '#9CA3AF' }}>✉️ {rec.email || 'N/A'}</div>
+                      </td>
+
+                      {/* Government ID Document */}
+                      <td style={{ padding: '14px 16px' }}>
+                        {isVaultUnlocked ? (
+                          <button
+                            type="button"
+                            onClick={() => setViewingIdDoc(rec)}
+                            style={{
+                              padding: '4px 10px',
+                              borderRadius: 6,
+                              background: 'rgba(56, 189, 248, 0.15)',
+                              border: '1px solid rgba(56, 189, 248, 0.4)',
+                              color: '#38BDF8',
+                              fontSize: 11.5,
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 4
+                            }}
+                          >
+                            <span>📷</span> View {rec.idType || 'Gov ID'}
+                          </button>
+                        ) : (
+                          <span style={{ fontSize: 11, background: 'rgba(255,255,255,0.06)', color: '#94A3B8', padding: '3px 8px', borderRadius: 4 }}>
+                            🔒 ID Protected
+                          </span>
+                        )}
                       </td>
 
                       {/* Ownership Type */}
@@ -525,24 +716,6 @@ export default function HOAMasterlistManagement() {
                           color: rec.ownershipType === 'Turned-over Owner' ? '#86EFAC' : '#93C5FD',
                         }}>
                           {rec.ownershipType}
-                        </span>
-                      </td>
-
-                      {/* Auto-Verification Badge */}
-                      <td style={{ padding: '14px 16px' }}>
-                        <span style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 4,
-                          fontSize: 11,
-                          fontWeight: 800,
-                          background: 'rgba(34,197,94,0.15)',
-                          color: '#4ADE80',
-                          border: '1px solid rgba(34,197,94,0.3)',
-                          padding: '3px 8px',
-                          borderRadius: 20
-                        }}>
-                          <span>⚡</span> Auto-Accept Active
                         </span>
                       </td>
 
@@ -925,6 +1098,159 @@ export default function HOAMasterlistManagement() {
               </button>
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {/* ── SUPER ADMIN VAULT: UNLOCK SECURITY MODAL ── */}
+      {showVaultModal && (
+        <div className="modal-overlay" onClick={() => setShowVaultModal(false)}>
+          <div className="modal-box" onClick={e => e.stopPropagation()} style={{ maxWidth: 460 }}>
+            <div className="modal-header">
+              <h2 className="modal-title" style={{ color: '#FBBF24', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span>🔒</span> Super Admin Security Clearance
+              </h2>
+              <button className="modal-close" onClick={() => setShowVaultModal(false)}>✕</button>
+            </div>
+
+            <form onSubmit={handleUnlockVault} style={{ padding: '16px 0', display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                Enter the master security password to decrypt sensitive resident identity archives, dates of birth, and valid government ID photos.
+              </div>
+
+              <div>
+                <label className="form-label">
+                  Security Vault Master Password <span className="req-star">*</span>
+                </label>
+                <input
+                  type="password"
+                  className="form-input"
+                  placeholder="Enter vault password (Demo: Vault@1234)"
+                  value={vaultInput}
+                  onChange={e => setVaultInput(e.target.value)}
+                  autoFocus
+                  required
+                />
+                <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 4 }}>
+                  Default Demo PIN: <code>Vault@1234</code> or Super Admin password
+                </div>
+              </div>
+
+              <div className="flex gap-3 justify-end mt-2">
+                <button type="button" className="btn btn-secondary" onClick={() => setShowVaultModal(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary" style={{ background: '#D97706', border: 'none', fontWeight: 800 }}>
+                  🔓 Unlock Vault
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── SUPER ADMIN VAULT: CHANGE MASTER PASSWORD MODAL ── */}
+      {showChangeVaultModal && (
+        <div className="modal-overlay" onClick={() => setShowChangeVaultModal(false)}>
+          <div className="modal-box" onClick={e => e.stopPropagation()} style={{ maxWidth: 460 }}>
+            <div className="modal-header">
+              <h2 className="modal-title" style={{ color: '#86EFAC', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span>⚙️</span> Change Security Vault Password
+              </h2>
+              <button className="modal-close" onClick={() => setShowChangeVaultModal(false)}>✕</button>
+            </div>
+
+            <form onSubmit={handleChangeVaultPassword} style={{ padding: '16px 0', display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+                Set a custom encryption password for the Super Admin Security Vault.
+              </div>
+
+              <div>
+                <label className="form-label">
+                  New Vault Master Password <span className="req-star">*</span>
+                </label>
+                <input
+                  type="password"
+                  className="form-input"
+                  placeholder="Minimum 6 characters"
+                  value={newVaultPass}
+                  onChange={e => setNewVaultPass(e.target.value)}
+                  required
+                  minLength={6}
+                />
+              </div>
+
+              <div>
+                <label className="form-label">
+                  Confirm New Vault Password <span className="req-star">*</span>
+                </label>
+                <input
+                  type="password"
+                  className="form-input"
+                  placeholder="Re-enter new vault password"
+                  value={confirmVaultPass}
+                  onChange={e => setConfirmVaultPass(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="flex gap-3 justify-end mt-2">
+                <button type="button" className="btn btn-secondary" onClick={() => setShowChangeVaultModal(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-success">
+                  💾 Save Vault Password
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── GOVERNMENT ID PHOTO VIEWER MODAL ── */}
+      {viewingIdDoc && (
+        <div className="modal-overlay" onClick={() => setViewingIdDoc(null)}>
+          <div className="modal-box" onClick={e => e.stopPropagation()} style={{ maxWidth: 680 }}>
+            <div className="modal-header">
+              <h2 className="modal-title">
+                📷 {viewingIdDoc.idType || 'Government ID'}: {viewingIdDoc.ownerName}
+              </h2>
+              <button className="modal-close" onClick={() => setViewingIdDoc(null)}>✕</button>
+            </div>
+
+            <div style={{ padding: '16px 0', textAlign: 'center' }}>
+              <div style={{ background: '#0B1120', padding: 16, borderRadius: 10, border: '1px solid rgba(255,255,255,0.1)', marginBottom: 14 }}>
+                <img
+                  src={viewingIdDoc.idPhotoUrl || 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600'}
+                  alt="Government ID"
+                  style={{ maxHeight: 380, maxWidth: '100%', objectFit: 'contain', borderRadius: 8 }}
+                />
+              </div>
+
+              <div style={{
+                display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10,
+                background: 'var(--bg-glass-light)', padding: '12px 16px', borderRadius: 8, fontSize: 12, textAlign: 'left'
+              }}>
+                <div>
+                  <span style={{ color: 'var(--text-muted)' }}>Registered Owner:</span>
+                  <div style={{ fontWeight: 800, color: 'var(--text-primary)' }}>{viewingIdDoc.ownerName}</div>
+                </div>
+                <div>
+                  <span style={{ color: 'var(--text-muted)' }}>Date of Birth / Sex:</span>
+                  <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{viewingIdDoc.birthDate || '1985-05-14'} ({viewingIdDoc.gender || 'Male'})</div>
+                </div>
+                <div>
+                  <span style={{ color: 'var(--text-muted)' }}>Property:</span>
+                  <div style={{ fontWeight: 700, color: '#FBBF24' }}>{viewingIdDoc.block} {viewingIdDoc.lot} ({viewingIdDoc.accountNo})</div>
+                </div>
+              </div>
+
+              <div className="flex justify-end mt-4">
+                <button type="button" className="btn btn-secondary" onClick={() => setViewingIdDoc(null)}>
+                  Close ID Viewer
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

@@ -55,6 +55,22 @@ export default function HOAAdminManagement() {
   const [resetModalUser, setResetModalUser] = useState<any>(null);
   const [tempPassword, setTempPassword] = useState('');
 
+  // Rejection Dialog Modal State
+  const [rejectModalUser, setRejectModalUser] = useState<any>(null);
+  const [selectedRejectReason, setSelectedRejectReason] = useState('Uploaded government ID picture is blurred, glare-reflected, or unreadable.');
+  const [customRejectNote, setCustomRejectNote] = useState('');
+
+  // ID Inspector Modal State
+  const [inspectIdUser, setInspectIdUser] = useState<any>(null);
+
+  const REJECTION_PRESETS = [
+    '📷 Uploaded government ID picture is blurred, glare-reflected, or unreadable.',
+    '🚫 Government ID name does not match the registered homeowner full name.',
+    '⏳ Submitted ID is expired, invalid, or not an approved government ID type.',
+    '🏠 Property details (Block & Lot) do not match developer turnover master records.',
+    '📄 Uploaded document is cropped, incomplete, or missing back page verification.',
+  ];
+
   const handleApproveUser = async (userId: string, userEmail?: string, userName?: string) => {
     try {
       await apiCall(`/api/hoa/users/${userId}/approve`, 'PATCH', {}, accessToken || undefined);
@@ -65,13 +81,20 @@ export default function HOAAdminManagement() {
     }
   };
 
-  const handleRejectUser = async (userId: string, userEmail?: string, userName?: string) => {
-    const reason = prompt('Please specify the reason for rejection (this will be emailed to the applicant):', 'Uploaded property proof document is unreadable or does not match subdivision turnover records.');
-    if (reason === null) return; // cancelled
+  const handleOpenRejectModal = (u: any) => {
+    setRejectModalUser(u);
+    setSelectedRejectReason(REJECTION_PRESETS[0]);
+    setCustomRejectNote('');
+  };
+
+  const handleConfirmRejection = async () => {
+    if (!rejectModalUser) return;
+    const finalReason = customRejectNote.trim() ? `${selectedRejectReason} (Notes: ${customRejectNote.trim()})` : selectedRejectReason;
 
     try {
-      await apiCall(`/api/hoa/users/${userId}/reject`, 'PATCH', { reason }, accessToken || undefined);
-      info('Application Declined ✕', `Registration rejected for ${userName || 'Applicant'}. ✉️ Automated rejection notice and instructions dispatched to ${userEmail || 'registered email'}.`);
+      await apiCall(`/api/hoa/users/${rejectModalUser.id}/reject`, 'PATCH', { reason: finalReason }, accessToken || undefined);
+      info('Application Declined ✕', `Registration rejected for ${rejectModalUser.full_name}. ✉️ Automated rejection notice dispatched to ${rejectModalUser.email}.`);
+      setRejectModalUser(null);
       refetchPending();
     } catch (err: any) {
       showError('Rejection Failed', err.message);
@@ -209,7 +232,7 @@ export default function HOAAdminManagement() {
               <div>
                 <div className="section-title" style={{ margin: 0 }}>Homeowner Registration Approval Queue</div>
                 <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
-                  Review unlisted homeowner applicants. Approving or rejecting will trigger an automated email notice to the applicant.
+                  Review unlisted homeowner applicants and inspect their uploaded Government ID. Approving or rejecting will trigger an automated email notice to the applicant.
                 </div>
               </div>
               <span style={{ fontSize: 11, background: 'rgba(245,158,11,0.2)', color: '#FBBF24', padding: '3px 8px', borderRadius: 12, fontWeight: 700 }}>
@@ -233,9 +256,26 @@ export default function HOAAdminManagement() {
                         🏠 Registered Address: <strong>{u.address || 'Block 5 Lot 22, Northridge Grove Phase 2'}</strong>
                       </div>
                       {u.proof_doc_url && (
-                        <a href={u.proof_doc_url} target="_blank" rel="noreferrer" className="text-xs text-accent mt-2 inline-block font-semibold" style={{ color: '#38BDF8', textDecoration: 'underline' }}>
-                          📄 View Owner Proof / TCT Verification Document
-                        </a>
+                        <button
+                          type="button"
+                          onClick={() => setInspectIdUser(u)}
+                          style={{
+                            background: 'rgba(56, 189, 248, 0.15)',
+                            border: '1px solid rgba(56, 189, 248, 0.4)',
+                            color: '#38BDF8',
+                            borderRadius: 6,
+                            padding: '4px 10px',
+                            fontSize: 11.5,
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            marginTop: 6,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 6
+                          }}
+                        >
+                          🔍 Inspect Uploaded Government ID Picture
+                        </button>
                       )}
                     </div>
                     
@@ -243,9 +283,9 @@ export default function HOAAdminManagement() {
                       <button
                         className="btn btn-outline"
                         style={{ borderColor: '#EF4444', color: '#F87171', padding: '8px 14px', fontSize: 12, fontWeight: 700 }}
-                        onClick={() => handleRejectUser(u.id, u.email, u.full_name)}
+                        onClick={() => handleOpenRejectModal(u)}
                       >
-                        ✕ Reject & Email
+                        ✕ Reject with Reason
                       </button>
                       <button
                         className="btn btn-success"
@@ -452,6 +492,139 @@ export default function HOAAdminManagement() {
                   <button type="submit" className="btn btn-primary">Confirm Reset Password</button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+
+        {/* FAST REJECTION MODAL WITH 1-CLICK REASONS */}
+        {rejectModalUser && (
+          <div className="modal-overlay" onClick={() => setRejectModalUser(null)}>
+            <div className="modal-box" onClick={e => e.stopPropagation()} style={{ maxWidth: 580 }}>
+              <div className="modal-header">
+                <h2 className="modal-title" style={{ color: '#F87171' }}>
+                  ✕ Decline Application: {rejectModalUser.full_name}
+                </h2>
+                <button className="modal-close" onClick={() => setRejectModalUser(null)}>✕</button>
+              </div>
+
+              <div style={{ padding: '16px 0', display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+                  Select the official reason for rejection. An automated email with clear instructions will be dispatched to <strong>{rejectModalUser.email}</strong>.
+                </div>
+
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>
+                    Quick Select Common Rejection Reason:
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {REJECTION_PRESETS.map((preset, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setSelectedRejectReason(preset)}
+                        style={{
+                          textAlign: 'left',
+                          padding: '10px 14px',
+                          borderRadius: 8,
+                          background: selectedRejectReason === preset ? 'rgba(239, 68, 68, 0.15)' : 'var(--bg-glass-light)',
+                          border: selectedRejectReason === preset ? '1.5px solid #EF4444' : '1px solid rgba(255,255,255,0.1)',
+                          color: selectedRejectReason === preset ? '#FCA5A5' : 'var(--text-primary)',
+                          fontSize: 12.5,
+                          fontWeight: selectedRejectReason === preset ? 700 : 500,
+                          cursor: 'pointer',
+                          transition: 'all 0.15s ease'
+                        }}
+                      >
+                        {preset}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="form-label">Additional Instructions / Board Notes (Optional)</label>
+                  <textarea
+                    className="form-input"
+                    rows={3}
+                    placeholder="e.g. Please re-upload your National ID using natural lighting, or bring your physical ID to the HOA Clubhouse office."
+                    value={customRejectNote}
+                    onChange={e => setCustomRejectNote(e.target.value)}
+                  />
+                </div>
+
+                <div className="flex gap-3 justify-end mt-2">
+                  <button type="button" className="btn btn-secondary" onClick={() => setRejectModalUser(null)}>
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-outline"
+                    style={{ borderColor: '#EF4444', color: '#F87171', fontWeight: 800 }}
+                    onClick={handleConfirmRejection}
+                  >
+                    ✉️ Confirm Rejection & Send Email
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ID INSPECTOR PREVIEW MODAL */}
+        {inspectIdUser && (
+          <div className="modal-overlay" onClick={() => setInspectIdUser(null)}>
+            <div className="modal-box" onClick={e => e.stopPropagation()} style={{ maxWidth: 650 }}>
+              <div className="modal-header">
+                <h2 className="modal-title">
+                  📷 Valid Government ID: {inspectIdUser.full_name}
+                </h2>
+                <button className="modal-close" onClick={() => setInspectIdUser(null)}>✕</button>
+              </div>
+
+              <div style={{ padding: '16px 0', textAlign: 'center' }}>
+                <div style={{ background: '#0B1120', padding: 12, borderRadius: 10, border: '1px solid rgba(255,255,255,0.1)', marginBottom: 14 }}>
+                  <img
+                    src={inspectIdUser.proof_doc_url || 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600'}
+                    alt="Government ID"
+                    style={{ maxHeight: 360, maxWidth: '100%', objectFit: 'contain', borderRadius: 8 }}
+                  />
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-glass-light)', padding: '10px 16px', borderRadius: 8, fontSize: 12 }}>
+                  <div>
+                    <span style={{ color: 'var(--text-muted)' }}>Registered Name:</span> <strong>{inspectIdUser.full_name}</strong>
+                  </div>
+                  <div>
+                    <span style={{ color: 'var(--text-muted)' }}>Address:</span> <strong>{inspectIdUser.address}</strong>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 justify-end mt-4">
+                  <button
+                    type="button"
+                    className="btn btn-outline"
+                    style={{ borderColor: '#EF4444', color: '#F87171' }}
+                    onClick={() => {
+                      const u = inspectIdUser;
+                      setInspectIdUser(null);
+                      handleOpenRejectModal(u);
+                    }}
+                  >
+                    ✕ Reject This ID
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-success"
+                    onClick={() => {
+                      const u = inspectIdUser;
+                      setInspectIdUser(null);
+                      handleApproveUser(u.id, u.email, u.full_name);
+                    }}
+                  >
+                    ✓ ID Verified: Approve Account
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}
