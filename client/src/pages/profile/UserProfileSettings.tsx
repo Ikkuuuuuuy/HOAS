@@ -182,208 +182,143 @@ export default function UserProfileSettings() {
 
   return (
     <PageContainer
-      title="Account Overview & Profile"
-      subtitle="User profile details, custom avatar, HOA verified credentials, and account security"
+      title="Member Profile & HOA Credentials"
+      subtitle="Official resident membership records, verified property credentials, and security settings"
     >
       <div style={{ animation: 'fadeInUp 0.3s ease' }}>
 
-        {/* ── TOP BADGE BAR ── */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 12,
-          marginBottom: 20
+        {/* ── TOP RESIDENT IDENTITY PASSPORT CARD ── */}
+        <div className="card mb-6" style={{
+          background: 'var(--bg-surface)',
+          border: '1px solid var(--border)',
+          borderRadius: 16,
+          padding: 24,
+          boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
+          position: 'relative',
+          overflow: 'hidden'
         }}>
-          <div>
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-              Account Overview & Profile
-            </h1>
-            <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: '3px 0 0 0' }}>
-              User profile details, custom avatar, HOA verified credentials, and account security
-            </p>
-          </div>
+          {/* Subtle Green Accent Stripe on top */}
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: 'linear-gradient(90deg, #16A34A, #15803D, #D97706)' }} />
 
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 6,
-            padding: '6px 14px',
-            borderRadius: 20,
-            background: 'rgba(22, 101, 52, 0.10)',
-            border: '1px solid rgba(22, 101, 52, 0.30)',
-            color: '#166534',
-            fontSize: 12.5,
-            fontWeight: 700
-          }}>
-            <span>✓</span> HOA Verified Active Account
-          </div>
-        </div>
-
-        {/* ── 2-COLUMN MAIN LAYOUT (CCP SYSTEM INSPIRED) ── */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '320px 1fr',
-          gap: 24,
-          alignItems: 'start'
-        }}>
-
-          {/* ══════════════════════════════════════════════════════ */}
-          {/* LEFT COLUMN: USER PROFILE SUMMARY CARD                 */}
-          {/* ══════════════════════════════════════════════════════ */}
-          <div className="card" style={{
-            background: 'var(--bg-surface)',
-            border: '1px solid var(--border)',
-            borderRadius: 14,
-            padding: 24,
-            textAlign: 'center'
-          }}>
-
-            {/* Avatar with Camera Overlay */}
-            <div style={{ position: 'relative', width: 96, height: 96, margin: '0 auto 14px' }}>
-              {avatarPreview ? (
-                <img
-                  src={avatarPreview}
-                  alt={user?.fullName}
-                  style={{
-                    width: 96,
-                    height: 96,
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20 }}>
+            {/* Left: Avatar + Details */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
+              <div style={{ position: 'relative', width: 88, height: 88, flexShrink: 0 }}>
+                {avatarPreview ? (
+                  <img
+                    src={avatarPreview}
+                    alt={user?.fullName}
+                    style={{
+                      width: 88,
+                      height: 88,
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      border: '3px solid #16A34A',
+                      boxShadow: '0 4px 12px rgba(22, 163, 74, 0.25)'
+                    }}
+                  />
+                ) : (
+                  <div style={{
+                    width: 88,
+                    height: 88,
                     borderRadius: '50%',
-                    objectFit: 'cover',
-                    border: '3px solid #166534',
-                    boxShadow: '0 4px 14px rgba(22, 101, 52, 0.25)'
+                    background: 'linear-gradient(135deg, #064E3B, #0D4A36)',
+                    color: '#FCD34D',
+                    fontSize: 28,
+                    fontWeight: 900,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '3px solid rgba(245, 158, 11, 0.4)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+                  }}>
+                    {getInitials()}
+                  </div>
+                )}
+
+                <label
+                  htmlFor="avatar-passport-upload"
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: 0,
+                    width: 28,
+                    height: 28,
+                    borderRadius: '50%',
+                    background: '#16A34A',
+                    color: '#FFFFFF',
+                    border: '2px solid var(--bg-surface)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 12,
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.3)'
                   }}
+                  title="Upload Custom Photo"
+                >
+                  📷
+                </label>
+                <input
+                  type="file"
+                  id="avatar-passport-upload"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  style={{ display: 'none' }}
                 />
-              ) : (
-                <div style={{
-                  width: 96,
-                  height: 96,
-                  borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #D97706, #B45309)',
-                  color: '#FFFFFF',
-                  fontSize: 32,
-                  fontWeight: 900,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 4px 14px rgba(217, 119, 6, 0.3)'
-                }}>
-                  {getInitials()}
+              </div>
+
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                  <h1 style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+                    {user?.fullName || fullName}
+                  </h1>
+                  <span style={{
+                    fontSize: 11,
+                    fontWeight: 800,
+                    padding: '3px 10px',
+                    borderRadius: 12,
+                    background: 'rgba(22, 163, 74, 0.12)',
+                    color: '#16A34A',
+                    border: '1px solid rgba(22, 163, 74, 0.3)'
+                  }}>
+                    ✓ {getRoleBadge()}
+                  </span>
                 </div>
-              )}
 
-              {/* Upload Badge Icon on Avatar */}
-              <label
-                htmlFor="avatar-upload-icon"
-                style={{
-                  position: 'absolute',
-                  bottom: 2,
-                  right: 2,
-                  width: 28,
-                  height: 28,
-                  borderRadius: '50%',
-                  background: '#166534',
-                  color: '#FFFFFF',
-                  border: '2px solid var(--bg-surface)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 13,
-                  cursor: 'pointer',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.3)'
-                }}
-                title="Change Photo"
-              >
-                📷
-              </label>
-              <input
-                type="file"
-                id="avatar-upload-icon"
-                accept="image/*"
-                onChange={handleFileUpload}
-                style={{ display: 'none' }}
-              />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap', marginTop: 6, fontSize: 12.5, color: 'var(--text-muted)' }}>
+                  <span>✉️ {user?.email || 'resident@palmera-hoa.com'}</span>
+                  <span>•</span>
+                  <span>📞 {phone}</span>
+                  <span>•</span>
+                  <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
+                    🏡 {user?.registeredBlock || 'Block 3'} {user?.registeredLot || 'Lot 12'}, Northridge Grove Ph2
+                  </span>
+                </div>
+              </div>
             </div>
 
-            {/* Upload Photo Outlined Button */}
-            <div style={{ marginBottom: 16 }}>
-              <label
-                htmlFor="avatar-upload-btn"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  padding: '5px 14px',
-                  borderRadius: 6,
-                  background: 'var(--bg-hover)',
-                  border: '1px solid var(--border)',
-                  color: 'var(--text-primary)',
-                  fontSize: 12,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease'
-                }}
-              >
-                <span>⬆️</span> Upload Photo
-              </label>
-              <input
-                type="file"
-                id="avatar-upload-btn"
-                accept="image/*"
-                onChange={handleFileUpload}
-                style={{ display: 'none' }}
-              />
-            </div>
-
-            {/* Full Name */}
-            <h2 style={{ fontSize: 17, fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 4px 0' }}>
-              {user?.fullName || fullName}
-            </h2>
-
-            {/* Role Badge */}
-            <div style={{ marginBottom: 4 }}>
-              <span style={{
-                fontSize: 11,
-                fontWeight: 800,
-                padding: '2px 10px',
-                borderRadius: 12,
-                background: 'rgba(22, 101, 52, 0.12)',
-                color: '#166534',
-                border: '1px solid rgba(22, 101, 52, 0.25)',
-                display: 'inline-block'
-              }}>
-                {getRoleBadge()}
-              </span>
-            </div>
-
-            {/* Email */}
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 18, wordBreak: 'break-all' }}>
-              {user?.email || 'resident@palmera-hoa.com'}
-            </div>
-
-            {/* Action Buttons */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20 }}>
+            {/* Right: Quick Action Buttons */}
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               <button
                 type="button"
                 className="btn btn-primary"
                 onClick={() => setShowEditModal(true)}
                 style={{
-                  background: 'linear-gradient(135deg, #166534, #15803D)',
-                  borderColor: '#166534',
+                  background: 'linear-gradient(135deg, #16A34A, #15803D)',
+                  border: 'none',
                   color: '#FFFFFF',
                   fontWeight: 700,
-                  fontSize: 13,
+                  fontSize: 12.5,
                   padding: '9px 16px',
                   borderRadius: 8,
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8,
-                  boxShadow: '0 2px 8px rgba(22, 101, 52, 0.3)'
+                  gap: 6,
+                  boxShadow: '0 2px 10px rgba(22, 163, 74, 0.3)'
                 }}
               >
-                <span>✏️</span> Edit Profile Information
+                <span>✏️</span> Edit Profile
               </button>
 
               <button
@@ -391,207 +326,160 @@ export default function UserProfileSettings() {
                 className="btn btn-secondary"
                 onClick={() => setShowPasswordModal(true)}
                 style={{
-                  background: 'var(--bg-surface)',
+                  background: 'var(--bg-hover)',
                   border: '1px solid var(--border)',
                   color: 'var(--text-primary)',
                   fontWeight: 600,
                   fontSize: 12.5,
-                  padding: '8px 16px',
+                  padding: '9px 16px',
                   borderRadius: 8,
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8
+                  gap: 6
                 }}
               >
                 <span>🔑</span> Change Password
               </button>
             </div>
+          </div>
 
-            {/* Property & Account Meta List */}
-            <div style={{ borderTop: '1px solid var(--border)', paddingTop: 16, textAlign: 'left' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: 12 }}>
-                <span style={{ color: 'var(--text-muted)' }}>Contact No:</span>
-                <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{phone}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: 12 }}>
-                <span style={{ color: 'var(--text-muted)' }}>Division / Lot:</span>
-                <span style={{ fontWeight: 600, color: 'var(--text-primary)', textAlign: 'right' }}>
-                  {user?.registeredBlock || 'Block 3'} {user?.registeredLot || 'Lot 12'}
-                </span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: 12 }}>
-                <span style={{ color: 'var(--text-muted)' }}>User ID:</span>
-                <span style={{ fontWeight: 700, fontFamily: 'monospace', color: 'var(--text-primary)' }}>
-                  NRG-{user?.id?.slice(0, 8) || '0312'}
-                </span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: 12 }}>
-                <span style={{ color: 'var(--text-muted)' }}>HOA Cert:</span>
-                <span style={{ fontWeight: 800, fontFamily: 'monospace', color: '#166534', fontSize: 11 }}>
-                  PH-HOA-08942-VERIFIED
-                </span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: 12 }}>
-                <span style={{ color: 'var(--text-muted)' }}>Account Status:</span>
-                <span style={{ fontWeight: 800, color: '#166534' }}>
-                  ACTIVE & CERTIFIED
-                </span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: 12 }}>
-                <span style={{ color: 'var(--text-muted)' }}>Password Changed:</span>
-                <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>Recent</span>
+          {/* Bottom Highlights Row */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: 12,
+            marginTop: 20,
+            paddingTop: 16,
+            borderTop: '1px solid var(--border)'
+          }}>
+            <div style={{ padding: '10px 14px', borderRadius: 8, background: 'var(--bg-hover)' }}>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>MEMBER ID / REF</div>
+              <div style={{ fontSize: 13, fontWeight: 800, fontFamily: 'monospace', color: 'var(--text-primary)', marginTop: 2 }}>
+                NRG-{user?.id?.slice(0, 8) || '2024-0312'}
               </div>
             </div>
 
+            <div style={{ padding: '10px 14px', borderRadius: 8, background: 'var(--bg-hover)' }}>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>HOA REGISTRY STATUS</div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: '#16A34A', marginTop: 2 }}>
+                ✓ Active & Good Standing
+              </div>
+            </div>
+
+            <div style={{ padding: '10px 14px', borderRadius: 8, background: 'var(--bg-hover)' }}>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>RFID GATE ACCESS</div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: '#16A34A', marginTop: 2 }}>
+                🚗 Enabled (Tag #RFID-8832)
+              </div>
+            </div>
+
+            <div style={{ padding: '10px 14px', borderRadius: 8, background: 'var(--bg-hover)' }}>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>SECURITY CERTIFICATE</div>
+              <div style={{ fontSize: 12, fontWeight: 700, fontFamily: 'monospace', color: 'var(--text-secondary)', marginTop: 2 }}>
+                PH-HOA-VERIFIED-2026
+              </div>
+            </div>
           </div>
+        </div>
+
+        {/* ── 2-COLUMN BALANCED FEATURE GRID ── */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: 20,
+          alignItems: 'start'
+        }}>
 
           {/* ══════════════════════════════════════════════════════ */}
-          {/* RIGHT COLUMN: CARDS STACK                              */}
+          {/* COLUMN 1: GOVERNANCE & COMMUNITY PRIVILEGES           */}
           {/* ══════════════════════════════════════════════════════ */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-
-            {/* CARD 1: ROLE PERMISSIONS & ACCESS MATRIX */}
+            {/* Card: Community Access Matrix */}
             <div className="card" style={{
               background: 'var(--bg-surface)',
               border: '1px solid var(--border)',
               borderRadius: 14,
               padding: 22
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                <span style={{ fontSize: 18 }}>🛡️</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                <span style={{ fontSize: 20 }}>🛡️</span>
                 <div>
                   <h3 style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-                    Role Permissions & Access Matrix
+                    Governance & Member Privileges
                   </h3>
                   <p style={{ fontSize: 12, color: 'var(--text-muted)', margin: '2px 0 0 0' }}>
-                    System scopes granted under HOA & Barangay governance security protocols
+                    Active community scopes authorized for your property
                   </p>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 14 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {getPermissions().map((perm, idx) => (
-                  <span
+                  <div
                     key={idx}
                     style={{
-                      fontSize: 12,
-                      fontWeight: 600,
-                      padding: '5px 12px',
-                      borderRadius: 6,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 10,
+                      padding: '10px 14px',
+                      borderRadius: 8,
                       background: 'var(--bg-hover)',
                       border: '1px solid var(--border)',
-                      color: 'var(--text-primary)',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 6
+                      fontSize: 12.5,
+                      fontWeight: 600,
+                      color: 'var(--text-primary)'
                     }}
                   >
-                    {perm}
-                  </span>
+                    <span>{perm}</span>
+                  </div>
                 ))}
               </div>
             </div>
 
-            {/* CARD 2: SECURITY & 2FA SETTINGS */}
+            {/* Card: Data Protection Compliance */}
             <div className="card" style={{
-              background: 'var(--bg-surface)',
-              border: '1px solid var(--border)',
+              background: 'rgba(22, 101, 52, 0.06)',
+              border: '1px solid rgba(22, 101, 52, 0.25)',
               borderRadius: 14,
-              padding: 22
+              padding: 18
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-                <span style={{ fontSize: 18 }}>🔒</span>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+                <span style={{ fontSize: 22 }}>🔒</span>
                 <div>
-                  <h3 style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-                    HOA Security & 2FA Settings
-                  </h3>
-                  <p style={{ fontSize: 12, color: 'var(--text-muted)', margin: '2px 0 0 0' }}>
-                    Multi-factor authentication and active session governance
-                  </p>
-                </div>
-              </div>
-
-              {/* Row 1: HOA Digital Certificate 2FA */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '12px 14px',
-                borderRadius: 8,
-                background: 'var(--bg-hover)',
-                border: '1px solid var(--border)',
-                marginBottom: 12
-              }}>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
-                    HOA Verified Digital Certificate (2FA)
+                  <div style={{ fontSize: 13, fontWeight: 800, color: '#166534' }}>
+                    Republic Act 10173 (Data Privacy Act of 2012)
                   </div>
-                  <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
-                    Mandatory digital authentication for dues payments & service requests
+                  <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 4, lineHeight: 1.5 }}>
+                    Your personal information, lot ownership records, and contact details are strictly encrypted under tenant isolation guidelines.
                   </div>
                 </div>
-                <span style={{
-                  fontSize: 11,
-                  fontWeight: 800,
-                  padding: '4px 10px',
-                  borderRadius: 6,
-                  background: 'rgba(22, 101, 52, 0.12)',
-                  color: '#166534',
-                  border: '1px solid rgba(22, 101, 52, 0.3)'
-                }}>
-                  ENABLED & VERIFIED
-                </span>
-              </div>
-
-              {/* Row 2: Automatic Session Timeout */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '12px 14px',
-                borderRadius: 8,
-                background: 'var(--bg-hover)',
-                border: '1px solid var(--border)'
-              }}>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
-                    Automatic Session Timeout
-                  </div>
-                  <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
-                    Locks session after inactivity to protect private account records
-                  </div>
-                </div>
-                <span style={{
-                  fontSize: 12.5,
-                  fontWeight: 700,
-                  color: 'var(--text-primary)'
-                }}>
-                  30 Minutes
-                </span>
               </div>
             </div>
+          </div>
 
-            {/* CARD 3: ACTIVE LOGIN SESSIONS */}
+          {/* ══════════════════════════════════════════════════════ */}
+          {/* COLUMN 2: SECURITY & SESSION AUDIT                     */}
+          {/* ══════════════════════════════════════════════════════ */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            {/* Card: Security & Verification */}
             <div className="card" style={{
               background: 'var(--bg-surface)',
               border: '1px solid var(--border)',
               borderRadius: 14,
               padding: 22
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-                <span style={{ fontSize: 18 }}>💻</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                <span style={{ fontSize: 20 }}>⚙️</span>
                 <div>
                   <h3 style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-                    Active Login Sessions
+                    Account Security & Session Policy
                   </h3>
                   <p style={{ fontSize: 12, color: 'var(--text-muted)', margin: '2px 0 0 0' }}>
-                    Authorized devices and secure IP connections
+                    Multi-factor authentication and automatic session controls
                   </p>
                 </div>
               </div>
 
-              {/* Session 1: Current */}
               <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -602,31 +490,27 @@ export default function UserProfileSettings() {
                 border: '1px solid var(--border)',
                 marginBottom: 10
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <span style={{ fontSize: 20 }}>🌐</span>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
-                      Chrome on Windows 11 (Current)
-                    </div>
-                    <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
-                      IP: 192.168.1.45 • Northridge Grove Phase 2, SJDM
-                    </div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
+                    Masterlist 2FA Verification
+                  </div>
+                  <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
+                    Cryptographic signature for statements & requests
                   </div>
                 </div>
                 <span style={{
                   fontSize: 11,
                   fontWeight: 800,
-                  padding: '3px 10px',
+                  padding: '3px 8px',
                   borderRadius: 6,
                   background: 'rgba(22, 101, 52, 0.12)',
                   color: '#166534',
                   border: '1px solid rgba(22, 101, 52, 0.3)'
                 }}>
-                  Active Now
+                  ACTIVE
                 </span>
               </div>
 
-              {/* Session 2: Mobile */}
               <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -636,23 +520,98 @@ export default function UserProfileSettings() {
                 background: 'var(--bg-hover)',
                 border: '1px solid var(--border)'
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <span style={{ fontSize: 20 }}>📱</span>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
+                    Session Timeout Protection
+                  </div>
+                  <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
+                    Automatic logout after 30 minutes of inactivity
+                  </div>
+                </div>
+                <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)' }}>
+                  30 Mins
+                </span>
+              </div>
+            </div>
+
+            {/* Card: Active Devices & Logins */}
+            <div className="card" style={{
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+              borderRadius: 14,
+              padding: 22
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                <span style={{ fontSize: 20 }}>💻</span>
+                <div>
+                  <h3 style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+                    Active Authorized Devices
+                  </h3>
+                  <p style={{ fontSize: 12, color: 'var(--text-muted)', margin: '2px 0 0 0' }}>
+                    Currently verified browser sessions
+                  </p>
+                </div>
+              </div>
+
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '12px 14px',
+                borderRadius: 8,
+                background: 'var(--bg-hover)',
+                border: '1px solid var(--border)',
+                marginBottom: 10
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ fontSize: 18 }}>🌐</span>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
+                      Chrome on Windows 11
+                    </div>
+                    <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
+                      IP: 192.168.1.45 • Current Portal Session
+                    </div>
+                  </div>
+                </div>
+                <span style={{
+                  fontSize: 11,
+                  fontWeight: 800,
+                  padding: '3px 8px',
+                  borderRadius: 6,
+                  background: 'rgba(22, 101, 52, 0.12)',
+                  color: '#166534',
+                  border: '1px solid rgba(22, 101, 52, 0.3)'
+                }}>
+                  Active
+                </span>
+              </div>
+
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '12px 14px',
+                borderRadius: 8,
+                background: 'var(--bg-hover)',
+                border: '1px solid var(--border)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ fontSize: 18 }}>📱</span>
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
                       Safari on iPhone 15 Pro
                     </div>
                     <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
-                      IP: 112.198.102.88 • Resident Portal Mobile
+                      IP: 112.198.102.88 • Mobile Access
                     </div>
                   </div>
                 </div>
-                <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>
-                  2 hours ago
+                <span style={{ fontSize: 11.5, color: 'var(--text-muted)', fontWeight: 600 }}>
+                  2h ago
                 </span>
               </div>
             </div>
-
           </div>
         </div>
 
