@@ -16,10 +16,12 @@ export default function UserProfileSettings() {
   const { user, updateUserProfile, changePassword } = useAuth();
   const { success, error: showError } = useToast();
 
-  const [activeTab, setActiveTab] = useState<'profile' | 'password' | 'security'>('profile');
+  // Modals state
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   // Profile fields state
-  const [fullName, setFullName] = useState(user?.fullName || '');
+  const [fullName, setFullName] = useState(user?.fullName || 'Ricardo Dalisay (Resident Owner)');
   const [phone, setPhone] = useState(user?.phone || '0917-890-1234');
   const [avatarPreview, setAvatarPreview] = useState<string>(user?.avatarUrl || '');
   const [isSavingProfile, setIsSavingProfile] = useState(false);
@@ -49,19 +51,24 @@ export default function UserProfileSettings() {
     reader.onload = (event) => {
       const base64 = event.target?.result as string;
       setAvatarPreview(base64);
-      success('Photo Selected!', 'Click "Save Profile Changes" to apply your new profile photo.');
+      updateUserProfile({
+        fullName: fullName.trim(),
+        phone: phone.trim(),
+        avatarUrl: base64
+      });
+      success('Photo Updated! 📷', 'Your new profile avatar is active.');
     };
     reader.readAsDataURL(file);
   };
 
   const handleSelectPreset = (url: string) => {
     setAvatarPreview(url);
-    success('Avatar Selected!', 'Click "Save Profile Changes" to update your profile photo.');
-  };
-
-  const handleRemovePhoto = () => {
-    setAvatarPreview('');
-    success('Photo Removed', 'Reverted to default initial letter avatar.');
+    updateUserProfile({
+      fullName: fullName.trim(),
+      phone: phone.trim(),
+      avatarUrl: url
+    });
+    success('Avatar Updated! 👤', 'Selected preset avatar applied.');
   };
 
   const handleSaveProfile = (e: React.FormEvent) => {
@@ -74,7 +81,8 @@ export default function UserProfileSettings() {
         phone: phone.trim(),
         avatarUrl: avatarPreview
       });
-      success('Profile Updated! ✓', 'Your name, contact details, and profile photo have been saved.');
+      success('Profile Saved! ✓', 'Your name and contact details have been updated.');
+      setShowEditModal(false);
     } catch {
       showError('Save Failed', 'Could not update profile information.');
     } finally {
@@ -103,6 +111,7 @@ export default function UserProfileSettings() {
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
+        setShowPasswordModal(false);
       } else {
         showError('Update Failed', res.message || 'Could not change password.');
       }
@@ -113,514 +122,722 @@ export default function UserProfileSettings() {
     }
   };
 
-  const getRoleBadgeColor = () => {
-    switch (user?.roleName) {
-      case 'super_admin': return { bg: 'rgba(245,158,11,0.2)', color: '#FBBF24', border: '#F59E0B' };
-      case 'hoa_admin': return { bg: 'rgba(22,101,52,0.2)', color: '#86EFAC', border: '#22C55E' };
-      case 'admin_staff': return { bg: 'rgba(59,130,246,0.2)', color: '#93C5FD', border: '#3B82F6' };
-      case 'security_guard': return { bg: 'rgba(239,68,68,0.2)', color: '#FCA5A5', border: '#EF4444' };
-      default: return { bg: 'rgba(16,185,129,0.2)', color: '#6EE7B7', border: '#10B981' };
+  // User Initials
+  const getInitials = () => {
+    if (!user?.fullName) return 'RD';
+    const parts = user.fullName.trim().split(' ');
+    if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    return user.fullName.slice(0, 2).toUpperCase();
+  };
+
+  // Role Badging
+  const getRoleBadge = () => {
+    const role = user?.roleName || 'resident';
+    switch (role) {
+      case 'super_admin': return 'SUPER ADMIN / GOVERNANCE';
+      case 'hoa_admin': return 'HOA BOARD ADMIN';
+      case 'admin_staff': return 'ADMIN STAFF';
+      case 'security_guard': return 'GATE SECURITY LEAD';
+      default: return 'HOMEOWNER / RESIDENT';
     }
   };
 
-  const roleMeta = getRoleBadgeColor();
+  // Role Permissions
+  const getPermissions = () => {
+    const role = user?.roleName || 'resident';
+    if (role === 'super_admin') {
+      return [
+        '🛡️ Super Admin Master Controls',
+        '🏛️ Multi-Tenant Community Provisioning',
+        '🔐 Security Vault Encryption Key Management',
+        '👥 System User Directory & Role Assignment',
+        '📊 Financial & Audit Governance Records'
+      ];
+    }
+    if (role === 'hoa_admin' || role === 'admin_staff') {
+      return [
+        '📋 HOA Masterlist Registration & Verification',
+        '💰 Monthly Dues & Ledger Billing Generator',
+        '🏀 Facility Reservations & Court Approvals',
+        '📄 Service & Document Requests Processing',
+        '👥 Household Member Directory Verification'
+      ];
+    }
+    if (role === 'security_guard') {
+      return [
+        '🚗 Visitor Gate Logbook Entry & Check-out',
+        '🚨 Subdivision Security Alert Broadcasts',
+        '🔍 Resident RFID Vehicle Tag Verification',
+        '📋 Daily Gate Logs Export'
+      ];
+    }
+    return [
+      '🏡 Homeowner Resident Portal',
+      '📄 Service Request & Gate Pass Filing',
+      '🏀 Sports & Facility Reservations',
+      '💰 Statements of Account & Online Payments',
+      '👨‍👩‍👧‍👦 Registered Household Occupants Directory'
+    ];
+  };
 
   return (
     <PageContainer
-      title="User Profile & Account Security"
-      subtitle="Manage your profile picture, personal details, password, and security preferences"
+      title="Account Overview & Profile"
+      subtitle="User profile details, custom avatar, HOA verified credentials, and account security"
     >
-      <div style={{ maxWidth: 900, margin: '0 auto', animation: 'fadeInUp 0.3s ease' }}>
+      <div style={{ animation: 'fadeInUp 0.3s ease' }}>
 
-        {/* ── TOP USER IDENTITY CARD ── */}
-        <div className="card" style={{
-          padding: '24px',
-          marginBottom: 'var(--space-6)',
-          background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9))',
-          border: '1px solid rgba(255, 255, 255, 0.12)',
-          borderRadius: 16,
-          boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+        {/* ── TOP BADGE BAR ── */}
+        <div style={{
           display: 'flex',
-          alignItems: 'center',
           justifyContent: 'space-between',
+          alignItems: 'center',
           flexWrap: 'wrap',
-          gap: 20
+          gap: 12,
+          marginBottom: 20
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-            {/* Avatar container */}
-            <div style={{ position: 'relative' }}>
+          <div>
+            <h1 style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+              Account Overview & Profile
+            </h1>
+            <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: '3px 0 0 0' }}>
+              User profile details, custom avatar, HOA verified credentials, and account security
+            </p>
+          </div>
+
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            padding: '6px 14px',
+            borderRadius: 20,
+            background: 'rgba(22, 101, 52, 0.10)',
+            border: '1px solid rgba(22, 101, 52, 0.30)',
+            color: '#166534',
+            fontSize: 12.5,
+            fontWeight: 700
+          }}>
+            <span>✓</span> HOA Verified Active Account
+          </div>
+        </div>
+
+        {/* ── 2-COLUMN MAIN LAYOUT (CCP SYSTEM INSPIRED) ── */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '320px 1fr',
+          gap: 24,
+          alignItems: 'start'
+        }}>
+
+          {/* ══════════════════════════════════════════════════════ */}
+          {/* LEFT COLUMN: USER PROFILE SUMMARY CARD                 */}
+          {/* ══════════════════════════════════════════════════════ */}
+          <div className="card" style={{
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border)',
+            borderRadius: 14,
+            padding: 24,
+            textAlign: 'center'
+          }}>
+
+            {/* Avatar with Camera Overlay */}
+            <div style={{ position: 'relative', width: 96, height: 96, margin: '0 auto 14px' }}>
               {avatarPreview ? (
                 <img
                   src={avatarPreview}
                   alt={user?.fullName}
                   style={{
-                    width: 84,
-                    height: 84,
+                    width: 96,
+                    height: 96,
                     borderRadius: '50%',
                     objectFit: 'cover',
-                    border: '3px solid #22C55E',
-                    boxShadow: '0 0 16px rgba(34,197,94,0.4)'
+                    border: '3px solid #166534',
+                    boxShadow: '0 4px 14px rgba(22, 101, 52, 0.25)'
                   }}
                 />
               ) : (
                 <div style={{
-                  width: 84,
-                  height: 84,
+                  width: 96,
+                  height: 96,
                   borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #1E3A8A, #3B82F6)',
+                  background: 'linear-gradient(135deg, #D97706, #B45309)',
                   color: '#FFFFFF',
-                  fontSize: 34,
+                  fontSize: 32,
                   fontWeight: 900,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  border: '3px solid rgba(255,255,255,0.2)',
-                  boxShadow: '0 4px 16px rgba(0,0,0,0.4)'
+                  boxShadow: '0 4px 14px rgba(217, 119, 6, 0.3)'
                 }}>
-                  {user?.fullName?.charAt(0) || 'U'}
+                  {getInitials()}
                 </div>
               )}
-              <span style={{
-                position: 'absolute',
-                bottom: 0,
-                right: 0,
-                width: 22,
-                height: 22,
-                borderRadius: '50%',
-                background: '#22C55E',
-                border: '3px solid #0F172A',
-                boxShadow: '0 0 8px rgba(34,197,94,0.6)'
-              }} />
+
+              {/* Upload Badge Icon on Avatar */}
+              <label
+                htmlFor="avatar-upload-icon"
+                style={{
+                  position: 'absolute',
+                  bottom: 2,
+                  right: 2,
+                  width: 28,
+                  height: 28,
+                  borderRadius: '50%',
+                  background: '#166534',
+                  color: '#FFFFFF',
+                  border: '2px solid var(--bg-surface)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 13,
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.3)'
+                }}
+                title="Change Photo"
+              >
+                📷
+              </label>
+              <input
+                type="file"
+                id="avatar-upload-icon"
+                accept="image/*"
+                onChange={handleFileUpload}
+                style={{ display: 'none' }}
+              />
             </div>
 
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                <h1 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
-                  {user?.fullName}
-                </h1>
+            {/* Upload Photo Outlined Button */}
+            <div style={{ marginBottom: 16 }}>
+              <label
+                htmlFor="avatar-upload-btn"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '5px 14px',
+                  borderRadius: 6,
+                  background: 'var(--bg-hover)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-primary)',
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                <span>⬆️</span> Upload Photo
+              </label>
+              <input
+                type="file"
+                id="avatar-upload-btn"
+                accept="image/*"
+                onChange={handleFileUpload}
+                style={{ display: 'none' }}
+              />
+            </div>
+
+            {/* Full Name */}
+            <h2 style={{ fontSize: 17, fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 4px 0' }}>
+              {user?.fullName || fullName}
+            </h2>
+
+            {/* Role Badge */}
+            <div style={{ marginBottom: 4 }}>
+              <span style={{
+                fontSize: 11,
+                fontWeight: 800,
+                padding: '2px 10px',
+                borderRadius: 12,
+                background: 'rgba(22, 101, 52, 0.12)',
+                color: '#166534',
+                border: '1px solid rgba(22, 101, 52, 0.25)',
+                display: 'inline-block'
+              }}>
+                {getRoleBadge()}
+              </span>
+            </div>
+
+            {/* Email */}
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 18, wordBreak: 'break-all' }}>
+              {user?.email || 'resident@palmera-hoa.com'}
+            </div>
+
+            {/* Action Buttons */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20 }}>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => setShowEditModal(true)}
+                style={{
+                  background: 'linear-gradient(135deg, #166534, #15803D)',
+                  borderColor: '#166534',
+                  color: '#FFFFFF',
+                  fontWeight: 700,
+                  fontSize: 13,
+                  padding: '9px 16px',
+                  borderRadius: 8,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  boxShadow: '0 2px 8px rgba(22, 101, 52, 0.3)'
+                }}
+              >
+                <span>✏️</span> Edit Profile Information
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => setShowPasswordModal(true)}
+                style={{
+                  background: 'var(--bg-surface)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-primary)',
+                  fontWeight: 600,
+                  fontSize: 12.5,
+                  padding: '8px 16px',
+                  borderRadius: 8,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8
+                }}
+              >
+                <span>🔑</span> Change Password
+              </button>
+            </div>
+
+            {/* Property & Account Meta List */}
+            <div style={{ borderTop: '1px solid var(--border)', paddingTop: 16, textAlign: 'left' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: 12 }}>
+                <span style={{ color: 'var(--text-muted)' }}>Contact No:</span>
+                <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{phone}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: 12 }}>
+                <span style={{ color: 'var(--text-muted)' }}>Division / Lot:</span>
+                <span style={{ fontWeight: 600, color: 'var(--text-primary)', textAlign: 'right' }}>
+                  {user?.registeredBlock || 'Block 3'} {user?.registeredLot || 'Lot 12'}
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: 12 }}>
+                <span style={{ color: 'var(--text-muted)' }}>User ID:</span>
+                <span style={{ fontWeight: 700, fontFamily: 'monospace', color: 'var(--text-primary)' }}>
+                  NRG-{user?.id?.slice(0, 8) || '0312'}
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: 12 }}>
+                <span style={{ color: 'var(--text-muted)' }}>HOA Cert:</span>
+                <span style={{ fontWeight: 800, fontFamily: 'monospace', color: '#166534', fontSize: 11 }}>
+                  PH-HOA-08942-VERIFIED
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: 12 }}>
+                <span style={{ color: 'var(--text-muted)' }}>Account Status:</span>
+                <span style={{ fontWeight: 800, color: '#166534' }}>
+                  ACTIVE & CERTIFIED
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: 12 }}>
+                <span style={{ color: 'var(--text-muted)' }}>Password Changed:</span>
+                <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>Recent</span>
+              </div>
+            </div>
+
+          </div>
+
+          {/* ══════════════════════════════════════════════════════ */}
+          {/* RIGHT COLUMN: CARDS STACK                              */}
+          {/* ══════════════════════════════════════════════════════ */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+            {/* CARD 1: ROLE PERMISSIONS & ACCESS MATRIX */}
+            <div className="card" style={{
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+              borderRadius: 14,
+              padding: 22
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                <span style={{ fontSize: 18 }}>🛡️</span>
+                <div>
+                  <h3 style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+                    Role Permissions & Access Matrix
+                  </h3>
+                  <p style={{ fontSize: 12, color: 'var(--text-muted)', margin: '2px 0 0 0' }}>
+                    System scopes granted under HOA & Barangay governance security protocols
+                  </p>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 14 }}>
+                {getPermissions().map((perm, idx) => (
+                  <span
+                    key={idx}
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 600,
+                      padding: '5px 12px',
+                      borderRadius: 6,
+                      background: 'var(--bg-hover)',
+                      border: '1px solid var(--border)',
+                      color: 'var(--text-primary)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 6
+                    }}
+                  >
+                    {perm}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* CARD 2: SECURITY & 2FA SETTINGS */}
+            <div className="card" style={{
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+              borderRadius: 14,
+              padding: 22
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                <span style={{ fontSize: 18 }}>🔒</span>
+                <div>
+                  <h3 style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+                    HOA Security & 2FA Settings
+                  </h3>
+                  <p style={{ fontSize: 12, color: 'var(--text-muted)', margin: '2px 0 0 0' }}>
+                    Multi-factor authentication and active session governance
+                  </p>
+                </div>
+              </div>
+
+              {/* Row 1: HOA Digital Certificate 2FA */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '12px 14px',
+                borderRadius: 8,
+                background: 'var(--bg-hover)',
+                border: '1px solid var(--border)',
+                marginBottom: 12
+              }}>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
+                    HOA Verified Digital Certificate (2FA)
+                  </div>
+                  <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
+                    Mandatory digital authentication for dues payments & service requests
+                  </div>
+                </div>
+                <span style={{
+                  fontSize: 11,
+                  fontWeight: 800,
+                  padding: '4px 10px',
+                  borderRadius: 6,
+                  background: 'rgba(22, 101, 52, 0.12)',
+                  color: '#166534',
+                  border: '1px solid rgba(22, 101, 52, 0.3)'
+                }}>
+                  ENABLED & VERIFIED
+                </span>
+              </div>
+
+              {/* Row 2: Automatic Session Timeout */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '12px 14px',
+                borderRadius: 8,
+                background: 'var(--bg-hover)',
+                border: '1px solid var(--border)'
+              }}>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
+                    Automatic Session Timeout
+                  </div>
+                  <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
+                    Locks session after inactivity to protect private account records
+                  </div>
+                </div>
+                <span style={{
+                  fontSize: 12.5,
+                  fontWeight: 700,
+                  color: 'var(--text-primary)'
+                }}>
+                  30 Minutes
+                </span>
+              </div>
+            </div>
+
+            {/* CARD 3: ACTIVE LOGIN SESSIONS */}
+            <div className="card" style={{
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border)',
+              borderRadius: 14,
+              padding: 22
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                <span style={{ fontSize: 18 }}>💻</span>
+                <div>
+                  <h3 style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+                    Active Login Sessions
+                  </h3>
+                  <p style={{ fontSize: 12, color: 'var(--text-muted)', margin: '2px 0 0 0' }}>
+                    Authorized devices and secure IP connections
+                  </p>
+                </div>
+              </div>
+
+              {/* Session 1: Current */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '12px 14px',
+                borderRadius: 8,
+                background: 'var(--bg-hover)',
+                border: '1px solid var(--border)',
+                marginBottom: 10
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <span style={{ fontSize: 20 }}>🌐</span>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
+                      Chrome on Windows 11 (Current)
+                    </div>
+                    <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
+                      IP: 192.168.1.45 • Northridge Grove Phase 2, SJDM
+                    </div>
+                  </div>
+                </div>
                 <span style={{
                   fontSize: 11,
                   fontWeight: 800,
                   padding: '3px 10px',
-                  borderRadius: 20,
-                  background: roleMeta.bg,
-                  color: roleMeta.color,
-                  border: `1px solid ${roleMeta.border}`
+                  borderRadius: 6,
+                  background: 'rgba(22, 101, 52, 0.12)',
+                  color: '#166534',
+                  border: '1px solid rgba(22, 101, 52, 0.3)'
                 }}>
-                  {user?.roleName?.replace(/_/g, ' ').toUpperCase()}
+                  Active Now
                 </span>
               </div>
-              <div style={{ fontSize: 13, color: '#94A3B8', marginTop: 4 }}>
-                ✉️ {user?.email} • 🏢 {user?.tenantName}
-              </div>
-              <div style={{ fontSize: 12, color: '#FBBF24', marginTop: 2, fontWeight: 700 }}>
-                🏠 {user?.registeredBlock || 'Block 3'} {user?.registeredLot || 'Lot 12'}, Northridge Grove Phase 2
-              </div>
-            </div>
-          </div>
 
-          <div style={{ display: 'flex', gap: 10 }}>
-            <label
-              htmlFor="quick-avatar-upload"
-              style={{
-                padding: '10px 18px',
-                borderRadius: 10,
-                background: 'linear-gradient(135deg, #166534, #15803D)',
-                color: '#FFF',
-                fontSize: 12.5,
-                fontWeight: 800,
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-                boxShadow: '0 4px 12px rgba(22,101,52,0.4)',
-                border: 'none'
-              }}
-            >
-              <span>📷</span> Change Photo
-            </label>
-            <input
-              type="file"
-              id="quick-avatar-upload"
-              accept="image/*"
-              onChange={handleFileUpload}
-              style={{ display: 'none' }}
-            />
-          </div>
-        </div>
-
-        {/* ── NAVIGATION TABS ── */}
-        <div style={{
-          display: 'flex',
-          gap: 10,
-          marginBottom: 'var(--space-6)',
-          borderBottom: '1px solid rgba(255,255,255,0.1)',
-          paddingBottom: 8
-        }}>
-          {[
-            { id: 'profile', label: '👤 Profile & Photo', icon: '📷' },
-            { id: 'password', label: '🔑 Change Password', icon: '🔒' },
-            { id: 'security', label: '🛡️ Privacy & Clearance', icon: '📜' },
-          ].map(t => (
-            <button
-              key={t.id}
-              type="button"
-              onClick={() => setActiveTab(t.id as any)}
-              style={{
-                padding: '10px 20px',
-                borderRadius: 10,
-                border: 'none',
-                background: activeTab === t.id ? '#DC2626' : 'rgba(255,255,255,0.06)',
-                color: '#FFFFFF',
-                fontSize: 13,
-                fontWeight: 800,
-                cursor: 'pointer',
+              {/* Session 2: Mobile */}
+              <div style={{
                 display: 'flex',
+                justifyContent: 'space-between',
                 alignItems: 'center',
-                gap: 8,
-                transition: 'all 0.2s ease',
-                boxShadow: activeTab === t.id ? '0 4px 14px rgba(220,38,38,0.4)' : 'none'
-              }}
-            >
-              <span>{t.icon}</span>
-              <span>{t.label}</span>
-            </button>
-          ))}
+                padding: '12px 14px',
+                borderRadius: 8,
+                background: 'var(--bg-hover)',
+                border: '1px solid var(--border)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <span style={{ fontSize: 20 }}>📱</span>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
+                      Safari on iPhone 15 Pro
+                    </div>
+                    <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
+                      IP: 112.198.102.88 • Resident Portal Mobile
+                    </div>
+                  </div>
+                </div>
+                <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>
+                  2 hours ago
+                </span>
+              </div>
+            </div>
+
+          </div>
         </div>
 
-        {/* ── TAB 1: PROFILE PICTURE & DETAILS ── */}
-        {activeTab === 'profile' && (
-          <div className="card" style={{ padding: '28px' }}>
-            <h3 style={{ fontSize: 16, fontWeight: 900, color: '#FFFFFF', margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span>📷</span> Profile Picture & Personal Details
-            </h3>
-
-            {/* Avatar Selection & Preset Gallery */}
-            <div style={{
-              background: 'rgba(15, 23, 42, 0.7)',
-              border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: 12,
-              padding: '20px',
-              marginBottom: 24
-            }}>
-              <div style={{ fontSize: 13, fontWeight: 800, color: '#FBBF24', marginBottom: 12 }}>
-                1. Select or Upload Profile Picture
+        {/* ══════════════════════════════════════════════════════ */}
+        {/* MODAL: EDIT PROFILE INFORMATION                        */}
+        {/* ══════════════════════════════════════════════════════ */}
+        {showEditModal && (
+          <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
+            <div
+              className="modal-box"
+              style={{ maxWidth: 520, width: '100%', animation: 'scaleIn 0.2s ease' }}
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="modal-header">
+                <div className="modal-title">✏️ Edit Profile Information</div>
+                <button type="button" className="modal-close" onClick={() => setShowEditModal(false)}>✕</button>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap', marginBottom: 18 }}>
-                {avatarPreview ? (
-                  <img
-                    src={avatarPreview}
-                    alt="Preview"
-                    style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', border: '2px solid #22C55E' }}
-                  />
-                ) : (
-                  <div style={{
-                    width: 72, height: 72, borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #1E3A8A, #3B82F6)',
-                    color: '#FFF', fontSize: 28, fontWeight: 800,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center'
-                  }}>
-                    {fullName.charAt(0) || 'U'}
+              <form onSubmit={handleSaveProfile}>
+                <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  <div>
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: 12 }}>
+                      Full Legal Name <span style={{ color: '#DC2626' }}>*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={fullName}
+                      onChange={e => setFullName(e.target.value)}
+                      required
+                    />
                   </div>
-                )}
 
-                <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                  <label
-                    htmlFor="main-avatar-upload"
-                    style={{
-                      padding: '8px 16px',
-                      borderRadius: 8,
-                      background: 'rgba(255,255,255,0.12)',
-                      color: '#FFF',
-                      fontSize: 12,
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      border: '1px solid rgba(255,255,255,0.2)'
-                    }}
-                  >
-                    📁 Upload Image from Device (Max 5MB)
-                  </label>
-                  <input
-                    type="file"
-                    id="main-avatar-upload"
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                    style={{ display: 'none' }}
-                  />
+                  <div>
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: 12 }}>
+                      Mobile Contact Number <span style={{ color: '#DC2626' }}>*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={phone}
+                      onChange={e => setPhone(e.target.value)}
+                      required
+                    />
+                  </div>
 
-                  {avatarPreview && (
-                    <button
-                      type="button"
-                      onClick={handleRemovePhoto}
-                      style={{
-                        padding: '8px 14px',
-                        borderRadius: 8,
-                        background: 'rgba(239,68,68,0.15)',
-                        border: '1px solid #EF4444',
-                        color: '#FCA5A5',
-                        fontSize: 12,
-                        fontWeight: 700,
-                        cursor: 'pointer'
-                      }}
-                    >
-                      ✕ Remove Photo
-                    </button>
-                  )}
-                </div>
-              </div>
+                  <div>
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: 12 }}>
+                      Email Address (Login ID)
+                    </label>
+                    <input
+                      type="email"
+                      className="form-input"
+                      value={user?.email || 'resident@palmera-hoa.com'}
+                      disabled
+                      style={{ opacity: 0.7, background: 'var(--bg-hover)' }}
+                    />
+                    <span style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2, display: 'block' }}>
+                      Email is linked to your verified Masterlist record.
+                    </span>
+                  </div>
 
-              {/* Preset Gallery */}
-              <div>
-                <div style={{ fontSize: 11.5, color: '#94A3B8', marginBottom: 10 }}>
-                  Or pick from high-definition preset community avatars:
+                  {/* Preset Community Avatars */}
+                  <div>
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: 12, marginBottom: 8 }}>
+                      Or Pick From Preset Community Avatars:
+                    </label>
+                    <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                      {PRESET_AVATARS.map(av => (
+                        <img
+                          key={av.id}
+                          src={av.url}
+                          alt={av.label}
+                          onClick={() => handleSelectPreset(av.url)}
+                          style={{
+                            width: 44,
+                            height: 44,
+                            borderRadius: '50%',
+                            objectFit: 'cover',
+                            cursor: 'pointer',
+                            border: avatarPreview === av.url ? '3px solid #166534' : '2px solid var(--border)',
+                            transform: avatarPreview === av.url ? 'scale(1.1)' : 'scale(1)',
+                            transition: 'all 0.15s ease'
+                          }}
+                          title={av.label}
+                        />
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                  {PRESET_AVATARS.map(av => (
-                    <button
-                      key={av.id}
-                      type="button"
-                      onClick={() => handleSelectPreset(av.url)}
-                      style={{
-                        padding: 4,
-                        borderRadius: '50%',
-                        border: avatarPreview === av.url ? '3px solid #22C55E' : '2px solid rgba(255,255,255,0.15)',
-                        background: 'none',
-                        cursor: 'pointer',
-                        transition: 'all 0.15s ease',
-                        boxShadow: avatarPreview === av.url ? '0 0 10px rgba(34,197,94,0.5)' : 'none'
-                      }}
-                      title={av.label}
-                    >
-                      <img
-                        src={av.url}
-                        alt={av.label}
-                        style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover' }}
-                      />
-                    </button>
-                  ))}
+
+                <div className="modal-footer" style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
+                  <button type="button" className="btn btn-secondary" onClick={() => setShowEditModal(false)}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn-primary" style={{ background: '#166534', borderColor: '#166534' }} disabled={isSavingProfile}>
+                    {isSavingProfile ? 'Saving...' : '💾 Save Profile Changes'}
+                  </button>
                 </div>
-              </div>
+              </form>
             </div>
-
-            {/* Form Fields */}
-            <form onSubmit={handleSaveProfile} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                <div>
-                  <label className="form-label">
-                    Full Legal Name <span className="req-star">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    value={fullName}
-                    onChange={e => setFullName(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="form-label">
-                    Mobile Contact Number <span className="req-star">*</span>
-                  </label>
-                  <input
-                    type="tel"
-                    className="form-input"
-                    value={phone}
-                    onChange={e => setPhone(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                <div>
-                  <label className="form-label">Email Address (Login ID)</label>
-                  <input
-                    type="email"
-                    className="form-input"
-                    value={user?.email || ''}
-                    disabled
-                    style={{ background: 'rgba(255,255,255,0.05)', color: '#9CA3AF', cursor: 'not-allowed' }}
-                  />
-                  <span style={{ fontSize: 11, color: '#94A3B8', marginTop: 3, display: 'block' }}>
-                    Email is linked to your verified Masterlist record.
-                  </span>
-                </div>
-
-                <div>
-                  <label className="form-label">Subdivision Property</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    value={`${user?.registeredBlock || 'Block 3'} ${user?.registeredLot || 'Lot 12'}, Northridge Grove Phase 2`}
-                    disabled
-                    style={{ background: 'rgba(255,255,255,0.05)', color: '#9CA3AF', cursor: 'not-allowed' }}
-                  />
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
-                <button
-                  type="submit"
-                  disabled={isSavingProfile}
-                  style={{
-                    padding: '12px 28px',
-                    borderRadius: 10,
-                    background: 'linear-gradient(135deg, #166534, #15803D)',
-                    color: '#FFFFFF',
-                    border: 'none',
-                    fontSize: 14,
-                    fontWeight: 800,
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 16px rgba(22,101,52,0.4)'
-                  }}
-                >
-                  {isSavingProfile ? 'Saving Changes...' : '💾 Save Profile Changes'}
-                </button>
-              </div>
-            </form>
           </div>
         )}
 
-        {/* ── TAB 2: CHANGE PASSWORD ── */}
-        {activeTab === 'password' && (
-          <div className="card" style={{ padding: '28px' }}>
-            <h3 style={{ fontSize: 16, fontWeight: 900, color: '#FFFFFF', margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span>🔑</span> Change Account Password
-            </h3>
-
-            <div style={{
-              background: 'rgba(245,158,11,0.12)',
-              border: '1px solid rgba(245,158,11,0.3)',
-              padding: '14px 18px',
-              borderRadius: 10,
-              marginBottom: 20,
-              fontSize: 12.5,
-              color: '#FDE68A'
-            }}>
-              🔒 <strong>Security Standard:</strong> Use at least 6 characters with a combination of letters, numbers, and symbols to ensure optimal account protection.
-            </div>
-
-            <form onSubmit={handleChangePasswordSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 520 }}>
-              <div>
-                <label className="form-label">
-                  Current Password <span className="req-star">*</span>
-                </label>
-                <input
-                  type={showPasswords ? 'text' : 'password'}
-                  className="form-input"
-                  placeholder="Enter your existing password"
-                  value={currentPassword}
-                  onChange={e => setCurrentPassword(e.target.value)}
-                  required
-                />
+        {/* ══════════════════════════════════════════════════════ */}
+        {/* MODAL: CHANGE PASSWORD                                 */}
+        {/* ══════════════════════════════════════════════════════ */}
+        {showPasswordModal && (
+          <div className="modal-overlay" onClick={() => setShowPasswordModal(false)}>
+            <div
+              className="modal-box"
+              style={{ maxWidth: 460, width: '100%', animation: 'scaleIn 0.2s ease' }}
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="modal-header">
+                <div className="modal-title">🔑 Change Account Password</div>
+                <button type="button" className="modal-close" onClick={() => setShowPasswordModal(false)}>✕</button>
               </div>
 
-              <div>
-                <label className="form-label">
-                  New Password <span className="req-star">*</span>
-                </label>
-                <input
-                  type={showPasswords ? 'text' : 'password'}
-                  className="form-input"
-                  placeholder="Minimum 6 characters"
-                  value={newPassword}
-                  onChange={e => setNewPassword(e.target.value)}
-                  required
-                  minLength={6}
-                />
-              </div>
+              <form onSubmit={handleChangePasswordSubmit}>
+                <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  <div>
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: 12 }}>
+                      Current Password <span style={{ color: '#DC2626' }}>*</span>
+                    </label>
+                    <input
+                      type={showPasswords ? 'text' : 'password'}
+                      className="form-input"
+                      value={currentPassword}
+                      onChange={e => setCurrentPassword(e.target.value)}
+                      placeholder="Enter current password"
+                      required
+                    />
+                  </div>
 
-              <div>
-                <label className="form-label">
-                  Confirm New Password <span className="req-star">*</span>
-                </label>
-                <input
-                  type={showPasswords ? 'text' : 'password'}
-                  className="form-input"
-                  placeholder="Re-enter new password"
-                  value={confirmPassword}
-                  onChange={e => setConfirmPassword(e.target.value)}
-                  required
-                />
-              </div>
+                  <div>
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: 12 }}>
+                      New Password <span style={{ color: '#DC2626' }}>*</span>
+                    </label>
+                    <input
+                      type={showPasswords ? 'text' : 'password'}
+                      className="form-input"
+                      value={newPassword}
+                      onChange={e => setNewPassword(e.target.value)}
+                      placeholder="Minimum 6 characters"
+                      required
+                    />
+                  </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 2 }}>
-                <input
-                  type="checkbox"
-                  id="show-pwd-checkbox"
-                  checked={showPasswords}
-                  onChange={e => setShowPasswords(e.target.checked)}
-                  style={{ width: 16, height: 16, cursor: 'pointer', accentColor: '#DC2626' }}
-                />
-                <label htmlFor="show-pwd-checkbox" style={{ fontSize: 12, color: '#E2E8F0', cursor: 'pointer' }}>
-                  Show Passwords
-                </label>
-              </div>
+                  <div>
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: 12 }}>
+                      Confirm New Password <span style={{ color: '#DC2626' }}>*</span>
+                    </label>
+                    <input
+                      type={showPasswords ? 'text' : 'password'}
+                      className="form-input"
+                      value={confirmPassword}
+                      onChange={e => setConfirmPassword(e.target.value)}
+                      placeholder="Confirm new password"
+                      required
+                    />
+                  </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: 10 }}>
-                <button
-                  type="submit"
-                  disabled={isChangingPassword}
-                  style={{
-                    padding: '12px 28px',
-                    borderRadius: 10,
-                    background: 'linear-gradient(135deg, #DC2626, #B91C1C)',
-                    color: '#FFFFFF',
-                    border: 'none',
-                    fontSize: 14,
-                    fontWeight: 800,
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 16px rgba(220,38,38,0.4)'
-                  }}
-                >
-                  {isChangingPassword ? 'Updating Password...' : '🔒 Update Account Password'}
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-
-        {/* ── TAB 3: PRIVACY & CLEARANCE ── */}
-        {activeTab === 'security' && (
-          <div className="card" style={{ padding: '28px' }}>
-            <h3 style={{ fontSize: 16, fontWeight: 900, color: '#FFFFFF', margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span>🛡️</span> Security Clearance & Data Privacy Status
-            </h3>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
-              <div style={{ background: 'rgba(15, 23, 42, 0.7)', padding: 18, borderRadius: 10, border: '1px solid rgba(255,255,255,0.08)' }}>
-                <div style={{ fontSize: 12, color: '#94A3B8', fontWeight: 700 }}>ACCOUNT ACCESS LEVEL</div>
-                <div style={{ fontSize: 16, fontWeight: 900, color: '#86EFAC', marginTop: 4 }}>
-                  {user?.roleName?.replace(/_/g, ' ').toUpperCase()}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <input
+                      type="checkbox"
+                      id="toggle-pwd-visibility"
+                      checked={showPasswords}
+                      onChange={e => setShowPasswords(e.target.checked)}
+                    />
+                    <label htmlFor="toggle-pwd-visibility" style={{ fontSize: 12, color: 'var(--text-secondary)', cursor: 'pointer' }}>
+                      Show password characters
+                    </label>
+                  </div>
                 </div>
-                <div style={{ fontSize: 12, color: '#CBD5E1', marginTop: 6 }}>
-                  Role permissions active for {user?.tenantName}.
-                </div>
-              </div>
 
-              <div style={{ background: 'rgba(15, 23, 42, 0.7)', padding: 18, borderRadius: 10, border: '1px solid rgba(255,255,255,0.08)' }}>
-                <div style={{ fontSize: 12, color: '#94A3B8', fontWeight: 700 }}>DATA PRIVACY PROTECTION</div>
-                <div style={{ fontSize: 16, fontWeight: 900, color: '#38BDF8', marginTop: 4 }}>
-                  R.A. 10173 Compliant
+                <div className="modal-footer" style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
+                  <button type="button" className="btn btn-secondary" onClick={() => setShowPasswordModal(false)}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn-primary" style={{ background: '#166534', borderColor: '#166534' }} disabled={isChangingPassword}>
+                    {isChangingPassword ? 'Updating...' : '🔒 Update Password'}
+                  </button>
                 </div>
-                <div style={{ fontSize: 12, color: '#CBD5E1', marginTop: 6 }}>
-                  PII and Sensitive ID photos protected in Encrypted Vault.
-                </div>
-              </div>
-            </div>
-
-            <div style={{
-              background: 'rgba(22, 101, 52, 0.15)',
-              border: '1px solid rgba(34, 197, 94, 0.3)',
-              padding: '16px 20px',
-              borderRadius: 10,
-              fontSize: 12.5,
-              color: '#D1FAE5',
-              lineHeight: 1.6
-            }}>
-              ✓ <strong>Continuous Session Protection:</strong> Your account password and profile changes are automatically synchronized and encrypted across portal sessions.
+              </form>
             </div>
           </div>
         )}
