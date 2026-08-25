@@ -336,23 +336,23 @@ export default function Sidebar() {
       </div>
 
       {/* Bottom User Card */}
-      <div className="sidebar-footer" ref={userMenuRef} style={{ padding: 10, borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+      <div className="sidebar-footer" ref={userMenuRef} style={{ padding: 10, borderTop: '1px solid rgba(255, 255, 255, 0.12)' }}>
         {showMenu && (
           <div className="user-popover-menu" style={{
             position: 'absolute',
             bottom: 74,
             left: 10,
             right: 10,
-            background: '#063D2E',
-            border: '1px solid rgba(52, 211, 153, 0.25)',
+            background: '#0D4A36',
+            border: '1px solid rgba(110, 231, 183, 0.3)',
             borderRadius: 8,
-            boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.4)',
             padding: 4,
             zIndex: 100
           }}>
-            <div style={{ padding: '8px 10px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+            <div style={{ padding: '8px 10px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
               <div style={{ fontSize: 12.5, fontWeight: 700, color: '#FFFFFF' }}>{user.fullName}</div>
-              <div style={{ fontSize: 11, color: '#86EFAC' }}>{user.email}</div>
+              <div style={{ fontSize: 11, color: '#A7F3D0' }}>{user.email}</div>
             </div>
             <button
               type="button"
@@ -366,7 +366,7 @@ export default function Sidebar() {
               type="button"
               onClick={handleLogout}
               className="user-menu-item"
-              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#F87171', fontSize: 12, fontWeight: 600, cursor: 'pointer', borderRadius: 4 }}
+              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#FCA5A5', fontSize: 12, fontWeight: 600, cursor: 'pointer', borderRadius: 4 }}
             >
               Logout
             </button>
@@ -382,7 +382,7 @@ export default function Sidebar() {
             padding: '8px 10px',
             borderRadius: 6,
             cursor: 'pointer',
-            background: showMenu ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
+            background: showMenu ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
             transition: 'all 0.15s ease'
           }}
         >
@@ -391,8 +391,8 @@ export default function Sidebar() {
           ) : (
             <div style={{
               width: 28, height: 28, borderRadius: '50%',
-              background: '#047857', color: '#FFFFFF',
-              border: '1px solid rgba(52, 211, 153, 0.3)',
+              background: '#059669', color: '#FFFFFF',
+              border: '1px solid rgba(167, 243, 208, 0.4)',
               fontSize: 11, fontWeight: 700,
               display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}>
@@ -403,7 +403,7 @@ export default function Sidebar() {
             <div style={{ fontSize: 12, fontWeight: 600, color: '#FFFFFF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {user.fullName}
             </div>
-            <div style={{ fontSize: 10.5, color: '#86EFAC' }}>
+            <div style={{ fontSize: 10.5, color: '#A7F3D0' }}>
               {user.roleName.replace(/_/g, ' ')}
             </div>
           </div>
@@ -414,8 +414,8 @@ export default function Sidebar() {
         .minimalist-sidebar {
           width: 240px;
           min-width: 240px;
-          background: #062E22;
-          border-right: 1px solid rgba(255, 255, 255, 0.08);
+          background: #0D4A36;
+          border-right: 1px solid rgba(255, 255, 255, 0.12);
           display: flex;
           flex-direction: column;
           height: 100vh;
@@ -433,13 +433,13 @@ export default function Sidebar() {
           gap: 12px;
           padding: 0 18px;
           border-bottom: 2px solid #16A34A;
-          background: #062E22;
+          background: #0D4A36;
         }
         .sidebar-brand-title {
           color: #FFFFFF !important;
         }
         .sidebar-brand-sub {
-          color: #34D399 !important;
+          color: #6EE7B7 !important;
         }
         .sidebar-nav-link {
           display: flex;
@@ -449,17 +449,17 @@ export default function Sidebar() {
           border-radius: 6px;
           font-size: 12.5px;
           font-weight: 500;
-          color: #A7F3D0;
+          color: #D1FAE5;
           text-decoration: none;
           transition: all 0.15s ease;
         }
         .sidebar-nav-link:hover {
-          background: rgba(255, 255, 255, 0.08);
+          background: rgba(255, 255, 255, 0.1);
           color: #FFFFFF;
         }
         .sidebar-nav-link.active {
-          background: rgba(16, 185, 129, 0.22);
-          border: 1px solid rgba(52, 211, 153, 0.35);
+          background: rgba(255, 255, 255, 0.2);
+          border: 1px solid rgba(255, 255, 255, 0.25);
           color: #FFFFFF;
           font-weight: 600;
         }

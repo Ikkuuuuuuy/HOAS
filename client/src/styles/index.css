@@ -66,18 +66,18 @@
   --accent-glow:    rgba(22, 163, 74, 0.25);
   --accent-soft:    rgba(22, 163, 74, 0.12);
 
-  /* Sidebar & Navbar Tokens — Northridge Grove Evergreen Branding */
-  --sidebar-bg:          #062E22; /* Rich Northridge Evergreen */
-  --sidebar-border:      rgba(255, 255, 255, 0.08);
+  /* Sidebar & Navbar Tokens — Lighter Vibrant Northridge Green */
+  --sidebar-bg:          #0D4A36; /* Lighter Vibrant Northridge Green */
+  --sidebar-border:      rgba(255, 255, 255, 0.12);
   --sidebar-text-title:  #FFFFFF;
-  --sidebar-text-sub:    #34D399; /* Northridge Mint Emerald */
-  --sidebar-nav-color:   #A7F3D0; /* Soft Sage Green */
-  --sidebar-nav-hover:   rgba(255, 255, 255, 0.08);
+  --sidebar-text-sub:    #6EE7B7; /* Bright Mint */
+  --sidebar-nav-color:   #D1FAE5; /* Light Mint */
+  --sidebar-nav-hover:   rgba(255, 255, 255, 0.10);
   --sidebar-nav-hover-t: #FFFFFF;
-  --sidebar-nav-act-bg:  rgba(16, 185, 129, 0.22);
+  --sidebar-nav-act-bg:  rgba(255, 255, 255, 0.20);
   --sidebar-nav-act-t:   #FFFFFF;
-  --sidebar-card-bg:     #063D2E;
-  --sidebar-card-bdr:    rgba(52, 211, 153, 0.25);
+  --sidebar-card-bg:     #0D4A36;
+  --sidebar-card-bdr:    rgba(110, 231, 183, 0.3);
 
   --navbar-bg:           #FFFFFF; /* Clean Top Bar */
   --navbar-border:       #16A34A; /* Northridge Green Border Line */
@@ -146,17 +146,17 @@
   --text-muted:     #6B7280;
   --text-inverse:   #FFFFFF;
 
-  --sidebar-bg:          #062E22; /* Rich Northridge Evergreen */
-  --sidebar-border:      rgba(255, 255, 255, 0.08);
+  --sidebar-bg:          #0D4A36; /* Lighter Vibrant Northridge Green */
+  --sidebar-border:      rgba(255, 255, 255, 0.12);
   --sidebar-text-title:  #FFFFFF;
-  --sidebar-text-sub:    #34D399; /* Northridge Mint Emerald */
-  --sidebar-nav-color:   #A7F3D0; /* Soft Sage Green */
-  --sidebar-nav-hover:   rgba(255, 255, 255, 0.08);
+  --sidebar-text-sub:    #6EE7B7; /* Bright Mint */
+  --sidebar-nav-color:   #D1FAE5; /* Light Mint */
+  --sidebar-nav-hover:   rgba(255, 255, 255, 0.10);
   --sidebar-nav-hover-t: #FFFFFF;
-  --sidebar-nav-act-bg:  rgba(16, 185, 129, 0.22);
+  --sidebar-nav-act-bg:  rgba(255, 255, 255, 0.20);
   --sidebar-nav-act-t:   #FFFFFF;
-  --sidebar-card-bg:     #063D2E;
-  --sidebar-card-bdr:    rgba(52, 211, 153, 0.25);
+  --sidebar-card-bg:     #0D4A36;
+  --sidebar-card-bdr:    rgba(110, 231, 183, 0.3);
 
   --navbar-bg:           #FFFFFF;
   --navbar-border:       #16A34A;
