@@ -42,7 +42,7 @@ export default function SecurityDashboard() {
             <div>
               <div style={{ color: '#FCA5A5', fontWeight: 700 }}>ACTIVE EMERGENCY ALERT</div>
               <div style={{ color: '#FECACA', fontSize: 'var(--font-sm)' }}>
-                {activeAlerts[0].alertType.toUpperCase()}: {activeAlerts[0].message}
+                {String(activeAlerts[0]?.alertType || (activeAlerts[0] as any)?.alert_type || 'ALERT').toUpperCase()}: {activeAlerts[0]?.message}
               </div>
             </div>
           </div>

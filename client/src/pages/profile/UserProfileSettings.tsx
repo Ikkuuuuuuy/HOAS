@@ -125,9 +125,9 @@ export default function UserProfileSettings() {
   // User Initials
   const getInitials = () => {
     if (!user?.fullName) return 'RD';
-    const parts = user.fullName.trim().split(' ');
-    if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
-    return user.fullName.slice(0, 2).toUpperCase();
+    const parts = (user.fullName || '').trim().split(' ').filter(Boolean);
+    if (parts.length >= 2 && parts[0] && parts[1]) return `${parts[0][0] || ''}${parts[1][0] || ''}`.toUpperCase();
+    return String(user.fullName || 'RD').slice(0, 2).toUpperCase();
   };
 
   // Role Badging

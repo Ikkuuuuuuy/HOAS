@@ -457,7 +457,7 @@ export default function HOAOfficersDirectory() {
                       </div>
                       <div>
                         <span className="badge" style={{ background: `${officer.color}15`, color: officer.color, fontWeight: 800, fontSize: 10 }}>
-                          {officer.badge.toUpperCase()}
+                          {String(officer.badge || 'OFFICER').toUpperCase()}
                         </span>
                         <h4 style={{ fontSize: 16, fontWeight: 900, color: 'var(--text-primary)', marginTop: 2, margin: 0 }}>
                           {officer.name}
@@ -625,7 +625,7 @@ export default function HOAOfficersDirectory() {
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <span className="badge" style={{ background: `${officer.color}15`, color: officer.color, fontWeight: 800 }}>
-                        {officer.badge.toUpperCase()}
+                        {String(officer.badge || 'OFFICER').toUpperCase()}
                       </span>
                       <span style={{ fontSize: 20 }}>{officer.avatarIcon}</span>
                     </div>

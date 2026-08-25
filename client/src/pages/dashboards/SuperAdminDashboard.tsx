@@ -127,7 +127,7 @@ export default function SuperAdminDashboard() {
                   </div>
                   <div>
                     <div className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{t.name}</div>
-                    <div className="text-xs text-muted">{t.type.toUpperCase()} • {t.user_count} users</div>
+                    <div className="text-xs text-muted">{String(t.type || 'HOA').toUpperCase()} • {t.user_count} users</div>
                   </div>
                 </div>
                 <span className={`badge badge-${t.type === 'barangay' ? 'approved' : 'issued'}`}>Active</span>

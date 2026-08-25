@@ -465,7 +465,7 @@ export default function DocumentRequests() {
     };
 
     setRequests([newTicket, ...requests]);
-    success('Service Request Submitted! 🚀', `Assigned Reference #: ${generatedRef}. Priority SLA: ${priority.toUpperCase()}`);
+    success('Service Request Submitted! 🚀', `Assigned Reference #: ${generatedRef}. Priority SLA: ${String(priority || 'MEDIUM').toUpperCase()}`);
     setShowModal(false);
 
     // Reset Form
@@ -492,7 +492,7 @@ export default function DocumentRequests() {
       return item;
     }));
 
-    success('Request Status Updated ✅', `Ref ${selectedRequest.ref_no} set to ${adminStatusInput.toUpperCase()}`);
+    success('Request Status Updated ✅', `Ref ${selectedRequest.ref_no} set to ${String(adminStatusInput || 'UPDATED').toUpperCase()}`);
     setSelectedRequest(null);
   };
 
@@ -1351,7 +1351,7 @@ export default function DocumentRequests() {
                 {/* SPECIFIC PAYLOAD */}
                 <div className="card mb-4" style={{ padding: 14 }}>
                   <div style={{ fontSize: 12, fontWeight: 800, color: '#2563EB', marginBottom: 8 }}>
-                    {getRequestTypeMeta(selectedRequest.request_type).label.toUpperCase()} DATA
+                    {String(getRequestTypeMeta(selectedRequest.request_type)?.label || 'SERVICE').toUpperCase()} DATA
                   </div>
                   <div style={{ fontSize: 13, color: 'var(--text-primary)' }}>
                     {Object.entries(selectedRequest.specific_data).map(([k, v]) => (

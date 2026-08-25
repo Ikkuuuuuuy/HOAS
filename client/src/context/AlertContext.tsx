@@ -44,7 +44,7 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
               // Browser notification if supported
               try {
                 if (typeof window !== 'undefined' && 'Notification' in window && window.Notification && window.Notification.permission === 'granted') {
-                  const aType = data?.alert?.alertType || data?.alert?.alert_type || 'EMERGENCY';
+                  const aType = String(data?.alert?.alertType || data?.alert?.alert_type || 'EMERGENCY');
                   new window.Notification(`🚨 Emergency Alert: ${aType.toUpperCase()}`, {
                     body: data?.alert?.message || 'New emergency alert broadcasted.',
                   });

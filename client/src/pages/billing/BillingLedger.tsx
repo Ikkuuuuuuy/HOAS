@@ -255,8 +255,8 @@ export default function BillingLedger() {
                   <td style={{ color: '#166534', fontWeight: 700 }}>₱{(item.paid_amount || 0).toLocaleString()}</td>
                   <td style={{ color: item.balance ? '#DC2626' : '#6B7280', fontWeight: 700 }}>₱{(item.balance || 0).toLocaleString()}</td>
                   <td>
-                    <span className={`badge badge-${item.status}`}>
-                      {item.status === 'pending_approval' ? '⏳ Pending Approval' : item.status.toUpperCase()}
+                    <span className={`badge badge-${item.status || 'unpaid'}`}>
+                      {item.status === 'pending_approval' ? '⏳ Pending Approval' : String(item.status || 'UNPAID').toUpperCase()}
                     </span>
                   </td>
                   <td>

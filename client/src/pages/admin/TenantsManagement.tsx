@@ -62,7 +62,7 @@ export default function TenantsManagement() {
     setIsSubmitting(true);
     try {
       // Create tenant logic
-      success('Tenant Provisioned! 🏛', `New ${tenantType.toUpperCase()} organization "${tenantName}" created with data isolation.`);
+      success('Tenant Provisioned! 🏛', `New ${String(tenantType || 'HOA').toUpperCase()} organization "${tenantName}" created with data isolation.`);
       setShowModal(false);
       setTenantName('');
       setTenantLocation('');

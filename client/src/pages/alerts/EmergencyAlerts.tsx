@@ -158,8 +158,8 @@ export default function EmergencyAlerts() {
                   <div style={{ fontSize: '2rem', flex: 'none', animation: 'pulse 1.5s infinite' }}>{cfg?.emoji}</div>
                   <div style={{ flex: 1 }}>
                     <div className="flex items-center gap-3 mb-2 flex-wrap">
-                      <span className="badge badge-active" style={{ background: `${cfg?.color}20`, color: cfg?.color, borderRadius: 'var(--radius-full)', padding: '2px 10px' }}>
-                        {(alertTypeKey || 'ALERT').toUpperCase()}
+                      <span className="badge badge-active" style={{ background: `${cfg?.color || '#DC2626'}20`, color: cfg?.color || '#DC2626', borderRadius: 'var(--radius-full)', padding: '2px 10px' }}>
+                        {String(alertTypeKey || 'ALERT').toUpperCase()}
                       </span>
                       <span className="text-xs text-muted">Broadcast: {alert.broadcast_to || alert.broadcastTo || 'all'}</span>
                       <span className="text-xs text-muted">

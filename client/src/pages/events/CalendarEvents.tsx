@@ -967,7 +967,7 @@ export default function CalendarEvents() {
                           <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>⏰ {time}</span>
                         </div>
                         <span className={`badge badge-${ev.status === 'completed' ? 'success' : ev.status === 'cancelled' ? 'danger' : 'primary'}`}>
-                          {ev.status.toUpperCase()}
+                          {String(ev.status || 'SCHEDULED').toUpperCase()}
                         </span>
                       </div>
 

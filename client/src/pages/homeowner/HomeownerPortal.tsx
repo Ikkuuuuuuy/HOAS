@@ -517,8 +517,10 @@ export default function HomeownerPortal() {
                   { id: '2', full_name: 'Maria Dela Cruz', relationship: 'Spouse', age: 39 },
                   { id: '3', full_name: 'Carlo Dela Cruz', relationship: 'Dependent (Child)', age: 14 },
                 ]).map((m: any) => {
-                  const parts = (m.full_name || 'HM').trim().split(' ');
-                  const initials = parts.length === 1 ? parts[0].slice(0, 2).toUpperCase() : (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+                  const parts = String(m.full_name || 'HM').trim().split(' ').filter(Boolean);
+                  const initials = parts.length === 1 && parts[0]
+                    ? parts[0].slice(0, 2).toUpperCase()
+                    : ((parts[0]?.[0] || 'H') + (parts[parts.length - 1]?.[0] || 'M')).toUpperCase();
                   const color = m.relationship?.includes('Head') ? '#DC2626' : (m.relationship?.includes('Spouse') ? '#166534' : '#1D4ED8');
 
                   return (

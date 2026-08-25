@@ -136,7 +136,7 @@ export default function FacilityCalendar() {
   const handleStatusUpdate = async (resId: string, status: string) => {
     try {
       await apiCall(`/api/facilities/reservations/${resId}/status`, 'PATCH', { status }, accessToken || undefined);
-      success(`Reservation ${status.toUpperCase()}`, `Court reservation has been marked as ${status}.`);
+      success(`Reservation ${String(status || 'UPDATED').toUpperCase()}`, `Court reservation has been marked as ${status}.`);
       refetch();
     } catch (err: any) {
       showError('Update Failed', err.message);

@@ -47,9 +47,12 @@ const getRelationshipColor = (rel: string) => {
 
 const getInitials = (name: string) => {
   if (!name) return 'HM';
-  const parts = name.trim().split(' ');
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  const parts = String(name || '').trim().split(' ').filter(Boolean);
+  if (parts.length === 1 && parts[0]) return parts[0].slice(0, 2).toUpperCase();
+  if (parts.length >= 2 && parts[0] && parts[parts.length - 1]) {
+    return ((parts[0][0] || '') + (parts[parts.length - 1][0] || '')).toUpperCase();
+  }
+  return 'HM';
 };
 
 export default function HouseholdMembers() {

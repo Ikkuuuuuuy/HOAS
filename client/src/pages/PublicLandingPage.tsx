@@ -958,7 +958,7 @@ export default function PublicLandingPage() {
                 >
                   <div>
                     <div className="flex justify-between items-center mb-1">
-                      <span className="badge" style={{ background: `${off.color}15`, color: off.color, fontWeight: 800, fontSize: 10 }}>{off.badge.toUpperCase()}</span>
+                      <span className="badge" style={{ background: `${off.color}15`, color: off.color, fontWeight: 800, fontSize: 10 }}>{String(off.badge || 'OFFICER').toUpperCase()}</span>
                       <span style={{ fontSize: 18 }}>{off.avatarIcon}</span>
                     </div>
                     <div style={{ fontSize: 14.5, fontWeight: 800, color: 'var(--landing-text)' }}>{off.name}</div>
