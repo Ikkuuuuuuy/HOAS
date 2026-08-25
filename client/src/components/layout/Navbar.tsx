@@ -224,8 +224,10 @@ export default function Navbar({ title }: NavbarProps) {
 
       <style>{`
         .minimalist-navbar {
-          height: 52px;
-          min-height: 52px;
+          height: 56px;
+          min-height: 56px;
+          max-height: 56px;
+          box-sizing: border-box;
           background: var(--navbar-bg);
           border-bottom: 1px solid var(--navbar-border);
           display: flex;

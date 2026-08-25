@@ -423,7 +423,10 @@ export default function Sidebar() {
           z-index: 50;
         }
         .sidebar-brand {
-          height: 64px;
+          height: 56px;
+          min-height: 56px;
+          max-height: 56px;
+          box-sizing: border-box;
           display: flex;
           align-items: center;
           gap: 10px;
