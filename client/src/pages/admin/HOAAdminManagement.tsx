@@ -317,7 +317,7 @@ export default function HOAAdminManagement() {
                   {requests.map(req => (
                     <tr key={req.id}>
                       <td><strong className="text-primary">{req.requester_name}</strong><div className="text-xs text-muted">{req.address}</div></td>
-                      <td><span className="badge badge-issued" style={{ textTransform: 'capitalize' }}>{req.request_type.replace(/_/g, ' ')}</span></td>
+                      <td><span className="badge badge-issued" style={{ textTransform: 'capitalize' }}>{((req.request_type || req.doc_type || 'General') as string).replace(/_/g, ' ')}</span></td>
                       <td className="truncate" style={{ maxWidth: 200 }}>{req.details}</td>
                       <td className="text-xs">{req.vehicle_info || req.scheduled_at || req.officer_name || '—'}</td>
                       <td><span className={`badge badge-${req.status}`}>{req.status}</span></td>

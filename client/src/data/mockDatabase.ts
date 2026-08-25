@@ -471,6 +471,7 @@ export const INITIAL_MOCK_DATABASE: MockDatabaseSchema = {
       contact_number: '0917-123-4567',
       email: 'juan.delacruz@gmail.com',
       request_type: 'car_sticker',
+      doc_type: 'car_sticker',
       priority: 'medium',
       due_date: '2026-08-30',
       status: 'under_review',
@@ -494,6 +495,7 @@ export const INITIAL_MOCK_DATABASE: MockDatabaseSchema = {
       contact_number: '0917-888-9999',
       email: 'resident@palmera-hoa.com',
       request_type: 'certificate',
+      doc_type: 'certificate',
       priority: 'low',
       due_date: '2026-08-29',
       status: 'approved',
@@ -515,6 +517,7 @@ export const INITIAL_MOCK_DATABASE: MockDatabaseSchema = {
       contact_number: '0918-554-1102',
       email: 'vp.cezar@nrgph2.org',
       request_type: 'home_improvement',
+      doc_type: 'home_improvement',
       priority: 'high',
       due_date: '2026-09-05',
       status: 'in_progress',
@@ -751,14 +754,14 @@ export function matchMasterlistRecord(params: {
 
   return HOA_MASTERLIST_DATABASE.find(record => {
     // 1. Account Number exact match
-    if (normAccount && record.accountNo.toLowerCase() === normAccount) {
+    if (normAccount && (record.accountNo || '').toLowerCase() === normAccount) {
       return true;
     }
 
-    const recordBlock = record.block.replace(/[^0-9]/g, '');
-    const recordLot = record.lot.replace(/[^0-9]/g, '');
-    const recordName = record.ownerName.trim().toLowerCase();
-    const recordPhone = record.phone.replace(/[^0-9]/g, '');
+    const recordBlock = (record.block || '').replace(/[^0-9]/g, '');
+    const recordLot = (record.lot || '').replace(/[^0-9]/g, '');
+    const recordName = (record.ownerName || '').trim().toLowerCase();
+    const recordPhone = (record.phone || '').replace(/[^0-9]/g, '');
     const recordGender = (record.gender || '').trim().toLowerCase();
     const recordDOB = (record.birthDate || '').trim();
 

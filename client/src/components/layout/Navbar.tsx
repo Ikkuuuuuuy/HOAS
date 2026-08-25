@@ -204,8 +204,8 @@ export default function Navbar({ title }: NavbarProps) {
               transition: 'all 0.15s ease'
             }}
           >
-            {user.avatarUrl ? (
-              <img src={user.avatarUrl} alt={user.fullName} style={{ width: 26, height: 26, borderRadius: '50%', objectFit: 'cover' }} />
+            {user?.avatarUrl ? (
+              <img src={user.avatarUrl} alt={user?.fullName || 'User'} style={{ width: 26, height: 26, borderRadius: '50%', objectFit: 'cover' }} />
             ) : (
               <div style={{
                 width: 26, height: 26, borderRadius: '50%',
@@ -213,11 +213,11 @@ export default function Navbar({ title }: NavbarProps) {
                 fontSize: 11, fontWeight: 700,
                 display: 'flex', alignItems: 'center', justifyContent: 'center'
               }}>
-                {user.fullName.charAt(0)}
+                {user?.fullName ? user.fullName.charAt(0) : 'U'}
               </div>
             )}
             <span style={{ fontSize: 13, fontWeight: 600, maxWidth: 110, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {user.fullName.split(' ')[0]}
+              {(user?.fullName || 'User').split(' ')[0]}
             </span>
           </button>
         )}

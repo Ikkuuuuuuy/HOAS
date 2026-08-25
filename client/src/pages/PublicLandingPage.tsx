@@ -158,9 +158,10 @@ const POI_DATA: POI[] = [
 function useCountUp(target: string, duration = 1600, triggered = false) {
   const [value, setValue] = useState('0');
   useEffect(() => {
-    if (!triggered) return;
-    const num = parseFloat(target.replace(/[^0-9.]/g, ''));
-    const suffix = target.replace(/[0-9.]/g, '');
+    if (!triggered || !target) return;
+    const cleanTarget = String(target || '');
+    const num = parseFloat(cleanTarget.replace(/[^0-9.]/g, ''));
+    const suffix = cleanTarget.replace(/[0-9.]/g, '');
     if (isNaN(num)) { setValue(target); return; }
     const steps = 60;
     const step = num / steps;
@@ -247,6 +248,7 @@ export default function PublicLandingPage() {
   };
 
   const scrollTo = (id: string) => {
+    if (!id) return;
     const targetId = SECTION_MAP[id] || id.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
     const el = document.getElementById(targetId);
     if (el) {

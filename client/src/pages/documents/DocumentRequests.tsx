@@ -1356,8 +1356,8 @@ export default function DocumentRequests() {
                   <div style={{ fontSize: 13, color: 'var(--text-primary)' }}>
                     {Object.entries(selectedRequest.specific_data).map(([k, v]) => (
                       <div key={k} style={{ padding: '4px 0', borderBottom: '1px solid var(--border-light)' }}>
-                        <strong style={{ textTransform: 'capitalize', color: 'var(--text-secondary)' }}>{k.replace(/_/g, ' ')}: </strong>
-                        <span>{Array.isArray(v) ? v.join(', ') : String(v)}</span>
+                        <strong style={{ textTransform: 'capitalize', color: 'var(--text-secondary)' }}>{String(k || '').replace(/_/g, ' ')}: </strong>
+                        <span>{Array.isArray(v) ? v.join(', ') : String(v ?? '')}</span>
                       </div>
                     ))}
                   </div>

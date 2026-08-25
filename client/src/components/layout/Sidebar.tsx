@@ -430,8 +430,8 @@ export default function Sidebar() {
             transition: 'all 0.15s ease'
           }}
         >
-          {user.avatarUrl ? (
-            <img src={user.avatarUrl} alt={user.fullName} style={{ width: 30, height: 30, borderRadius: '50%', objectFit: 'cover', border: '1.5px solid #F59E0B' }} />
+          {user?.avatarUrl ? (
+            <img src={user.avatarUrl} alt={user.fullName || 'User'} style={{ width: 30, height: 30, borderRadius: '50%', objectFit: 'cover', border: '1.5px solid #F59E0B' }} />
           ) : (
             <div style={{
               width: 30, height: 30, borderRadius: '50%',
@@ -440,15 +440,15 @@ export default function Sidebar() {
               fontSize: 11.5, fontWeight: 800,
               display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}>
-              {user.fullName.charAt(0)}
+              {user?.fullName ? user.fullName.charAt(0) : 'U'}
             </div>
           )}
           <div style={{ flex: 1, overflow: 'hidden' }}>
             <div style={{ fontSize: 12.5, fontWeight: 700, color: '#FFFFFF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {user.fullName}
+              {user?.fullName || 'User'}
             </div>
             <div style={{ fontSize: 10.5, color: '#FBBF24', fontWeight: 600 }}>
-              {user.roleName.replace(/_/g, ' ')}
+              {(user?.roleName || '').replace(/_/g, ' ')}
             </div>
           </div>
           <span style={{ color: '#94A3B8', fontSize: 11 }}>▾</span>

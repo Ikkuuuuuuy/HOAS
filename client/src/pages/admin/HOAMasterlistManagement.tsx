@@ -160,8 +160,8 @@ export default function HOAMasterlistManagement() {
     }
 
     const calculatedStreet = BLOCK_STREET_MAP[formBlock] || formStreet || 'Maagap Street';
-    const normBlockNum = formBlock.replace(/[^0-9]/g, '').padStart(2, '0');
-    const normLotNum = formLot.replace(/[^0-9]/g, '').padStart(2, '0');
+    const normBlockNum = String(formBlock || '').replace(/[^0-9]/g, '').padStart(2, '0');
+    const normLotNum = String(formLot || '').replace(/[^0-9]/g, '').padStart(2, '0');
     const finalAccountNo = formAccountNo.trim() || `NRG2-B${normBlockNum}L${normLotNum}`;
 
     if (editingRecord) {
@@ -230,7 +230,7 @@ export default function HOAMasterlistManagement() {
           throw new Error('The file appears empty or missing table headers.');
         }
 
-        const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/["']/g, ''));
+        const headers = lines[0].split(',').map(h => String(h || '').trim().toLowerCase().replace(/["']/g, ''));
         
         // Match header indices
         const nameIdx = headers.findIndex(h => h.includes('name') || h.includes('owner'));
@@ -245,7 +245,7 @@ export default function HOAMasterlistManagement() {
         const parsed: MasterlistRecord[] = [];
 
         for (let i = 1; i < lines.length; i++) {
-          const row = lines[i].split(',').map(c => c.trim().replace(/^["']|["']$/g, ''));
+          const row = lines[i].split(',').map(c => String(c || '').trim().replace(/^["']|["']$/g, ''));
           if (row.length < 2) continue;
 
           const rawBlock = blockIdx !== -1 ? row[blockIdx] : 'Block 1';
@@ -256,8 +256,8 @@ export default function HOAMasterlistManagement() {
 
           if (!ownerName || ownerName === 'Homeowner') continue;
 
-          const normBlockNum = block.replace(/[^0-9]/g, '').padStart(2, '0');
-          const normLotNum = lot.replace(/[^0-9]/g, '').padStart(2, '0');
+          const normBlockNum = String(block || '').replace(/[^0-9]/g, '').padStart(2, '0');
+          const normLotNum = String(lot || '').replace(/[^0-9]/g, '').padStart(2, '0');
 
           parsed.push({
             id: `ml-imp-${Date.now()}-${i}`,
@@ -267,7 +267,7 @@ export default function HOAMasterlistManagement() {
             street: streetIdx !== -1 && row[streetIdx] ? row[streetIdx] : (BLOCK_STREET_MAP[block] || 'Maagap Street'),
             ownerName: ownerName,
             phone: phoneIdx !== -1 && row[phoneIdx] ? row[phoneIdx] : '0917-000-0000',
-            email: emailIdx !== -1 && row[emailIdx] ? row[emailIdx] : `${ownerName.toLowerCase().replace(/\s+/g, '.')}@gmail.com`,
+            email: emailIdx !== -1 && row[emailIdx] ? row[emailIdx] : `${String(ownerName || '').toLowerCase().replace(/\s+/g, '.')}@gmail.com`,
             ownershipType: (typeIdx !== -1 && row[typeIdx]) ? (row[typeIdx] as any) : 'Turned-over Owner',
             turnoverDate: '2024-01-15',
             status: 'verified_active',

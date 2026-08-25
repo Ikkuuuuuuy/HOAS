@@ -72,7 +72,7 @@ export default function BarangayDashboard() {
                       <td className="font-semibold" style={{ color: 'var(--text-primary)' }}>{doc.requester_name}</td>
                       <td>
                         <span style={{ fontSize: 'var(--font-xs)', color: 'var(--text-muted)' }}>
-                          {doc.doc_type.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())}
+                          {((doc.doc_type || doc.request_type || doc.title || 'Document') as string).replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())}
                         </span>
                       </td>
                       <td className="truncate" style={{ maxWidth: 120 }}>{doc.purpose}</td>
