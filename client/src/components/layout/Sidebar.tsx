@@ -255,16 +255,20 @@ export default function Sidebar() {
       {/* Brand Header */}
       <div className="sidebar-brand">
         <div style={{
-          width: 32, height: 32, borderRadius: 8, overflow: 'hidden', flexShrink: 0,
-          background: '#FFFFFF', border: '1px solid var(--sidebar-border)'
+          width: 44, height: 44, borderRadius: '50%', overflow: 'hidden', flexShrink: 0,
+          background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center'
         }}>
-          <img src="/nrg-ph2-logo.png" alt="NRG PH2 HOA" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <img
+            src="/nrg-ph2-logo.png"
+            alt="NRG PH2 HOA"
+            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+          />
         </div>
         <div style={{ overflow: 'hidden' }}>
-          <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--sidebar-text-title)', whiteSpace: 'nowrap', lineHeight: 1.2 }}>
+          <div style={{ fontSize: 14.5, fontWeight: 800, color: '#FFFFFF', whiteSpace: 'nowrap', lineHeight: 1.2, letterSpacing: '-0.01em' }}>
             NRG PH2 HOA
           </div>
-          <div style={{ fontSize: 11, color: 'var(--sidebar-text-sub)', whiteSpace: 'nowrap' }}>
+          <div style={{ fontSize: 11.5, color: '#6EE7B7', fontWeight: 600, whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>
             Phase 2 Cloud Portal
           </div>
         </div>
