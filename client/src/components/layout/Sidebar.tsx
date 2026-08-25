@@ -343,22 +343,22 @@ export default function Sidebar() {
             bottom: 74,
             left: 10,
             right: 10,
-            background: '#0F172A',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
+            background: '#063D2E',
+            border: '1px solid rgba(52, 211, 153, 0.25)',
             borderRadius: 8,
-            boxShadow: '0 10px 30px rgba(0,0,0,0.4)',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
             padding: 4,
             zIndex: 100
           }}>
             <div style={{ padding: '8px 10px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
-              <div style={{ fontSize: 12.5, fontWeight: 700, color: '#F8FAFC' }}>{user.fullName}</div>
-              <div style={{ fontSize: 11, color: '#94A3B8' }}>{user.email}</div>
+              <div style={{ fontSize: 12.5, fontWeight: 700, color: '#FFFFFF' }}>{user.fullName}</div>
+              <div style={{ fontSize: 11, color: '#86EFAC' }}>{user.email}</div>
             </div>
             <button
               type="button"
               onClick={() => { setShowMenu(false); navigate('/profile'); }}
               className="user-menu-item"
-              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#E2E8F0', fontSize: 12, cursor: 'pointer', borderRadius: 4 }}
+              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#ECFDF5', fontSize: 12, cursor: 'pointer', borderRadius: 4 }}
             >
               Account Settings
             </button>
@@ -391,8 +391,8 @@ export default function Sidebar() {
           ) : (
             <div style={{
               width: 28, height: 28, borderRadius: '50%',
-              background: '#1E293B', color: '#F8FAFC',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
+              background: '#047857', color: '#FFFFFF',
+              border: '1px solid rgba(52, 211, 153, 0.3)',
               fontSize: 11, fontWeight: 700,
               display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}>
@@ -400,10 +400,10 @@ export default function Sidebar() {
             </div>
           )}
           <div style={{ flex: 1, overflow: 'hidden' }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: '#F8FAFC', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#FFFFFF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {user.fullName}
             </div>
-            <div style={{ fontSize: 10.5, color: '#94A3B8' }}>
+            <div style={{ fontSize: 10.5, color: '#86EFAC' }}>
               {user.roleName.replace(/_/g, ' ')}
             </div>
           </div>
@@ -414,7 +414,7 @@ export default function Sidebar() {
         .minimalist-sidebar {
           width: 240px;
           min-width: 240px;
-          background: #0B1120;
+          background: #062E22;
           border-right: 1px solid rgba(255, 255, 255, 0.08);
           display: flex;
           flex-direction: column;
@@ -433,13 +433,13 @@ export default function Sidebar() {
           gap: 12px;
           padding: 0 18px;
           border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          background: #0B1120;
+          background: #062E22;
         }
         .sidebar-brand-title {
           color: #FFFFFF !important;
         }
         .sidebar-brand-sub {
-          color: #94A3B8 !important;
+          color: #34D399 !important;
         }
         .sidebar-nav-link {
           display: flex;
@@ -449,17 +449,17 @@ export default function Sidebar() {
           border-radius: 6px;
           font-size: 12.5px;
           font-weight: 500;
-          color: #94A3B8;
+          color: #A7F3D0;
           text-decoration: none;
           transition: all 0.15s ease;
         }
         .sidebar-nav-link:hover {
-          background: rgba(255, 255, 255, 0.05);
-          color: #F8FAFC;
+          background: rgba(255, 255, 255, 0.08);
+          color: #FFFFFF;
         }
         .sidebar-nav-link.active {
-          background: rgba(255, 255, 255, 0.1);
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: rgba(16, 185, 129, 0.22);
+          border: 1px solid rgba(52, 211, 153, 0.35);
           color: #FFFFFF;
           font-weight: 600;
         }

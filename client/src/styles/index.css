@@ -66,18 +66,18 @@
   --accent-glow:    rgba(22, 163, 74, 0.25);
   --accent-soft:    rgba(22, 163, 74, 0.12);
 
-  /* Sidebar & Navbar Tokens */
-  --sidebar-bg:          #0B1120; /* Enterprise Dark Navy */
+  /* Sidebar & Navbar Tokens — Northridge Grove Evergreen Branding */
+  --sidebar-bg:          #062E22; /* Rich Northridge Evergreen */
   --sidebar-border:      rgba(255, 255, 255, 0.08);
   --sidebar-text-title:  #FFFFFF;
-  --sidebar-text-sub:    #94A3B8;
-  --sidebar-nav-color:   #94A3B8;
-  --sidebar-nav-hover:   rgba(255, 255, 255, 0.05);
-  --sidebar-nav-hover-t: #F8FAFC;
-  --sidebar-nav-act-bg:  rgba(255, 255, 255, 0.10);
+  --sidebar-text-sub:    #34D399; /* Northridge Mint Emerald */
+  --sidebar-nav-color:   #A7F3D0; /* Soft Sage Green */
+  --sidebar-nav-hover:   rgba(255, 255, 255, 0.08);
+  --sidebar-nav-hover-t: #FFFFFF;
+  --sidebar-nav-act-bg:  rgba(16, 185, 129, 0.22);
   --sidebar-nav-act-t:   #FFFFFF;
-  --sidebar-card-bg:     #0F172A;
-  --sidebar-card-bdr:    rgba(255, 255, 255, 0.08);
+  --sidebar-card-bg:     #063D2E;
+  --sidebar-card-bdr:    rgba(52, 211, 153, 0.25);
 
   --navbar-bg:           #FFFFFF; /* Clean Top Bar */
   --navbar-border:       #E5E7EB; /* Subtle Bottom Border */
@@ -146,17 +146,17 @@
   --text-muted:     #6B7280;
   --text-inverse:   #FFFFFF;
 
-  --sidebar-bg:          #0B1120; /* Enterprise Dark Navy */
+  --sidebar-bg:          #062E22; /* Rich Northridge Evergreen */
   --sidebar-border:      rgba(255, 255, 255, 0.08);
   --sidebar-text-title:  #FFFFFF;
-  --sidebar-text-sub:    #94A3B8;
-  --sidebar-nav-color:   #94A3B8;
-  --sidebar-nav-hover:   rgba(255, 255, 255, 0.05);
-  --sidebar-nav-hover-t: #F8FAFC;
-  --sidebar-nav-act-bg:  rgba(255, 255, 255, 0.10);
+  --sidebar-text-sub:    #34D399; /* Northridge Mint Emerald */
+  --sidebar-nav-color:   #A7F3D0; /* Soft Sage Green */
+  --sidebar-nav-hover:   rgba(255, 255, 255, 0.08);
+  --sidebar-nav-hover-t: #FFFFFF;
+  --sidebar-nav-act-bg:  rgba(16, 185, 129, 0.22);
   --sidebar-nav-act-t:   #FFFFFF;
-  --sidebar-card-bg:     #0F172A;
-  --sidebar-card-bdr:    rgba(255, 255, 255, 0.08);
+  --sidebar-card-bg:     #063D2E;
+  --sidebar-card-bdr:    rgba(52, 211, 153, 0.25);
 
   --navbar-bg:           #FFFFFF;
   --navbar-border:       #E5E7EB;
