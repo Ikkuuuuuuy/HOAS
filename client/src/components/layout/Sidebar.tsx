@@ -340,17 +340,21 @@ export default function Sidebar() {
       </div>
 
       {/* Bottom User Card */}
-      <div className="sidebar-footer" ref={userMenuRef} style={{ padding: 10, borderTop: '1px solid rgba(255, 255, 255, 0.12)' }}>
+      <div className="sidebar-footer" ref={userMenuRef} style={{
+        padding: '12px 12px',
+        borderTop: '1px solid rgba(52, 211, 153, 0.25)',
+        background: '#06281E'
+      }}>
         {showMenu && (
           <div className="user-popover-menu" style={{
             position: 'absolute',
-            bottom: 74,
+            bottom: 78,
             left: 10,
             right: 10,
-            background: '#0D4A36',
-            border: '1px solid rgba(110, 231, 183, 0.3)',
+            background: '#073327',
+            border: '1px solid rgba(110, 231, 183, 0.35)',
             borderRadius: 8,
-            boxShadow: '0 10px 30px rgba(0,0,0,0.4)',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
             padding: 4,
             zIndex: 100
           }}>
@@ -437,7 +441,7 @@ export default function Sidebar() {
           gap: 12px;
           padding: 0 18px;
           border-bottom: 2px solid #16A34A;
-          background: #0D4A36;
+          background: #06281E;
         }
         .sidebar-brand-title {
           color: #FFFFFF !important;
