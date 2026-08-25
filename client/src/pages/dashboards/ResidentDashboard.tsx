@@ -33,7 +33,7 @@ export default function ResidentDashboard() {
         location: `${user?.tenantName} — Resident Unit`,
         broadcastTo: 'all',
       }, accessToken || undefined);
-      success('🆘 Emergency Alert Sent!', 'Security and Barangay emergency responders have been notified.');
+      success('Emergency Alert Sent', 'Security and Barangay emergency responders have been notified.');
       setTimeout(() => setIsPanicActive(false), 5000);
     } catch (err: any) {
       showError('Alert Failed', err.message);
@@ -60,19 +60,19 @@ export default function ResidentDashboard() {
         {/* ── 1. MINIMALIST HERO BANNER ── */}
         <div style={{
           background: 'linear-gradient(135deg, #0B1120 0%, #111827 50%, #1E293B 100%)',
-          borderRadius: 14,
-          padding: '24px 28px',
+          borderRadius: 12,
+          padding: '22px 26px',
           color: '#FFFFFF',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
           gap: 16,
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
         }}>
           <div>
             <div style={{
-              fontSize: 11,
+              fontSize: 10.5,
               fontWeight: 700,
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
@@ -81,51 +81,51 @@ export default function ResidentDashboard() {
             }}>
               Homeowner Portal & Services
             </div>
-            <h1 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 6px 0', color: '#FFFFFF' }}>
+            <h1 style={{ fontSize: 22, fontWeight: 800, margin: '0 0 6px 0', color: '#FFFFFF' }}>
               Welcome Home, {user?.fullName?.split(' ')[0] || 'Neighbor'}.
             </h1>
-            <p style={{ margin: 0, fontSize: 13, color: '#CBD5E1', maxWidth: 640 }}>
+            <p style={{ margin: 0, fontSize: 12.5, color: '#CBD5E1', maxWidth: 640 }}>
               Access your monthly HOA statement of account, request official Barangay clearances, and reserve community amenities.
             </p>
-            <div style={{ marginTop: 12, fontSize: 11.5, color: '#94A3B8', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span>🕒 {currentDateStr}</span>
+            <div style={{ marginTop: 10, fontSize: 11, color: '#94A3B8', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span>{currentDateStr}</span>
               <span>•</span>
-              <span style={{ color: '#4ADE80' }}>● Account Active & Verified</span>
+              <span style={{ color: '#4ADE80' }}>Account Verified</span>
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: 10 }}>
+          <div style={{ display: 'flex', gap: 8 }}>
             <button
               type="button"
               onClick={() => navigate('/documents')}
               style={{
-                padding: '8px 16px',
+                padding: '7px 14px',
                 borderRadius: 6,
                 background: '#166534',
                 color: '#FFFFFF',
                 border: 'none',
-                fontSize: 12.5,
+                fontSize: 12,
                 fontWeight: 600,
                 cursor: 'pointer'
               }}
             >
-              📋 Request Clearance
+              Request Clearance
             </button>
             <button
               type="button"
               onClick={() => navigate('/billing')}
               style={{
-                padding: '8px 16px',
+                padding: '7px 14px',
                 borderRadius: 6,
                 background: 'rgba(255, 255, 255, 0.1)',
                 color: '#FFFFFF',
                 border: '1px solid rgba(255, 255, 255, 0.2)',
-                fontSize: 12.5,
+                fontSize: 12,
                 fontWeight: 600,
                 cursor: 'pointer'
               }}
             >
-              💳 View Statement
+              View Statement
             </button>
           </div>
         </div>
@@ -134,19 +134,9 @@ export default function ResidentDashboard() {
         <div className="grid grid-3" style={{ gap: 16 }}>
           {/* Dues Status */}
           <div className="stat-card" style={{ padding: '20px 22px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>HOA Monthly Dues</div>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Maintenance & Security Fee</div>
-              </div>
-              <div style={{
-                width: 36, height: 36, borderRadius: 8,
-                background: unpaidBills.length > 0 ? '#FEE2E2' : '#DCFCE7',
-                color: unpaidBills.length > 0 ? '#DC2626' : '#166534',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16
-              }}>
-                💳
-              </div>
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>HOA Monthly Dues</div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Maintenance & Security Fee</div>
             </div>
 
             <div style={{
@@ -167,13 +157,13 @@ export default function ResidentDashboard() {
               gap: 6
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Unpaid Invoices</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Unpaid Invoices</span>
                 <strong style={{ color: unpaidBills.length > 0 ? '#DC2626' : '#166534' }}>
                   {unpaidBills.length} Invoices Pending
                 </strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Payment Channel</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Payment Channel</span>
                 <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>GCash / HOA Office</span>
               </div>
             </div>
@@ -181,18 +171,9 @@ export default function ResidentDashboard() {
 
           {/* Service Requests */}
           <div className="stat-card" style={{ padding: '20px 22px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Service & Clearance Requests</div>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Gate pass & certifications</div>
-              </div>
-              <div style={{
-                width: 36, height: 36, borderRadius: 8,
-                background: '#EFF6FF', color: '#1E40AF',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16
-              }}>
-                📋
-              </div>
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Service & Clearance Requests</div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Gate pass & certifications</div>
             </div>
 
             <div style={{ fontSize: 26, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 14 }}>
@@ -209,11 +190,11 @@ export default function ResidentDashboard() {
               gap: 6
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Under Evaluation</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Under Evaluation</span>
                 <strong style={{ color: '#D97706' }}>{pendingDocs} Pending</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Approved / Ready</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Approved / Ready</span>
                 <span style={{ color: '#166534', fontWeight: 600 }}>{(myDocs?.length || 0) - pendingDocs} Completed</span>
               </div>
             </div>
@@ -231,7 +212,6 @@ export default function ResidentDashboard() {
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                 <span style={{ fontSize: 12, fontWeight: 700, color: '#DC2626' }}>Emergency Response</span>
-                <span style={{ fontSize: 16 }}>🚨</span>
               </div>
               <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
                 Direct panic dispatch to Barangay 174 & Phase 2 Guard House.
@@ -245,19 +225,18 @@ export default function ResidentDashboard() {
               disabled={isSendingAlert}
               style={{
                 width: '100%',
-                padding: '10px 16px',
-                borderRadius: 8,
+                padding: '9px 14px',
+                borderRadius: 6,
                 background: isPanicActive ? '#DC2626' : '#EF4444',
                 color: '#FFFFFF',
                 border: 'none',
-                fontSize: 13,
+                fontSize: 12.5,
                 fontWeight: 700,
                 cursor: isSendingAlert ? 'not-allowed' : 'pointer',
-                boxShadow: '0 2px 8px rgba(239, 68, 68, 0.3)',
                 marginTop: 12
               }}
             >
-              {isSendingAlert ? '📡 SENDING BROADCAST...' : isPanicActive ? '🆘 DISPATCH NOTIFIED!' : '🆘 ONE-TAP EMERGENCY SOS'}
+              {isSendingAlert ? 'Sending Broadcast...' : isPanicActive ? 'Dispatch Notified' : 'Emergency SOS Dispatch'}
             </button>
           </div>
         </div>
@@ -414,10 +393,10 @@ export default function ResidentDashboard() {
 
           <div className="grid grid-4" style={{ gap: 12 }}>
             {[
-              { label: 'Household Members', icon: '👨‍👩‍👧‍👦', path: '/household' },
-              { label: 'Request Clearance', icon: '📄', path: '/documents' },
-              { label: 'Pay HOA Dues', icon: '💳', path: '/billing' },
-              { label: 'Basketball Court', icon: '🏀', path: '/facilities' },
+              { label: 'Household Members', path: '/household' },
+              { label: 'Request Clearance', path: '/documents' },
+              { label: 'Pay HOA Dues', path: '/billing' },
+              { label: 'Basketball Court', path: '/facilities' },
             ].map((tool, i) => (
               <div
                 key={i}
@@ -432,10 +411,7 @@ export default function ResidentDashboard() {
                   transition: 'all 0.15s ease'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontSize: 16 }}>{tool.icon}</span>
-                  <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-primary)' }}>{tool.label}</span>
-                </div>
+                <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-primary)' }}>{tool.label}</span>
                 <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>→</span>
               </div>
             ))}

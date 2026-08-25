@@ -46,19 +46,19 @@ export default function SuperAdminDashboard() {
         {/* ── 1. MINIMALIST HERO BANNER ── */}
         <div style={{
           background: 'linear-gradient(135deg, #0B1120 0%, #111827 50%, #1E293B 100%)',
-          borderRadius: 14,
-          padding: '24px 28px',
+          borderRadius: 12,
+          padding: '22px 26px',
           color: '#FFFFFF',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
           gap: 16,
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
         }}>
           <div>
             <div style={{
-              fontSize: 11,
+              fontSize: 10.5,
               fontWeight: 700,
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
@@ -67,51 +67,51 @@ export default function SuperAdminDashboard() {
             }}>
               Super Admin Multi-Tenant Center
             </div>
-            <h1 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 6px 0', color: '#FFFFFF' }}>
+            <h1 style={{ fontSize: 22, fontWeight: 800, margin: '0 0 6px 0', color: '#FFFFFF' }}>
               Welcome back, {user?.fullName?.split(' ')[0] || 'Super Admin'}.
             </h1>
-            <p style={{ margin: 0, fontSize: 13, color: '#CBD5E1', maxWidth: 640 }}>
+            <p style={{ margin: 0, fontSize: 12.5, color: '#CBD5E1', maxWidth: 640 }}>
               Full administrative master clearance across Northridge Grove Phase 2 and Barangay 174.
             </p>
-            <div style={{ marginTop: 12, fontSize: 11.5, color: '#94A3B8', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span>🕒 {currentDateStr}</span>
+            <div style={{ marginTop: 10, fontSize: 11, color: '#94A3B8', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span>{currentDateStr}</span>
               <span>•</span>
-              <span style={{ color: '#4ADE80' }}>● All 4 Clusters Healthy & Active</span>
+              <span style={{ color: '#4ADE80' }}>All Clusters Active</span>
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: 10 }}>
+          <div style={{ display: 'flex', gap: 8 }}>
             <button
               type="button"
               onClick={() => navigate('/masterlist')}
               style={{
-                padding: '8px 16px',
+                padding: '7px 14px',
                 borderRadius: 6,
                 background: '#166534',
                 color: '#FFFFFF',
                 border: 'none',
-                fontSize: 12.5,
+                fontSize: 12,
                 fontWeight: 600,
                 cursor: 'pointer'
               }}
             >
-              📜 Masterlist Database
+              Masterlist Database
             </button>
             <button
               type="button"
               onClick={() => navigate('/users')}
               style={{
-                padding: '8px 16px',
+                padding: '7px 14px',
                 borderRadius: 6,
                 background: 'rgba(255, 255, 255, 0.1)',
                 color: '#FFFFFF',
                 border: '1px solid rgba(255, 255, 255, 0.2)',
-                fontSize: 12.5,
+                fontSize: 12,
                 fontWeight: 600,
                 cursor: 'pointer'
               }}
             >
-              👥 All Users
+              All Users
             </button>
           </div>
         </div>
@@ -120,18 +120,9 @@ export default function SuperAdminDashboard() {
         <div className="grid grid-3" style={{ gap: 16 }}>
           {/* Card 1: Users & Tenants */}
           <div className="stat-card" style={{ padding: '20px 22px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Multi-Tenant Accounts</div>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>System-wide user base</div>
-              </div>
-              <div style={{
-                width: 36, height: 36, borderRadius: 8,
-                background: '#F3E8FF', color: '#7E22CE',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16
-              }}>
-                🏛️
-              </div>
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Multi-Tenant Accounts</div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>System-wide user base</div>
             </div>
 
             <div style={{ fontSize: 26, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 14 }}>
@@ -148,15 +139,15 @@ export default function SuperAdminDashboard() {
               gap: 6
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Active Tenants</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Active Tenants</span>
                 <strong style={{ color: 'var(--text-primary)' }}>{stats?.totalTenants || 2} Municipalities</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Verified Homeowners</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Verified Homeowners</span>
                 <span style={{ color: '#166534', fontWeight: 600 }}>19 Verified Lots</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Security / Staff</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Security / Staff</span>
                 <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>7 Active Staff</span>
               </div>
             </div>
@@ -164,18 +155,9 @@ export default function SuperAdminDashboard() {
 
           {/* Card 2: Financials & Revenue */}
           <div className="stat-card" style={{ padding: '20px 22px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Consolidated Revenue</div>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>HOA dues & permits</div>
-              </div>
-              <div style={{
-                width: 36, height: 36, borderRadius: 8,
-                background: '#DCFCE7', color: '#166534',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16
-              }}>
-                💰
-              </div>
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Consolidated Revenue</div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>HOA dues & permits</div>
             </div>
 
             <div style={{ fontSize: 26, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 14 }}>
@@ -192,34 +174,25 @@ export default function SuperAdminDashboard() {
               gap: 6
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Monthly Invoiced</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Monthly Invoiced</span>
                 <strong style={{ color: 'var(--text-primary)' }}>₱175,000</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Overdue Notices</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Overdue Notices</span>
                 <span style={{ color: '#DC2626', fontWeight: 600 }}>{stats?.overduePayments || 3} Delinquent</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Audit Sync</span>
-                <span style={{ color: '#166534', fontWeight: 600 }}>Matched ✓</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Audit Sync</span>
+                <span style={{ color: '#166534', fontWeight: 600 }}>Matched</span>
               </div>
             </div>
           </div>
 
           {/* Card 3: Security & Operations */}
           <div className="stat-card" style={{ padding: '20px 22px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Security & Passes</div>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Gate entry monitoring</div>
-              </div>
-              <div style={{
-                width: 36, height: 36, borderRadius: 8,
-                background: '#FEF3C7', color: '#B45309',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16
-              }}>
-                🚨
-              </div>
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Security & Passes</div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Gate entry monitoring</div>
             </div>
 
             <div style={{ fontSize: 26, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 14 }}>
@@ -236,17 +209,17 @@ export default function SuperAdminDashboard() {
               gap: 6
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Emergency Alerts</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Emergency Alerts</span>
                 <span style={{ color: (alerts?.length || 0) > 0 ? '#DC2626' : '#166534', fontWeight: 600 }}>
                   {alerts?.length || 0} Active
                 </span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Pending Permits</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Pending Permits</span>
                 <span style={{ color: '#D97706', fontWeight: 600 }}>{stats?.pendingDocuments || 4} Pending</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Facilities Reserved</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Facilities Reserved</span>
                 <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{stats?.totalReservations || 8} Approved</span>
               </div>
             </div>
@@ -319,7 +292,7 @@ export default function SuperAdminDashboard() {
                     fontSize: 12
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                      <strong style={{ color: 'var(--text-primary)' }}>🚨 {a.title}</strong>
+                      <strong style={{ color: 'var(--text-primary)' }}>{a.title}</strong>
                       <span style={{ fontSize: 10.5, color: 'var(--text-muted)' }}>{a.created_at || 'Just now'}</span>
                     </div>
                     <div style={{ fontSize: 11.5, color: 'var(--text-secondary)' }}>{a.message}</div>
@@ -327,7 +300,7 @@ export default function SuperAdminDashboard() {
                 ))
               ) : (
                 <div style={{ textAlign: 'center', padding: '24px 0', color: 'var(--text-muted)', fontSize: 12 }}>
-                  ✓ All security checkpoints and perimeter logs normal.
+                  All security checkpoints and perimeter logs normal.
                 </div>
               )}
             </div>
@@ -345,10 +318,10 @@ export default function SuperAdminDashboard() {
 
           <div className="grid grid-4" style={{ gap: 12 }}>
             {[
-              { label: 'HOA Masterlist & Excel', icon: '📜', path: '/masterlist' },
-              { label: 'Household Registry', icon: '👨‍👩‍👧‍👦', path: '/household' },
-              { label: 'Tenants Management', icon: '🏢', path: '/tenants' },
-              { label: 'All System Users', icon: '👥', path: '/users' },
+              { label: 'HOA Masterlist & Excel', path: '/masterlist' },
+              { label: 'Household Registry', path: '/household' },
+              { label: 'Tenants Management', path: '/tenants' },
+              { label: 'All System Users', path: '/users' },
             ].map((tool, i) => (
               <div
                 key={i}
@@ -363,10 +336,7 @@ export default function SuperAdminDashboard() {
                   transition: 'all 0.15s ease'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontSize: 16 }}>{tool.icon}</span>
-                  <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-primary)' }}>{tool.label}</span>
-                </div>
+                <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-primary)' }}>{tool.label}</span>
                 <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>→</span>
               </div>
             ))}

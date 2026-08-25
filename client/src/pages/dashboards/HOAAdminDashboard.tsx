@@ -34,22 +34,22 @@ export default function HOAAdminDashboard() {
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20, animation: 'fadeInUp 0.25s ease' }}>
 
-        {/* ── 1. MINIMALIST HERO WELCOME BANNER ── */}
+        {/* ── 1. MINIMALIST HERO BANNER ── */}
         <div style={{
           background: 'linear-gradient(135deg, #0B1120 0%, #111827 50%, #1E293B 100%)',
-          borderRadius: 14,
-          padding: '24px 28px',
+          borderRadius: 12,
+          padding: '22px 26px',
           color: '#FFFFFF',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
           gap: 16,
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
         }}>
           <div>
             <div style={{
-              fontSize: 11,
+              fontSize: 10.5,
               fontWeight: 700,
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
@@ -58,51 +58,51 @@ export default function HOAAdminDashboard() {
             }}>
               HOA Operations & Financial Center
             </div>
-            <h1 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 6px 0', color: '#FFFFFF' }}>
+            <h1 style={{ fontSize: 22, fontWeight: 800, margin: '0 0 6px 0', color: '#FFFFFF' }}>
               Welcome back, {user?.fullName?.split(' ')[0] || 'Admin'}.
             </h1>
-            <p style={{ margin: 0, fontSize: 13, color: '#CBD5E1', maxWidth: 640 }}>
+            <p style={{ margin: 0, fontSize: 12.5, color: '#CBD5E1', maxWidth: 640 }}>
               Here is today's Phase 2 collection efficiency, resident profiling records, and community activity at a glance.
             </p>
-            <div style={{ marginTop: 12, fontSize: 11.5, color: '#94A3B8', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span>🕒 {currentDateStr}</span>
+            <div style={{ marginTop: 10, fontSize: 11, color: '#94A3B8', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span>{currentDateStr}</span>
               <span>•</span>
-              <span style={{ color: '#4ADE80' }}>● Live Sync Active</span>
+              <span style={{ color: '#4ADE80' }}>Live Sync Active</span>
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: 10 }}>
+          <div style={{ display: 'flex', gap: 8 }}>
             <button
               type="button"
               onClick={() => navigate('/masterlist')}
               style={{
-                padding: '8px 16px',
+                padding: '7px 14px',
                 borderRadius: 6,
                 background: '#166534',
                 color: '#FFFFFF',
                 border: 'none',
-                fontSize: 12.5,
+                fontSize: 12,
                 fontWeight: 600,
                 cursor: 'pointer'
               }}
             >
-              📜 Masterlist Registry
+              Masterlist Registry
             </button>
             <button
               type="button"
               onClick={() => navigate('/billing')}
               style={{
-                padding: '8px 16px',
+                padding: '7px 14px',
                 borderRadius: 6,
                 background: 'rgba(255, 255, 255, 0.1)',
                 color: '#FFFFFF',
                 border: '1px solid rgba(255, 255, 255, 0.2)',
-                fontSize: 12.5,
+                fontSize: 12,
                 fontWeight: 600,
                 cursor: 'pointer'
               }}
             >
-              💳 Billing Ledger
+              Billing Ledger
             </button>
           </div>
         </div>
@@ -111,18 +111,9 @@ export default function HOAAdminDashboard() {
         <div className="grid grid-3" style={{ gap: 16 }}>
           {/* Card 1: Dues Collection */}
           <div className="stat-card" style={{ padding: '20px 22px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Monthly Dues Collection</div>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>August 2026 Collection Cycle</div>
-              </div>
-              <div style={{
-                width: 36, height: 36, borderRadius: 8,
-                background: '#DCFCE7', color: '#166534',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16
-              }}>
-                💰
-              </div>
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Monthly Dues Collection</div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>August 2026 Collection Cycle</div>
             </div>
 
             <div style={{ fontSize: 26, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 14 }}>
@@ -139,15 +130,15 @@ export default function HOAAdminDashboard() {
               gap: 6
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Collection Rate</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Collection Rate</span>
                 <strong style={{ color: '#166534' }}>88.4% Efficiency</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Outstanding Balance</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Outstanding Balance</span>
                 <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>₱32,500</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Overdue Accounts</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Overdue Accounts</span>
                 <span style={{ color: '#DC2626', fontWeight: 600 }}>₱7,500 ({overdueLedgers.length} units)</span>
               </div>
             </div>
@@ -155,18 +146,9 @@ export default function HOAAdminDashboard() {
 
           {/* Card 2: Resident Demographics */}
           <div className="stat-card" style={{ padding: '20px 22px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Resident Profiling</div>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Northridge Grove Phase 2</div>
-              </div>
-              <div style={{
-                width: 36, height: 36, borderRadius: 8,
-                background: '#EFF6FF', color: '#1E40AF',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16
-              }}>
-                👥
-              </div>
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Resident Profiling</div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Northridge Grove Phase 2</div>
             </div>
 
             <div style={{ fontSize: 26, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 14 }}>
@@ -183,15 +165,15 @@ export default function HOAAdminDashboard() {
               gap: 6
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Heads of Household</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Heads of Household</span>
                 <strong style={{ color: 'var(--text-primary)' }}>312 Registered Lots</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Dependents / Youth</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Dependents / Youth</span>
                 <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>348 Members</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Senior Citizens / PWD</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Senior Citizens / PWD</span>
                 <span style={{ color: '#D97706', fontWeight: 600 }}>71 Members</span>
               </div>
             </div>
@@ -199,18 +181,9 @@ export default function HOAAdminDashboard() {
 
           {/* Card 3: Community & Facilities */}
           <div className="stat-card" style={{ padding: '20px 22px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Facility & Gate Pass</div>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Real-time Operations</div>
-              </div>
-              <div style={{
-                width: 36, height: 36, borderRadius: 8,
-                background: '#F3E8FF', color: '#7E22CE',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16
-              }}>
-                🏀
-              </div>
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Facility & Gate Pass</div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Real-time Operations</div>
             </div>
 
             <div style={{ fontSize: 26, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 14 }}>
@@ -227,15 +200,15 @@ export default function HOAAdminDashboard() {
               gap: 6
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Confirmed Bookings</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Confirmed Bookings</span>
                 <strong style={{ color: '#166534' }}>8 Approved</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Pending Approvals</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Pending Approvals</span>
                 <span style={{ color: '#D97706', fontWeight: 600 }}>{pendingReservations.length} Pending</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>● Today's Gate Entries</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Today's Gate Entries</span>
                 <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>12 Entries</span>
               </div>
             </div>
@@ -272,7 +245,7 @@ export default function HOAAdminDashboard() {
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="empty-state"><div className="empty-state-icon">📊</div><h3>No revenue data</h3></div>
+              <div className="empty-state"><h3>No revenue data</h3></div>
             )}
           </div>
 
@@ -336,10 +309,10 @@ export default function HOAAdminDashboard() {
 
           <div className="grid grid-4" style={{ gap: 12 }}>
             {[
-              { label: 'Manage Masterlist', icon: '📜', path: '/masterlist' },
-              { label: 'Visitor & Gate Pass', icon: '🚗', path: '/visitors' },
-              { label: 'Manage Household Members', icon: '👨‍👩‍👧‍👦', path: '/household' },
-              { label: 'Document & Requests', icon: '📋', path: '/documents' },
+              { label: 'Manage Masterlist', path: '/masterlist' },
+              { label: 'Visitor & Gate Pass', path: '/visitors' },
+              { label: 'Manage Household Members', path: '/household' },
+              { label: 'Document & Requests', path: '/documents' },
             ].map((tool, i) => (
               <div
                 key={i}
@@ -354,10 +327,7 @@ export default function HOAAdminDashboard() {
                   transition: 'all 0.15s ease'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontSize: 16 }}>{tool.icon}</span>
-                  <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-primary)' }}>{tool.label}</span>
-                </div>
+                <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-primary)' }}>{tool.label}</span>
                 <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>→</span>
               </div>
             ))}

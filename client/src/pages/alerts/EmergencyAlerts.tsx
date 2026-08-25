@@ -144,7 +144,8 @@ export default function EmergencyAlerts() {
               <span>🚨 Active Emergency Broadcasts ({activeAlerts.length})</span>
             </div>
             {activeAlerts.map((alert: any) => {
-              const cfg = alertTypeConfig[alert.alert_type];
+              const typeStr = (alert.alert_type || alert.alertType || 'general').toLowerCase();
+              const cfg = alertTypeConfig[typeStr] || alertTypeConfig['general'];
               return (
                 <div key={alert.id} style={{
                   padding: 'var(--space-4)',
@@ -154,18 +155,18 @@ export default function EmergencyAlerts() {
                   marginBottom: 'var(--space-3)',
                   display: 'flex', alignItems: 'flex-start', gap: 'var(--space-4)',
                 }}>
-                  <div style={{ fontSize: '2rem', flex: 'none', animation: 'pulse 1.5s infinite' }}>{cfg?.emoji}</div>
+                  <div style={{ fontSize: '1.4rem', flex: 'none' }}>{cfg?.emoji || '🚨'}</div>
                   <div style={{ flex: 1 }}>
                     <div className="flex items-center gap-3 mb-2">
-                      <span className="badge badge-active" style={{ background: `${cfg?.color}20`, color: cfg?.color, borderRadius: 'var(--radius-full)', padding: '2px 10px' }}>
-                        {alert.alert_type.toUpperCase()}
+                      <span className="badge badge-active" style={{ background: `${cfg?.color || '#DC2626'}20`, color: cfg?.color || '#DC2626', borderRadius: 'var(--radius-full)', padding: '2px 10px' }}>
+                        {typeStr.toUpperCase()}
                       </span>
-                      <span className="text-xs text-muted">Broadcast: {alert.broadcast_to}</span>
-                      <span className="text-xs text-muted">{new Date(alert.created_at).toLocaleString('en-PH')}</span>
+                      <span className="text-xs text-muted">Broadcast: {alert.broadcast_to || alert.broadcastTo || 'all'}</span>
+                      <span className="text-xs text-muted">{alert.created_at ? new Date(alert.created_at).toLocaleString('en-PH') : 'Recent'}</span>
                     </div>
                     <div className="font-bold" style={{ color: 'var(--text-primary)' }}>{alert.message}</div>
                     {alert.location && <div className="text-xs text-muted mt-2">📍 {alert.location}</div>}
-                    <div className="text-xs text-muted mt-1">By: {alert.triggered_by_name}</div>
+                    <div className="text-xs text-muted mt-1">By: {alert.triggered_by_name || alert.triggeredByName || 'System'}</div>
                   </div>
                   {canResolve && (
                     <button
@@ -244,23 +245,23 @@ export default function EmergencyAlerts() {
               </thead>
               <tbody>
                 {filteredAlerts.map((alert: any) => {
-                  const cfg = alertTypeConfig[alert.alert_type];
+                  const typeStr = (alert.alert_type || alert.alertType || 'general').toLowerCase();
+                  const cfg = alertTypeConfig[typeStr] || alertTypeConfig['general'];
                   return (
                     <tr key={alert.id}>
                       <td>
                         <div className="flex items-center gap-2">
-                          <span>{cfg?.emoji}</span>
-                          <span style={{ color: cfg?.color, fontWeight: 700, fontSize: 'var(--font-xs)', textTransform: 'uppercase' }}>
-                            {alert.alert_type}
+                          <span style={{ color: cfg?.color || '#DC2626', fontWeight: 700, fontSize: 'var(--font-xs)', textTransform: 'uppercase' }}>
+                            {typeStr}
                           </span>
                         </div>
                       </td>
                       <td className="truncate" style={{ maxWidth: 200 }}>{alert.message}</td>
                       <td className="text-xs">{alert.location || '—'}</td>
-                      <td>{alert.triggered_by_name}</td>
-                      <td><span className="badge badge-issued">{alert.broadcast_to}</span></td>
-                      <td><span className={`badge badge-${alert.status}`}>{alert.status}</span></td>
-                      <td className="text-xs">{new Date(alert.created_at).toLocaleString('en-PH')}</td>
+                      <td>{alert.triggered_by_name || alert.triggeredByName || 'System'}</td>
+                      <td><span className="badge badge-issued">{alert.broadcast_to || alert.broadcastTo || 'all'}</span></td>
+                      <td><span className={`badge badge-${alert.status || 'active'}`}>{alert.status || 'active'}</span></td>
+                      <td className="text-xs">{alert.created_at ? new Date(alert.created_at).toLocaleString('en-PH') : '—'}</td>
                     </tr>
                   );
                 })}

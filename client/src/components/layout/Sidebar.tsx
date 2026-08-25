@@ -5,7 +5,6 @@ import { useAlerts } from '../../context/AlertContext';
 
 interface NavItem {
   path: string;
-  icon: string;
   label: string;
 }
 
@@ -17,47 +16,45 @@ interface NavGroup {
 const ROLE_CONFIG: Record<string, {
   label: string;
   color: string;
-  gradient: string;
   groups: NavGroup[];
 }> = {
   super_admin: {
     label: 'Super Admin',
     color: '#7C3AED',
-    gradient: 'linear-gradient(135deg, #4C1D95, #7C3AED)',
     groups: [
       {
         section: 'Main',
         items: [
-          { path: '/dashboard', icon: '⊞', label: 'Dashboard' },
-          { path: '/homeowner-portal', icon: '🏠', label: 'Homeowner Portal' },
+          { path: '/dashboard', label: 'Dashboard' },
+          { path: '/homeowner-portal', label: 'Homeowner Portal' },
         ]
       },
       {
         section: 'HOA Management',
         items: [
-          { path: '/masterlist', icon: '📜', label: 'HOA Masterlist & Excel' },
-          { path: '/officers', icon: '🏛️', label: 'HOA Officers' },
-          { path: '/household', icon: '👨‍👩‍👧‍👦', label: 'Household Members' },
-          { path: '/events', icon: '📅', label: 'Calendar Events' },
-          { path: '/documents', icon: '📋', label: 'Service Requests' },
-          { path: '/hoa-manage', icon: '⚙️', label: 'Admin Staff Hub' },
+          { path: '/masterlist', label: 'HOA Masterlist & Excel' },
+          { path: '/officers', label: 'HOA Officers' },
+          { path: '/household', label: 'Household Members' },
+          { path: '/events', label: 'Calendar Events' },
+          { path: '/documents', label: 'Service Requests' },
+          { path: '/hoa-manage', label: 'Admin Staff Hub' },
         ]
       },
       {
         section: 'Administration & Finance',
         items: [
-          { path: '/tenants', icon: '🏢', label: 'Tenants' },
-          { path: '/users', icon: '👥', label: 'All Users' },
-          { path: '/billing', icon: '💳', label: 'Billing Ledger' },
-          { path: '/financial-reports', icon: '📊', label: 'Financial Reports' },
+          { path: '/tenants', label: 'Tenants' },
+          { path: '/users', label: 'All Users' },
+          { path: '/billing', label: 'Billing Ledger' },
+          { path: '/financial-reports', label: 'Financial Reports' },
         ]
       },
       {
         section: 'Security & Community',
         items: [
-          { path: '/facilities', icon: '🏀', label: 'Basketball Reservation' },
-          { path: '/visitors', icon: '🚗', label: 'Visitor Logs' },
-          { path: '/alerts', icon: '🚨', label: 'Emergency Alerts' },
+          { path: '/facilities', label: 'Basketball Reservation' },
+          { path: '/visitors', label: 'Visitor Logs' },
+          { path: '/alerts', label: 'Emergency Alerts' },
         ]
       }
     ]
@@ -66,39 +63,38 @@ const ROLE_CONFIG: Record<string, {
   hoa_admin: {
     label: 'Main Administrator',
     color: '#DC2626',
-    gradient: 'linear-gradient(135deg, #7F1D1D, #DC2626)',
     groups: [
       {
         section: 'Main',
         items: [
-          { path: '/dashboard', icon: '⊞', label: 'Dashboard' },
-          { path: '/homeowner-portal', icon: '🏠', label: 'Homeowner View' },
+          { path: '/dashboard', label: 'Dashboard' },
+          { path: '/homeowner-portal', label: 'Homeowner View' },
         ]
       },
       {
         section: 'Community & Records',
         items: [
-          { path: '/masterlist', icon: '📜', label: 'HOA Masterlist & Excel' },
-          { path: '/officers', icon: '🏛️', label: 'HOA Officers' },
-          { path: '/household', icon: '👨‍👩‍👧‍👦', label: 'Household Members' },
-          { path: '/events', icon: '📅', label: 'Calendar Events' },
-          { path: '/documents', icon: '📋', label: 'Service Requests' },
-          { path: '/hoa-manage', icon: '⚙️', label: 'Admin Staff & Approvals' },
+          { path: '/masterlist', label: 'HOA Masterlist & Excel' },
+          { path: '/officers', label: 'HOA Officers' },
+          { path: '/household', label: 'Household Members' },
+          { path: '/events', label: 'Calendar Events' },
+          { path: '/documents', label: 'Service Requests' },
+          { path: '/hoa-manage', label: 'Admin Staff & Approvals' },
         ]
       },
       {
         section: 'Finance & Utilities',
         items: [
-          { path: '/billing', icon: '💳', label: 'Billing Ledger' },
-          { path: '/financial-reports', icon: '📊', label: 'Financial Reports' },
-          { path: '/facilities', icon: '🏀', label: 'Basketball Reservation' },
+          { path: '/billing', label: 'Billing Ledger' },
+          { path: '/financial-reports', label: 'Financial Reports' },
+          { path: '/facilities', label: 'Basketball Reservation' },
         ]
       },
       {
         section: 'Security & Access',
         items: [
-          { path: '/visitors', icon: '🚗', label: 'Visitor Logs' },
-          { path: '/alerts', icon: '🚨', label: 'Emergency Alerts' },
+          { path: '/visitors', label: 'Visitor Logs' },
+          { path: '/alerts', label: 'Emergency Alerts' },
         ]
       }
     ]
@@ -107,33 +103,32 @@ const ROLE_CONFIG: Record<string, {
   admin_staff: {
     label: 'Admin Staff',
     color: '#3B82F6',
-    gradient: 'linear-gradient(135deg, #1D4ED8, #3B82F6)',
     groups: [
       {
         section: 'Main',
         items: [
-          { path: '/dashboard', icon: '⊞', label: 'Dashboard' },
-          { path: '/homeowner-portal', icon: '🏠', label: 'Homeowner View' },
+          { path: '/dashboard', label: 'Dashboard' },
+          { path: '/homeowner-portal', label: 'Homeowner View' },
         ]
       },
       {
         section: 'Operations',
         items: [
-          { path: '/masterlist', icon: '📜', label: 'HOA Masterlist & Excel' },
-          { path: '/officers', icon: '🏛️', label: 'HOA Officers' },
-          { path: '/household', icon: '👨‍👩‍👧‍👦', label: 'Household Members' },
-          { path: '/events', icon: '📅', label: 'Calendar Events' },
-          { path: '/documents', icon: '📋', label: 'Service Requests' },
-          { path: '/hoa-manage', icon: '⚙️', label: 'Approvals & Publishing' },
+          { path: '/masterlist', label: 'HOA Masterlist & Excel' },
+          { path: '/officers', label: 'HOA Officers' },
+          { path: '/household', label: 'Household Members' },
+          { path: '/events', label: 'Calendar Events' },
+          { path: '/documents', label: 'Service Requests' },
+          { path: '/hoa-manage', label: 'Approvals & Publishing' },
         ]
       },
       {
         section: 'Finance & Logistics',
         items: [
-          { path: '/billing', icon: '💳', label: 'Billing Ledger' },
-          { path: '/financial-reports', icon: '📊', label: 'Financial Reports' },
-          { path: '/facilities', icon: '🏀', label: 'Basketball Reservation' },
-          { path: '/visitors', icon: '🚗', label: 'Visitor Logs' },
+          { path: '/billing', label: 'Billing Ledger' },
+          { path: '/financial-reports', label: 'Financial Reports' },
+          { path: '/facilities', label: 'Basketball Reservation' },
+          { path: '/visitors', label: 'Visitor Logs' },
         ]
       }
     ]
@@ -142,22 +137,21 @@ const ROLE_CONFIG: Record<string, {
   security_guard: {
     label: 'Security Guard',
     color: '#D97706',
-    gradient: 'linear-gradient(135deg, #78350F, #D97706)',
     groups: [
       {
         section: 'Main',
         items: [
-          { path: '/dashboard', icon: '⊞', label: 'Guard Dashboard' },
+          { path: '/dashboard', label: 'Guard Dashboard' },
         ]
       },
       {
         section: 'Perimeter & Gate Access',
         items: [
-          { path: '/visitors', icon: '🚗', label: 'Visitor Logbook' },
-          { path: '/officers', icon: '🏛️', label: 'HOA Officers' },
-          { path: '/events', icon: '📅', label: 'Community Events' },
-          { path: '/documents', icon: '📋', label: 'Gate Permits & Passes' },
-          { path: '/alerts', icon: '🚨', label: 'Emergency Broadcast' },
+          { path: '/visitors', label: 'Visitor Logbook' },
+          { path: '/officers', label: 'HOA Officers' },
+          { path: '/events', label: 'Community Events' },
+          { path: '/documents', label: 'Gate Permits & Passes' },
+          { path: '/alerts', label: 'Emergency Broadcast' },
         ]
       }
     ]
@@ -166,30 +160,29 @@ const ROLE_CONFIG: Record<string, {
   resident: {
     label: 'Registered Homeowner',
     color: '#0891B2',
-    gradient: 'linear-gradient(135deg, #164E63, #0891B2)',
     groups: [
       {
         section: 'Main',
         items: [
-          { path: '/homeowner-portal', icon: '🏠', label: 'Homeowner Portal' },
-          { path: '/dashboard', icon: '⊞', label: 'My Dashboard' },
+          { path: '/homeowner-portal', label: 'Homeowner Portal' },
+          { path: '/dashboard', label: 'My Dashboard' },
         ]
       },
       {
         section: 'Household & Requests',
         items: [
-          { path: '/household', icon: '👨‍👩‍👧‍👦', label: 'Household Members' },
-          { path: '/documents', icon: '📋', label: 'Service Requests' },
-          { path: '/billing', icon: '💳', label: 'My Billing Statements' },
+          { path: '/household', label: 'Household Members' },
+          { path: '/documents', label: 'Service Requests' },
+          { path: '/billing', label: 'My Billing Statements' },
         ]
       },
       {
         section: 'Community & Amenities',
         items: [
-          { path: '/officers', icon: '🏛️', label: 'HOA Officers' },
-          { path: '/events', icon: '📅', label: 'Calendar Events' },
-          { path: '/facilities', icon: '🏀', label: 'Facility Reservation' },
-          { path: '/alerts', icon: '🚨', label: 'Emergency Alerts' },
+          { path: '/officers', label: 'HOA Officers' },
+          { path: '/events', label: 'Calendar Events' },
+          { path: '/facilities', label: 'Facility Reservation' },
+          { path: '/alerts', label: 'Emergency Alerts' },
         ]
       }
     ]
@@ -204,7 +197,6 @@ export default function Sidebar() {
   const [showMenu, setShowMenu] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
-  // Close menu on click outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
@@ -243,7 +235,7 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Grouped Navigation List */}
+      {/* Grouped Navigation List without distracting emojis */}
       <nav className="sidebar-nav">
         {config.groups.map((grp) => (
           <div key={grp.section} className="sidebar-group">
@@ -255,9 +247,9 @@ export default function Sidebar() {
                   to={item.path}
                   className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
                 >
-                  <span className="nav-icon">{item.icon}</span>
+                  <span className="nav-bullet"></span>
                   <span className="nav-label">{item.label}</span>
-                  {item.icon === '🚨' && activeAlerts.length > 0 && (
+                  {item.path === '/alerts' && activeAlerts.length > 0 && (
                     <span className="nav-badge">{activeAlerts.length}</span>
                   )}
                 </NavLink>
@@ -266,11 +258,11 @@ export default function Sidebar() {
           </div>
         ))}
 
-        {/* External Utility Links */}
+        {/* Utilities */}
         <div className="sidebar-group" style={{ marginTop: 'auto', paddingTop: 8 }}>
           <div className="sidebar-group-title">Utilities & Guides</div>
           <NavLink to="/" className="sidebar-nav-item">
-            <span className="nav-icon">🌐</span>
+            <span className="nav-bullet"></span>
             <span className="nav-label">Public Website</span>
           </NavLink>
           <a
@@ -279,7 +271,7 @@ export default function Sidebar() {
             rel="noopener noreferrer"
             className="sidebar-nav-item"
           >
-            <span className="nav-icon">📘</span>
+            <span className="nav-bullet"></span>
             <span className="nav-label">Community Facebook</span>
           </a>
         </div>
@@ -295,12 +287,10 @@ export default function Sidebar() {
             </div>
 
             <button className="user-menu-item" onClick={() => { setShowMenu(false); navigate('/profile'); }}>
-              <span className="item-icon">⚙️</span>
               <span>Account & Password</span>
             </button>
 
             <button className="user-menu-item logout-item" onClick={handleLogout}>
-              <span className="item-icon">🚪</span>
               <span>Logout</span>
             </button>
           </div>
@@ -326,14 +316,14 @@ export default function Sidebar() {
             <div className="sidebar-user-name">{user.fullName}</div>
             <div className="sidebar-user-role">{config.label}</div>
           </div>
-          <div className="sidebar-user-chevron">⚙️</div>
+          <div className="sidebar-user-chevron">⚙</div>
         </div>
       </div>
 
       <style>{`
         .sidebar {
-          width: 250px;
-          min-width: 250px;
+          width: 240px;
+          min-width: 240px;
           height: 100vh;
           position: sticky;
           top: 0;
@@ -347,8 +337,8 @@ export default function Sidebar() {
         }
 
         .sidebar-brand {
-          height: 64px;
-          min-height: 64px;
+          height: 60px;
+          min-height: 60px;
           padding: 0 16px;
           display: flex;
           align-items: center;
@@ -358,16 +348,15 @@ export default function Sidebar() {
         }
 
         .sidebar-logo {
-          width: 32px;
-          height: 32px;
-          border-radius: 8px;
+          width: 28px;
+          height: 28px;
+          border-radius: 6px;
           overflow: hidden;
           flex-shrink: 0;
-          background: rgba(255, 255, 255, 0.05);
         }
 
         .sidebar-brand-title {
-          font-size: 13.5px;
+          font-size: 13px;
           font-weight: 700;
           color: #F8FAFC;
           letter-spacing: -0.01em;
@@ -377,7 +366,7 @@ export default function Sidebar() {
         }
 
         .sidebar-brand-sub {
-          font-size: 11px;
+          font-size: 10.5px;
           color: #94A3B8;
           white-space: nowrap;
           overflow: hidden;
@@ -387,10 +376,10 @@ export default function Sidebar() {
         .sidebar-nav {
           flex: 1;
           overflow-y: auto;
-          padding: 12px 10px;
+          padding: 12px 8px;
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: 14px;
         }
 
         .sidebar-group-title {
@@ -399,7 +388,7 @@ export default function Sidebar() {
           text-transform: uppercase;
           letter-spacing: 0.06em;
           color: #64748B;
-          padding: 0 10px 6px;
+          padding: 0 10px 4px;
         }
 
         .sidebar-group-items {
@@ -412,9 +401,9 @@ export default function Sidebar() {
           display: flex;
           align-items: center;
           gap: 10px;
-          padding: 8px 12px;
-          border-radius: 8px;
-          font-size: 13px;
+          padding: 7px 10px;
+          border-radius: 6px;
+          font-size: 12.5px;
           font-weight: 500;
           color: #94A3B8;
           text-decoration: none;
@@ -427,17 +416,24 @@ export default function Sidebar() {
         }
 
         .sidebar-nav-item.active {
-          background: rgba(255, 255, 255, 0.08);
+          background: rgba(255, 255, 255, 0.1);
           color: #FFFFFF;
           font-weight: 600;
-          box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
         }
 
-        .nav-icon {
-          width: 18px;
-          font-size: 14px;
-          text-align: center;
-          opacity: 0.85;
+        .nav-bullet {
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: #64748B;
+          opacity: 0.6;
+          transition: all 0.15s ease;
+        }
+
+        .sidebar-nav-item.active .nav-bullet {
+          background: #DC2626;
+          opacity: 1;
+          transform: scale(1.3);
         }
 
         .nav-label {
@@ -450,14 +446,14 @@ export default function Sidebar() {
         .nav-badge {
           background: #DC2626;
           color: #FFFFFF;
-          font-size: 10px;
+          font-size: 9.5px;
           font-weight: 700;
           padding: 1px 6px;
           border-radius: 10px;
         }
 
         .sidebar-footer {
-          padding: 10px 10px 14px;
+          padding: 10px;
           border-top: 1px solid rgba(255, 255, 255, 0.08);
           background: #080C14;
           position: relative;
@@ -467,8 +463,8 @@ export default function Sidebar() {
           display: flex;
           align-items: center;
           gap: 10px;
-          padding: 6px 10px;
-          border-radius: 8px;
+          padding: 6px 8px;
+          border-radius: 6px;
           cursor: pointer;
           transition: background 0.15s ease;
         }
@@ -478,8 +474,8 @@ export default function Sidebar() {
         }
 
         .sidebar-avatar-capsule {
-          width: 28px;
-          height: 28px;
+          width: 26px;
+          height: 26px;
           border-radius: 50%;
           background: rgba(255, 255, 255, 0.15);
           color: #FFFFFF;
@@ -492,8 +488,8 @@ export default function Sidebar() {
         }
 
         .sidebar-avatar-img {
-          width: 28px;
-          height: 28px;
+          width: 26px;
+          height: 26px;
           border-radius: 50%;
           object-fit: cover;
           flex-shrink: 0;
@@ -505,7 +501,7 @@ export default function Sidebar() {
         }
 
         .sidebar-user-name {
-          font-size: 12.5px;
+          font-size: 12px;
           font-weight: 600;
           color: #F8FAFC;
           white-space: nowrap;
@@ -514,7 +510,7 @@ export default function Sidebar() {
         }
 
         .sidebar-user-role {
-          font-size: 10.5px;
+          font-size: 10px;
           color: #64748B;
           white-space: nowrap;
           overflow: hidden;
@@ -522,18 +518,18 @@ export default function Sidebar() {
         }
 
         .sidebar-user-chevron {
-          font-size: 12px;
+          font-size: 11px;
           color: #64748B;
         }
 
         .user-popover-menu {
           position: absolute;
-          bottom: 64px;
-          left: 10px;
-          right: 10px;
+          bottom: 58px;
+          left: 8px;
+          right: 8px;
           background: #0F172A;
           border: 1px solid rgba(255, 255, 255, 0.12);
-          border-radius: 10px;
+          border-radius: 8px;
           box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
           z-index: 100;
           overflow: hidden;
@@ -547,27 +543,26 @@ export default function Sidebar() {
         }
 
         .menu-header-name {
-          font-size: 12px;
+          font-size: 11.5px;
           font-weight: 700;
           color: #FFFFFF;
         }
 
         .menu-header-email {
-          font-size: 10.5px;
+          font-size: 10px;
           color: #94A3B8;
         }
 
         .user-menu-item {
           display: flex;
           align-items: center;
-          gap: 8px;
           width: 100%;
-          padding: 8px 10px;
-          border-radius: 6px;
+          padding: 7px 10px;
+          border-radius: 5px;
           background: none;
           border: none;
           color: #CBD5E1;
-          font-size: 12px;
+          font-size: 11.5px;
           font-weight: 500;
           cursor: pointer;
           text-align: left;
