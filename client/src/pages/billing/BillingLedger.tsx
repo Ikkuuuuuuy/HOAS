@@ -3,6 +3,7 @@ import PageContainer from '../../components/layout/PageContainer';
 import { useApi, apiCall } from '../../hooks/useApi';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import Pagination from '../../components/common/Pagination';
 
 interface LedgerItem {
   id: string;
@@ -47,6 +48,8 @@ export default function BillingLedger() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortBy, setSortBy] = useState('period-desc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const isHOAAdmin = user?.roleName === 'hoa_admin' || user?.roleName === 'super_admin';
 
@@ -133,6 +136,11 @@ export default function BillingLedger() {
     });
   }, [localLedgers, searchQuery, statusFilter]);
 
+  const paginatedLedgers = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredLedgers.slice(start, start + pageSize);
+  }, [filteredLedgers, currentPage, pageSize]);
+
   return (
     <PageContainer title="Financial Module" subtitle="NRG PH2 HOA INC — Unified Monthly & Association Dues">
       <div style={{ animation: 'fadeInUp 0.4s ease' }}>
@@ -212,7 +220,7 @@ export default function BillingLedger() {
               </tr>
             </thead>
             <tbody>
-              {filteredLedgers.map(item => (
+              {paginatedLedgers.map(item => (
                 <tr key={item.id}>
                   <td className="font-semibold" style={{ color: 'var(--text-primary)' }}>{item.resident_name}</td>
                   <td className="font-mono">{item.billing_period}</td>
@@ -253,6 +261,15 @@ export default function BillingLedger() {
               ))}
             </tbody>
           </table>
+
+          {/* Table Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalItems={filteredLedgers.length}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
+          />
         </div>
 
         {/* PAYMENT MODAL (WITH GCASH QR & TEST BANK DETAILS) */}

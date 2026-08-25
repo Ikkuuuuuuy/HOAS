@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import PageContainer from '../../components/layout/PageContainer';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import Pagination from '../../components/common/Pagination';
 
 export type RequestType = 
   | 'move_in_out'
@@ -221,6 +222,8 @@ export default function DocumentRequests() {
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   // Form State - Common Requester & Property Details
   const [block, setBlock] = useState('Block 3');
@@ -514,6 +517,11 @@ export default function DocumentRequests() {
     });
   }, [requests, searchQuery, typeFilter, statusFilter, priorityFilter]);
 
+  const paginatedRequests = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredRequests.slice(start, start + pageSize);
+  }, [filteredRequests, currentPage, pageSize]);
+
   return (
     <PageContainer
       title="Service Request Module"
@@ -644,7 +652,7 @@ export default function DocumentRequests() {
               </tr>
             </thead>
             <tbody>
-              {filteredRequests.map(r => {
+              {paginatedRequests.map(r => {
                 const meta = getRequestTypeMeta(r.request_type);
                 return (
                   <tr key={r.id}>
@@ -707,6 +715,15 @@ export default function DocumentRequests() {
               })}
             </tbody>
           </table>
+
+          {/* Table Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalItems={filteredRequests.length}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
+          />
         </div>
 
         {/* ============================================================ */}

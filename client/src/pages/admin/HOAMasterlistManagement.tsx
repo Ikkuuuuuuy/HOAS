@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import PageContainer from '../../components/layout/PageContainer';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import Pagination from '../../components/common/Pagination';
 import { HOA_MASTERLIST_DATABASE, MasterlistRecord, getMockData, setMockData } from '../../data/mockDatabase';
 
 const BLOCK_STREET_MAP: Record<string, string> = {
@@ -86,6 +87,8 @@ export default function HOAMasterlistManagement() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBlock, setSelectedBlock] = useState('ALL');
   const [selectedOwnership, setSelectedOwnership] = useState('ALL');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   // Modal States
   const [showAddModal, setShowAddModal] = useState(false);
@@ -341,6 +344,12 @@ export default function HOAMasterlistManagement() {
       return matchesSearch && matchesBlock && matchesOwnership;
     });
   }, [masterlist, searchQuery, selectedBlock, selectedOwnership]);
+
+  // Paginated Masterlist Records
+  const paginatedList = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredList.slice(start, start + pageSize);
+  }, [filteredList, currentPage, pageSize]);
 
   return (
     <PageContainer
@@ -632,7 +641,7 @@ export default function HOAMasterlistManagement() {
                     </td>
                   </tr>
                 ) : (
-                  filteredList.map((rec) => (
+                  paginatedList.map((rec) => (
                     <tr key={rec.id} style={{ fontSize: 12.5 }}>
                       
                       {/* Account No */}
@@ -774,6 +783,15 @@ export default function HOAMasterlistManagement() {
               </tbody>
             </table>
           </div>
+
+          {/* Table Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalItems={filteredList.length}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
+          />
         </div>
 
       </div>

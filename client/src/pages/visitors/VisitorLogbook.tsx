@@ -3,6 +3,7 @@ import PageContainer from '../../components/layout/PageContainer';
 import { useApi, apiCall } from '../../hooks/useApi';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
+import Pagination from '../../components/common/Pagination';
 
 export default function VisitorLogbook() {
   const { user, accessToken } = useAuth();
@@ -18,6 +19,8 @@ export default function VisitorLogbook() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortBy, setSortBy] = useState('time-desc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const [form, setForm] = useState({
     hostId: '',
@@ -88,6 +91,11 @@ export default function VisitorLogbook() {
 
     return result;
   }, [visitors, searchQuery, statusFilter, sortBy]);
+
+  const paginatedVisitors = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredVisitors.slice(start, start + pageSize);
+  }, [filteredVisitors, currentPage, pageSize]);
 
   return (
     <PageContainer title="Visitor Logbook" subtitle="Gate Entry Management & Digital Gate Pass">
@@ -183,7 +191,7 @@ export default function VisitorLogbook() {
               </tr>
             </thead>
             <tbody>
-              {filteredVisitors.map((v: any) => (
+              {paginatedVisitors.map((v: any) => (
                 <tr key={v.id}>
                   <td className="font-semibold" style={{ color: 'var(--text-primary)' }}>{v.visitor_name}</td>
                   <td>{v.host_name}</td>
@@ -230,6 +238,15 @@ export default function VisitorLogbook() {
               <p>Try adjusting your search query or status filter.</p>
             </div>
           )}
+
+          {/* Table Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalItems={filteredVisitors.length}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
+          />
         </div>
 
         {/* Modal */}

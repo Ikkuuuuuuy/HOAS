@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PageContainer from '../../components/layout/PageContainer';
 import { useAuth } from '../../context/AuthContext';
 import { useApi } from '../../hooks/useApi';
 import { useToast } from '../../context/ToastContext';
+import Pagination from '../../components/common/Pagination';
 
 const DEFAULT_USERS = [
   { id: '1', full_name: 'System Super Admin', email: 'superadmin@cloudportal.ph', role_name: 'super_admin', tenant_name: 'Global System', is_active: 1, created_at: '2025-01-01' },
@@ -22,6 +23,8 @@ export default function AllUsersManagement() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [showModal, setShowModal] = useState(false);
 
   // Form State - Create User
@@ -38,13 +41,20 @@ export default function AllUsersManagement() {
   const [editRoleName, setEditRoleName] = useState('resident');
   const [editIsActive, setEditIsActive] = useState<number>(1);
 
-  const filteredUsers = users.filter((u: any) => {
-    const matchesSearch = !searchQuery ||
-      (u.full_name || u.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (u.email || '').toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesRole = roleFilter === 'all' || u.role_name === roleFilter;
-    return matchesSearch && matchesRole;
-  });
+  const filteredUsers = useMemo(() => {
+    return users.filter((u: any) => {
+      const matchesSearch = !searchQuery ||
+        (u.full_name || u.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (u.email || '').toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesRole = roleFilter === 'all' || u.role_name === roleFilter;
+      return matchesSearch && matchesRole;
+    });
+  }, [users, searchQuery, roleFilter]);
+
+  const paginatedUsers = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredUsers.slice(start, start + pageSize);
+  }, [filteredUsers, currentPage, pageSize]);
 
   const handleCreateUser = (e: React.FormEvent) => {
     e.preventDefault();
@@ -165,7 +175,7 @@ export default function AllUsersManagement() {
               </tr>
             </thead>
             <tbody>
-              {filteredUsers.map((u: any) => {
+              {paginatedUsers.map((u: any) => {
                 const badge = getRoleBadge(u.role_name);
                 return (
                   <tr key={u.id}>
@@ -194,6 +204,15 @@ export default function AllUsersManagement() {
               })}
             </tbody>
           </table>
+
+          {/* Table Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalItems={filteredUsers.length}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
+          />
         </div>
 
         {/* CREATE USER MODAL */}

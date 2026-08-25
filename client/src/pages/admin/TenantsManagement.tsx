@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PageContainer from '../../components/layout/PageContainer';
 import { useAuth } from '../../context/AuthContext';
 import { useApi, apiCall } from '../../hooks/useApi';
 import { useToast } from '../../context/ToastContext';
+import Pagination from '../../components/common/Pagination';
 
 const DEFAULT_TENANTS = [
   { id: 'tenant-nrg-ph2', name: 'NRG PH2 HOA INC (Northridge Grove Phase 2)', type: 'hoa', location: 'San Jose del Monte, Bulacan (3023)', user_count: 731, status: 'active', created_at: '2025-01-15' },
@@ -19,6 +20,8 @@ export default function TenantsManagement() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [showModal, setShowModal] = useState(false);
 
   // Form State
@@ -28,13 +31,20 @@ export default function TenantsManagement() {
   const [adminEmail, setAdminEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const filteredTenants = tenants.filter((t: any) => {
-    const matchesSearch = !searchQuery ||
-      t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (t.location && t.location.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesType = typeFilter === 'all' || t.type === typeFilter;
-    return matchesSearch && matchesType;
-  });
+  const filteredTenants = useMemo(() => {
+    return tenants.filter((t: any) => {
+      const matchesSearch = !searchQuery ||
+        t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (t.location && t.location.toLowerCase().includes(searchQuery.toLowerCase()));
+      const matchesType = typeFilter === 'all' || t.type === typeFilter;
+      return matchesSearch && matchesType;
+    });
+  }, [tenants, searchQuery, typeFilter]);
+
+  const paginatedTenants = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredTenants.slice(start, start + pageSize);
+  }, [filteredTenants, currentPage, pageSize]);
 
   const handleCreateTenant = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -133,7 +143,7 @@ export default function TenantsManagement() {
               </tr>
             </thead>
             <tbody>
-              {filteredTenants.map((t: any) => (
+              {paginatedTenants.map((t: any) => (
                 <tr key={t.id}>
                   <td className="font-bold" style={{ color: 'var(--text-primary)' }}>{t.name}</td>
                   <td>
@@ -156,6 +166,15 @@ export default function TenantsManagement() {
               ))}
             </tbody>
           </table>
+
+          {/* Table Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalItems={filteredTenants.length}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
+          />
         </div>
 
         {/* PROVISION TENANT MODAL */}

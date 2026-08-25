@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PageContainer from '../../components/layout/PageContainer';
 import { useAuth } from '../../context/AuthContext';
 import { useApi, apiCall } from '../../hooks/useApi';
 import { useToast } from '../../context/ToastContext';
+import Pagination from '../../components/common/Pagination';
 
 interface HouseholdMember {
   id: string;
@@ -62,6 +63,8 @@ export default function HouseholdMembers() {
   const [selectedRel, setSelectedRel] = useState('ALL');
   const [filterEmergencyOnly, setFilterEmergencyOnly] = useState(false);
   const [filterRfidOnly, setFilterRfidOnly] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   // Modal State
   const [showModal, setShowModal] = useState(false);
@@ -205,6 +208,11 @@ export default function HouseholdMembers() {
 
     return matchesSearch && matchesRel && matchesEmergency && matchesRfid;
   });
+
+  const paginatedMembers = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredMembers.slice(start, start + pageSize);
+  }, [filteredMembers, currentPage, pageSize]);
 
   return (
     <PageContainer
@@ -383,8 +391,9 @@ export default function HouseholdMembers() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-2 gap-4">
-            {filteredMembers.map(member => {
+          <>
+            <div className="grid grid-2 gap-4">
+              {paginatedMembers.map(member => {
               const relTheme = getRelationshipColor(member.relationship);
               const initials = getInitials(member.full_name);
 
@@ -545,7 +554,19 @@ export default function HouseholdMembers() {
               );
             })}
           </div>
-        )}
+
+          {/* Table Pagination */}
+          <div style={{ marginTop: 16 }}>
+            <Pagination
+              currentPage={currentPage}
+              totalItems={filteredMembers.length}
+              pageSize={pageSize}
+              onPageChange={setCurrentPage}
+              onPageSizeChange={setPageSize}
+            />
+          </div>
+        </>
+      )}
 
         {/* ── ADD / EDIT MEMBER MODAL ── */}
         {showModal && (
