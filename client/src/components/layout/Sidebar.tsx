@@ -444,6 +444,9 @@ export default function Sidebar() {
           border-bottom: 2px solid #16A34A;
           background: #064E3B; /* Rich Northridge Pine Header */
         }
+        [data-theme="dark"] .sidebar-brand {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+        }
         .sidebar-brand-title {
           color: #FFFFFF !important;
         }

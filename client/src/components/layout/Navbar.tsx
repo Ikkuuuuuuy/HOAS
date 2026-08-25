@@ -239,6 +239,9 @@ export default function Navbar({ title }: NavbarProps) {
           top: 0;
           z-index: 40;
         }
+        [data-theme="dark"] .minimalist-navbar {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+        }
         .btn-theme-minimal {
           padding: 6px 12px;
           border-radius: 6px;

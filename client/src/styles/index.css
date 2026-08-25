@@ -399,12 +399,18 @@
   border: 1px solid var(--sidebar-border) !important;
 }
 
-.navbar,
-.minimalist-navbar,
-[data-theme="light"] .navbar {
+[data-theme="light"] .navbar,
+[data-theme="light"] .minimalist-navbar {
   background: var(--navbar-bg) !important;
   border-bottom: 2px solid #16A34A !important; /* Northridge Green Border Line */
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="dark"] .navbar,
+[data-theme="dark"] .minimalist-navbar {
+  background: var(--bg-surface) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: none !important;
 }
 
 [data-theme="light"] .navbar-title {
