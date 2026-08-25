@@ -338,7 +338,6 @@ export default function HOAMasterlistManagement() {
 
       const matchesBlock = selectedBlock === 'ALL' || rec.block === selectedBlock;
       const matchesOwnership = selectedOwnership === 'ALL' || rec.ownershipType === selectedOwnership;
-
       return matchesSearch && matchesBlock && matchesOwnership;
     });
   }, [masterlist, searchQuery, selectedBlock, selectedOwnership]);
@@ -348,47 +347,45 @@ export default function HOAMasterlistManagement() {
       title="HOA Homeowners Masterlist & Excel Sync"
       subtitle="Official Registry of 312 Property Owners for Automated Instant Registration & Verification"
     >
-      <div style={{ animation: 'fadeInUp 0.3s ease' }}>
+      <div style={{ animation: 'fadeInUp 0.25s ease' }}>
 
-        {/* SUPER ADMIN ENCRYPTED SECURITY VAULT BANNER */}
+        {/* SUPER ADMIN ENCRYPTED SECURITY VAULT BANNER (Minimalist Design) */}
         <div style={{
-          background: isVaultUnlocked
-            ? 'linear-gradient(135deg, rgba(22, 101, 52, 0.4), rgba(4, 47, 46, 0.5))'
-            : 'linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9))',
-          border: isVaultUnlocked ? '1.5px solid #22C55E' : '1px solid rgba(245, 158, 11, 0.4)',
-          borderRadius: 12,
-          padding: '16px 20px',
-          marginBottom: 'var(--space-6)',
+          background: isVaultUnlocked ? 'rgba(22, 101, 52, 0.06)' : 'var(--bg-hover)',
+          border: isVaultUnlocked ? '1px solid #86EFAC' : '1px solid var(--border)',
+          borderRadius: 10,
+          padding: '12px 18px',
+          marginBottom: 'var(--space-5)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
-          gap: 14,
-          boxShadow: isVaultUnlocked ? '0 0 15px rgba(34,197,94,0.2)' : 'none'
+          gap: 12
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div style={{
-              width: 44, height: 44, borderRadius: 12,
-              background: isVaultUnlocked ? 'rgba(34,197,94,0.2)' : 'rgba(245,158,11,0.2)',
-              color: isVaultUnlocked ? '#4ADE80' : '#FBBF24',
-              fontSize: 22, display: 'flex', alignItems: 'center', justifyContent: 'center'
+              width: 36, height: 36, borderRadius: 8,
+              background: isVaultUnlocked ? '#DCFCE7' : '#FEF3C7',
+              color: isVaultUnlocked ? '#15803D' : '#B45309',
+              fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
             }}>
               {isVaultUnlocked ? '🔓' : '🔒'}
             </div>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 14, fontWeight: 800, color: '#FFF' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                <span style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--text-primary)' }}>
                   {isVaultUnlocked ? 'Super Admin Security Vault: UNLOCKED' : 'Super Admin Security Vault: PROTECTED'}
                 </span>
                 <span style={{
-                  fontSize: 10, fontWeight: 800, padding: '2px 6px', borderRadius: 4,
-                  background: isVaultUnlocked ? '#166534' : 'rgba(245,158,11,0.2)',
-                  color: isVaultUnlocked ? '#86EFAC' : '#FDE68A'
+                  fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 4,
+                  background: isVaultUnlocked ? '#DCFCE7' : '#FEF3C7',
+                  color: isVaultUnlocked ? '#15803D' : '#92400E',
+                  border: isVaultUnlocked ? '1px solid #BBF7D0' : '1px solid #FDE68A'
                 }}>
                   {isVaultUnlocked ? 'MASTER CLEARANCE ACTIVE' : 'SENSITIVE DATA ENCRYPTED'}
                 </span>
               </div>
-              <div style={{ fontSize: 12, color: '#94A3B8', marginTop: 2 }}>
+              <div style={{ fontSize: 11.5, color: 'var(--text-muted)', marginTop: 2 }}>
                 {isVaultUnlocked
                   ? 'All confidential resident demographics, date of birth, and valid government ID photos are decrypted.'
                   : 'Homeowner Date of Birth, Gender, and Uploaded Government ID cards are encrypted under RA 10173. Enter vault password to view.'}
@@ -403,12 +400,12 @@ export default function HOAMasterlistManagement() {
                   type="button"
                   onClick={() => setShowChangeVaultModal(true)}
                   style={{
-                    padding: '8px 14px', borderRadius: 8,
-                    background: 'rgba(255,255,255,0.08)', color: '#E2E8F0',
-                    border: '1px solid rgba(255,255,255,0.2)', fontSize: 12, fontWeight: 700, cursor: 'pointer'
+                    padding: '7px 12px', borderRadius: 6,
+                    background: 'var(--bg-surface)', color: 'var(--text-secondary)',
+                    border: '1px solid var(--border)', fontSize: 12, fontWeight: 600, cursor: 'pointer'
                   }}
                 >
-                  ⚙️ Change Vault Password
+                  ⚙️ Change Password
                 </button>
                 <button
                   type="button"
@@ -417,9 +414,9 @@ export default function HOAMasterlistManagement() {
                     info('Vault Locked', 'Sensitive personal data and ID attachments have been re-encrypted.');
                   }}
                   style={{
-                    padding: '8px 14px', borderRadius: 8,
-                    background: 'rgba(239, 68, 68, 0.2)', color: '#FCA5A5',
-                    border: '1px solid #EF4444', fontSize: 12, fontWeight: 800, cursor: 'pointer'
+                    padding: '7px 12px', borderRadius: 6,
+                    background: '#FEE2E2', color: '#991B1B',
+                    border: '1px solid #FCA5A5', fontSize: 12, fontWeight: 700, cursor: 'pointer'
                   }}
                 >
                   🔒 Lock Vault
@@ -430,76 +427,81 @@ export default function HOAMasterlistManagement() {
                 type="button"
                 onClick={() => setShowVaultModal(true)}
                 style={{
-                  padding: '10px 18px', borderRadius: 8,
-                  background: 'linear-gradient(135deg, #D97706, #B45309)',
-                  color: '#FFFFFF', border: 'none', fontSize: 12.5, fontWeight: 800, cursor: 'pointer',
-                  boxShadow: '0 2px 10px rgba(217,119,6,0.3)', display: 'flex', alignItems: 'center', gap: 6
+                  padding: '8px 16px', borderRadius: 6,
+                  background: '#B45309',
+                  color: '#FFFFFF', border: 'none', fontSize: 12.5, fontWeight: 700, cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
                 }}
               >
-                <span>🔑</span> Unlock Security Vault
+                <span>🔑</span> Unlock Vault
               </button>
             )}
           </div>
         </div>
 
-        {/* ── 1. METRICS & STATS BAR ── */}
-        <div className="grid grid-4" style={{ marginBottom: 'var(--space-6)' }}>
-          <div className="stat-card" style={{ borderLeft: '4px solid #166534' }}>
-            <div className="stat-icon" style={{ background: 'rgba(22, 101, 52, 0.2)', color: '#22C55E' }}>📜</div>
-            <div>
-              <div className="stat-value">{masterlist.length}</div>
-              <div className="stat-label">Total Masterlist Lots</div>
+        {/* ── 1. METRICS & STATS BAR (Minimalist Grid) ── */}
+        <div className="grid grid-4" style={{ marginBottom: 'var(--space-5)', gap: 'var(--space-4)' }}>
+          <div className="stat-card" style={{ padding: '16px 20px', gap: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Total Masterlist</span>
+              <span style={{ fontSize: 16 }}>📜</span>
             </div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-primary)' }}>{masterlist.length}</div>
+            <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Pre-verified property records</div>
           </div>
 
-          <div className="stat-card" style={{ borderLeft: '4px solid #DC2626' }}>
-            <div className="stat-icon" style={{ background: 'rgba(220, 38, 38, 0.2)', color: '#EF4444' }}>⚡</div>
-            <div>
-              <div className="stat-value">100%</div>
-              <div className="stat-label">Multi-Factor Match Active</div>
+          <div className="stat-card" style={{ padding: '16px 20px', gap: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Instant Verification</span>
+              <span style={{ fontSize: 16 }}>⚡</span>
             </div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: '#16A34A' }}>100%</div>
+            <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Multi-factor matching active</div>
           </div>
 
-          <div className="stat-card" style={{ borderLeft: '4px solid #D97706' }}>
-            <div className="stat-icon" style={{ background: 'rgba(217, 119, 6, 0.2)', color: '#F59E0B' }}>🏘️</div>
-            <div>
-              <div className="stat-value">Blocks 1 – 9</div>
-              <div className="stat-label">Subdivision Phases</div>
+          <div className="stat-card" style={{ padding: '16px 20px', gap: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Subdivision Phases</span>
+              <span style={{ fontSize: 16 }}>🏘️</span>
             </div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-primary)' }}>Blocks 1 – 9</div>
+            <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>NRG Phase 2 coverage</div>
           </div>
 
-          <div className="stat-card" style={{ borderLeft: '4px solid #2563EB' }}>
-            <div className="stat-icon" style={{ background: 'rgba(37, 99, 235, 0.2)', color: '#3B82F6' }}>📊</div>
-            <div>
-              <div className="stat-value">{filteredList.length}</div>
-              <div className="stat-label">Displayed Records</div>
+          <div className="stat-card" style={{ padding: '16px 20px', gap: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Filtered Results</span>
+              <span style={{ fontSize: 16 }}>📊</span>
             </div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-primary)' }}>{filteredList.length}</div>
+            <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Currently matching filters</div>
           </div>
         </div>
 
-        {/* ── 2. CONTROLS & ACTION BAR ── */}
-        <div className="card" style={{ marginBottom: 'var(--space-6)', padding: '16px 20px' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, justifyContent: 'space-between', alignItems: 'center' }}>
+        {/* ── 2. CONTROLS & ACTION BAR (Clean Toolbar) ── */}
+        <div className="card" style={{ marginBottom: 'var(--space-5)', padding: '14px 18px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'space-between', alignItems: 'center' }}>
             
             {/* Search & Filters */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, flex: 1, minWidth: 320 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, flex: 1, minWidth: 320 }}>
               <div style={{ position: 'relative', flex: 1, minWidth: 220 }}>
                 <input
                   type="text"
                   className="form-input"
-                  placeholder="🔍 Search name, account #, block, lot, street..."
+                  placeholder="Search name, account #, block, lot, street..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  style={{ width: '100%' }}
+                  style={{ width: '100%', fontSize: 13 }}
                 />
               </div>
 
               {/* Block Filter */}
               <select
-                className="form-input"
+                className="form-select"
                 value={selectedBlock}
                 onChange={e => setSelectedBlock(e.target.value)}
-                style={{ width: 140 }}
+                style={{ width: 140, fontSize: 13 }}
               >
                 <option value="ALL">All Blocks (1-9)</option>
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(b => (
@@ -509,10 +511,10 @@ export default function HOAMasterlistManagement() {
 
               {/* Ownership Filter */}
               <select
-                className="form-input"
+                className="form-select"
                 value={selectedOwnership}
                 onChange={e => setSelectedOwnership(e.target.value)}
-                style={{ width: 170 }}
+                style={{ width: 170, fontSize: 13 }}
               >
                 <option value="ALL">All Ownership Types</option>
                 <option value="Turned-over Owner">Turned-over Owner</option>
@@ -522,26 +524,25 @@ export default function HOAMasterlistManagement() {
             </div>
 
             {/* Action Buttons */}
-            <div style={{ display: 'flex', gap: 10 }}>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               <button
                 type="button"
                 onClick={handleOpenAddModal}
                 style={{
-                  padding: '10px 16px',
-                  borderRadius: 8,
+                  padding: '8px 14px',
+                  borderRadius: 6,
                   background: '#166534',
                   color: '#FFFFFF',
                   border: 'none',
-                  fontWeight: 700,
-                  fontSize: 13,
+                  fontWeight: 600,
+                  fontSize: 12.5,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 6,
-                  boxShadow: '0 2px 8px rgba(22,101,52,0.3)',
+                  gap: 6
                 }}
               >
-                <span>➕</span> Add Homeowner
+                <span>+</span> Add Homeowner
               </button>
 
               <button
@@ -553,18 +554,17 @@ export default function HOAMasterlistManagement() {
                   setShowImportModal(true);
                 }}
                 style={{
-                  padding: '10px 16px',
-                  borderRadius: 8,
-                  background: 'linear-gradient(135deg, #1E3A8A, #2563EB)',
-                  color: '#FFFFFF',
-                  border: 'none',
-                  fontWeight: 700,
-                  fontSize: 13,
+                  padding: '8px 14px',
+                  borderRadius: 6,
+                  background: 'var(--bg-hover)',
+                  color: 'var(--text-primary)',
+                  border: '1px solid var(--border)',
+                  fontWeight: 600,
+                  fontSize: 12.5,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 6,
-                  boxShadow: '0 2px 8px rgba(37,99,235,0.3)',
+                  gap: 6
                 }}
               >
                 <span>📁</span> Import Excel / CSV
@@ -574,189 +574,200 @@ export default function HOAMasterlistManagement() {
                 type="button"
                 onClick={handleDownloadTemplate}
                 style={{
-                  padding: '10px 14px',
-                  borderRadius: 8,
-                  background: 'rgba(255,255,255,0.08)',
-                  color: '#E5E7EB',
-                  border: '1px solid rgba(255,255,255,0.2)',
-                  fontWeight: 600,
+                  padding: '8px 12px',
+                  borderRadius: 6,
+                  background: 'transparent',
+                  color: 'var(--text-muted)',
+                  border: '1px solid var(--border)',
+                  fontWeight: 500,
                   fontSize: 12,
-                  cursor: 'pointer',
+                  cursor: 'pointer'
                 }}
                 title="Download CSV template"
               >
-                📥 Template
+                Template
               </button>
             </div>
 
           </div>
         </div>
 
-        {/* ── 3. MASTERLIST DATA TABLE ── */}
+        {/* ── 3. MASTERLIST DATA TABLE (Clean Minimalist Table) ── */}
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: 15, fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span>📜 Pre-Verified Homeowners Master Database</span>
-              <span style={{ fontSize: 12, background: 'rgba(34,197,94,0.2)', color: '#86EFAC', padding: '2px 8px', borderRadius: 12, fontWeight: 700 }}>
-                {filteredList.length} Verified Lots
+          <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <h3 style={{ fontSize: 14, fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
+                Pre-Verified Master Database
+              </h3>
+              <span style={{ fontSize: 11, background: '#DCFCE7', color: '#166534', padding: '2px 8px', borderRadius: 12, fontWeight: 600 }}>
+                {filteredList.length} verified lots
               </span>
-            </h3>
-            <span style={{ fontSize: 12, color: '#9CA3AF' }}>
-              ⚡ Cross-referencing Name, DOB, Sex & Lot for secure auto-accept
+            </div>
+            <span style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
+              Cross-referencing Name, DOB, Sex & Lot
             </span>
           </div>
 
           <div style={{ overflowX: 'auto' }}>
-            <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
-                <tr style={{ background: 'rgba(255,255,255,0.03)', textAlign: 'left', fontSize: 12, color: '#9CA3AF' }}>
-                  <th style={{ padding: '12px 16px' }}>Account No.</th>
-                  <th style={{ padding: '12px 16px' }}>Registered Owner</th>
-                  <th style={{ padding: '12px 16px' }}>Property Address</th>
-                  <th style={{ padding: '12px 16px' }}>Demographics (DOB/Sex)</th>
-                  <th style={{ padding: '12px 16px' }}>Contact & Email</th>
-                  <th style={{ padding: '12px 16px' }}>Government ID Document</th>
-                  <th style={{ padding: '12px 16px' }}>Ownership</th>
-                  <th style={{ padding: '12px 16px', textAlign: 'right' }}>Actions</th>
+                <tr>
+                  <th style={{ padding: '10px 16px' }}>Account No.</th>
+                  <th style={{ padding: '10px 16px' }}>Registered Owner</th>
+                  <th style={{ padding: '10px 16px' }}>Property Address</th>
+                  <th style={{ padding: '10px 16px' }}>Demographics</th>
+                  <th style={{ padding: '10px 16px' }}>Contact & Email</th>
+                  <th style={{ padding: '10px 16px' }}>Government ID</th>
+                  <th style={{ padding: '10px 16px' }}>Ownership</th>
+                  <th style={{ padding: '10px 16px', textAlign: 'right' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredList.length === 0 ? (
                   <tr>
-                    <td colSpan={8} style={{ textAlign: 'center', padding: '36px 16px', color: '#9CA3AF' }}>
-                      <div style={{ fontSize: 32, marginBottom: 8 }}>🔍</div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: '#FFF' }}>No matching homeowner records found</div>
-                      <div style={{ fontSize: 12 }}>Try clearing your search query or filters</div>
+                    <td colSpan={8} style={{ textAlign: 'center', padding: '36px 16px', color: 'var(--text-muted)' }}>
+                      <div style={{ fontSize: 24, marginBottom: 6 }}>🔍</div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>No matching homeowner records found</div>
+                      <div style={{ fontSize: 11.5 }}>Try clearing your search query or filters</div>
                     </td>
                   </tr>
                 ) : (
                   filteredList.map((rec) => (
-                    <tr key={rec.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', fontSize: 13 }}>
+                    <tr key={rec.id} style={{ fontSize: 12.5 }}>
                       
                       {/* Account No */}
-                      <td style={{ padding: '14px 16px' }}>
-                        <code style={{ background: 'rgba(245,158,11,0.15)', color: '#FBBF24', padding: '3px 8px', borderRadius: 4, fontWeight: 700, fontSize: 12 }}>
+                      <td style={{ padding: '12px 16px' }}>
+                        <code style={{
+                          fontFamily: 'monospace',
+                          background: 'var(--bg-hover)',
+                          color: 'var(--text-primary)',
+                          border: '1px solid var(--border)',
+                          padding: '2px 6px',
+                          borderRadius: 4,
+                          fontSize: 11.5,
+                          fontWeight: 600
+                        }}>
                           {rec.accountNo}
                         </code>
                       </td>
 
                       {/* Owner Name */}
-                      <td style={{ padding: '14px 16px' }}>
-                        <div style={{ fontWeight: 800, color: '#FFFFFF' }}>{rec.ownerName}</div>
-                        <div style={{ fontSize: 11, color: '#9CA3AF' }}>Turnover: {rec.turnoverDate || '2024'}</div>
+                      <td style={{ padding: '12px 16px' }}>
+                        <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{rec.ownerName}</div>
+                        <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Turnover: {rec.turnoverDate || '2024'}</div>
                       </td>
 
                       {/* Property Address */}
-                      <td style={{ padding: '14px 16px' }}>
-                        <div style={{ fontWeight: 700, color: '#E5E7EB' }}>{rec.block} {rec.lot}</div>
-                        <div style={{ fontSize: 11, color: '#9CA3AF' }}>{rec.street}</div>
+                      <td style={{ padding: '12px 16px' }}>
+                        <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{rec.block} {rec.lot}</div>
+                        <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{rec.street}</div>
                       </td>
 
                       {/* Demographics (Vault Encrypted/Unlocked) */}
-                      <td style={{ padding: '14px 16px' }}>
+                      <td style={{ padding: '12px 16px' }}>
                         {isVaultUnlocked ? (
                           <div>
-                            <div style={{ fontWeight: 700, color: '#F8FAFC' }}>
-                              🎂 {rec.birthDate || '1985-05-14'}
+                            <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
+                              {rec.birthDate || '1985-05-14'}
                             </div>
-                            <div style={{ fontSize: 11, color: '#86EFAC' }}>
+                            <div style={{ fontSize: 11, color: '#166534' }}>
                               {rec.gender || 'Male'} • {rec.age || 41} yrs
                             </div>
                           </div>
                         ) : (
-                          <span style={{ fontSize: 11, background: 'rgba(255,255,255,0.06)', color: '#94A3B8', padding: '3px 8px', borderRadius: 4 }}>
+                          <span style={{ fontSize: 11, background: 'var(--bg-hover)', color: 'var(--text-muted)', border: '1px solid var(--border)', padding: '2px 6px', borderRadius: 4 }}>
                             🔒 Encrypted
                           </span>
                         )}
                       </td>
 
                       {/* Contact & Email */}
-                      <td style={{ padding: '14px 16px' }}>
-                        <div style={{ color: '#E5E7EB' }}>📞 {rec.phone || 'N/A'}</div>
-                        <div style={{ fontSize: 11, color: '#9CA3AF' }}>✉️ {rec.email || 'N/A'}</div>
+                      <td style={{ padding: '12px 16px' }}>
+                        <div style={{ color: 'var(--text-primary)' }}>{rec.phone || '—'}</div>
+                        <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{rec.email || '—'}</div>
                       </td>
 
                       {/* Government ID Document */}
-                      <td style={{ padding: '14px 16px' }}>
+                      <td style={{ padding: '12px 16px' }}>
                         {isVaultUnlocked ? (
                           <button
                             type="button"
                             onClick={() => setViewingIdDoc(rec)}
                             style={{
-                              padding: '4px 10px',
-                              borderRadius: 6,
-                              background: 'rgba(56, 189, 248, 0.15)',
-                              border: '1px solid rgba(56, 189, 248, 0.4)',
-                              color: '#38BDF8',
-                              fontSize: 11.5,
-                              fontWeight: 700,
+                              padding: '3px 8px',
+                              borderRadius: 4,
+                              background: '#EFF6FF',
+                              border: '1px solid #BFDBFE',
+                              color: '#1E40AF',
+                              fontSize: 11,
+                              fontWeight: 600,
                               cursor: 'pointer',
                               display: 'inline-flex',
                               alignItems: 'center',
                               gap: 4
                             }}
                           >
-                            <span>📷</span> View {rec.idType || 'Gov ID'}
+                            <span>📷</span> View {rec.idType || 'ID'}
                           </button>
                         ) : (
-                          <span style={{ fontSize: 11, background: 'rgba(255,255,255,0.06)', color: '#94A3B8', padding: '3px 8px', borderRadius: 4 }}>
-                            🔒 ID Protected
+                          <span style={{ fontSize: 11, background: 'var(--bg-hover)', color: 'var(--text-muted)', border: '1px solid var(--border)', padding: '2px 6px', borderRadius: 4 }}>
+                            🔒 Protected
                           </span>
                         )}
                       </td>
 
                       {/* Ownership Type */}
-                      <td style={{ padding: '14px 16px' }}>
+                      <td style={{ padding: '12px 16px' }}>
                         <span style={{
                           fontSize: 11,
-                          fontWeight: 700,
-                          padding: '3px 8px',
+                          fontWeight: 600,
+                          padding: '2px 8px',
                           borderRadius: 4,
-                          background: rec.ownershipType === 'Turned-over Owner' ? 'rgba(22,101,52,0.2)' : 'rgba(37,99,235,0.2)',
-                          color: rec.ownershipType === 'Turned-over Owner' ? '#86EFAC' : '#93C5FD',
+                          background: rec.ownershipType === 'Turned-over Owner' ? '#DCFCE7' : '#EFF6FF',
+                          color: rec.ownershipType === 'Turned-over Owner' ? '#166534' : '#1E40AF',
+                          border: rec.ownershipType === 'Turned-over Owner' ? '1px solid #BBF7D0' : '1px solid #BFDBFE'
                         }}>
                           {rec.ownershipType}
                         </span>
                       </td>
 
                       {/* Actions */}
-                      <td style={{ padding: '14px 16px', textAlign: 'right' }}>
-                        <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                      <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                        <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
                           <button
                             type="button"
                             onClick={() => handleOpenEditModal(rec)}
                             style={{
-                              padding: '5px 10px',
-                              borderRadius: 6,
-                              background: 'rgba(255,255,255,0.08)',
-                              color: '#93C5FD',
-                              border: '1px solid rgba(147,197,253,0.3)',
-                              fontSize: 12,
-                              fontWeight: 600,
+                              padding: '4px 8px',
+                              borderRadius: 4,
+                              background: 'var(--bg-surface)',
+                              color: 'var(--text-secondary)',
+                              border: '1px solid var(--border)',
+                              fontSize: 11.5,
+                              fontWeight: 500,
                               cursor: 'pointer'
                             }}
                           >
-                            ✏️ Edit
+                            Edit
                           </button>
                           <button
                             type="button"
                             onClick={() => handleDeleteRecord(rec.id, rec.ownerName)}
                             style={{
-                              padding: '5px 10px',
-                              borderRadius: 6,
-                              background: 'rgba(239,68,68,0.1)',
-                              color: '#F87171',
-                              border: '1px solid rgba(239,68,68,0.3)',
-                              fontSize: 12,
-                              fontWeight: 600,
+                              padding: '4px 8px',
+                              borderRadius: 4,
+                              background: 'var(--bg-surface)',
+                              color: '#DC2626',
+                              border: '1px solid #FCA5A5',
+                              fontSize: 11.5,
+                              fontWeight: 500,
                               cursor: 'pointer'
                             }}
                           >
-                            🗑️
+                            Delete
                           </button>
                         </div>
                       </td>
-
                     </tr>
                   ))
                 )}
