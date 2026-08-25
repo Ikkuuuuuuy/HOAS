@@ -44,8 +44,9 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
               // Browser notification if supported
               try {
                 if (typeof window !== 'undefined' && 'Notification' in window && window.Notification && window.Notification.permission === 'granted') {
-                  new window.Notification(`🚨 Emergency Alert: ${data.alert.alertType.toUpperCase()}`, {
-                    body: data.alert.message,
+                  const aType = data?.alert?.alertType || data?.alert?.alert_type || 'EMERGENCY';
+                  new window.Notification(`🚨 Emergency Alert: ${aType.toUpperCase()}`, {
+                    body: data?.alert?.message || 'New emergency alert broadcasted.',
                   });
                 }
               } catch { /* ignore notification errors */ }
