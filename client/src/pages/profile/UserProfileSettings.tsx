@@ -346,19 +346,12 @@ export default function UserProfileSettings() {
           {/* Bottom Highlights Row */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
             gap: 12,
             marginTop: 20,
             paddingTop: 16,
             borderTop: '1px solid var(--border)'
           }}>
-            <div style={{ padding: '10px 14px', borderRadius: 8, background: 'var(--bg-hover)' }}>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>MEMBER ID / REF</div>
-              <div style={{ fontSize: 13, fontWeight: 800, fontFamily: 'monospace', color: 'var(--text-primary)', marginTop: 2 }}>
-                NRG-{user?.id?.slice(0, 8) || '2024-0312'}
-              </div>
-            </div>
-
             <div style={{ padding: '10px 14px', borderRadius: 8, background: 'var(--bg-hover)' }}>
               <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>HOA REGISTRY STATUS</div>
               <div style={{ fontSize: 13, fontWeight: 800, color: '#16A34A', marginTop: 2 }}>
@@ -370,13 +363,6 @@ export default function UserProfileSettings() {
               <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>RFID GATE ACCESS</div>
               <div style={{ fontSize: 13, fontWeight: 800, color: '#16A34A', marginTop: 2 }}>
                 🚗 Enabled (Tag #RFID-8832)
-              </div>
-            </div>
-
-            <div style={{ padding: '10px 14px', borderRadius: 8, background: 'var(--bg-hover)' }}>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>SECURITY CERTIFICATE</div>
-              <div style={{ fontSize: 12, fontWeight: 700, fontFamily: 'monospace', color: 'var(--text-secondary)', marginTop: 2 }}>
-                PH-HOA-VERIFIED-2026
               </div>
             </div>
           </div>
@@ -458,81 +444,9 @@ export default function UserProfileSettings() {
           </div>
 
           {/* ══════════════════════════════════════════════════════ */}
-          {/* COLUMN 2: SECURITY & SESSION AUDIT                     */}
+          {/* COLUMN 2: ACTIVE SESSIONS & DEVICE AUDIT               */}
           {/* ══════════════════════════════════════════════════════ */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-            {/* Card: Security & Verification */}
-            <div className="card" style={{
-              background: 'var(--bg-surface)',
-              border: '1px solid var(--border)',
-              borderRadius: 14,
-              padding: 22
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-                <span style={{ fontSize: 20 }}>⚙️</span>
-                <div>
-                  <h3 style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-                    Account Security & Session Policy
-                  </h3>
-                  <p style={{ fontSize: 12, color: 'var(--text-muted)', margin: '2px 0 0 0' }}>
-                    Multi-factor authentication and automatic session controls
-                  </p>
-                </div>
-              </div>
-
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '12px 14px',
-                borderRadius: 8,
-                background: 'var(--bg-hover)',
-                border: '1px solid var(--border)',
-                marginBottom: 10
-              }}>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
-                    Masterlist 2FA Verification
-                  </div>
-                  <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
-                    Cryptographic signature for statements & requests
-                  </div>
-                </div>
-                <span style={{
-                  fontSize: 11,
-                  fontWeight: 800,
-                  padding: '3px 8px',
-                  borderRadius: 6,
-                  background: 'rgba(22, 101, 52, 0.12)',
-                  color: '#166534',
-                  border: '1px solid rgba(22, 101, 52, 0.3)'
-                }}>
-                  ACTIVE
-                </span>
-              </div>
-
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '12px 14px',
-                borderRadius: 8,
-                background: 'var(--bg-hover)',
-                border: '1px solid var(--border)'
-              }}>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
-                    Session Timeout Protection
-                  </div>
-                  <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
-                    Automatic logout after 30 minutes of inactivity
-                  </div>
-                </div>
-                <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)' }}>
-                  30 Mins
-                </span>
-              </div>
-            </div>
 
             {/* Card: Active Devices & Logins */}
             <div className="card" style={{
