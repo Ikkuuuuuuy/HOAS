@@ -78,8 +78,8 @@ export default function SubdivisionMap() {
 
     try {
       if (!leafletInstance.current) {
-        // Center at Northridge Grove Phase 2
-        const map = window.L.map(mapRef.current).setView([14.7946, 121.0800], 16);
+        // Center directly at Northridge Grove Phase 2 (Right sector)
+        const map = window.L.map(mapRef.current).setView([14.7956, 121.0824], 17);
 
         // Tile Layer Providers
         const streetLayer = window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -90,81 +90,65 @@ export default function SubdivisionMap() {
         streetLayer.addTo(map);
         leafletInstance.current = map;
 
-        // Draw Accurate Subdivision Polygon Boundary (Northridge Grove Phase 2, Blocks 1–9)
+        // Draw Accurate Phase 2 Boundary Polygon (Right Side / Phase 2 Sector)
         const polygonCoords = [
-          // ── 1. West Sector: Left Edge & Southwest Entrance Corner ──
-          [14.79250, 121.07580], // Southwest Corner (near La Bonita Cosmetics & Main Gate)
-          [14.79350, 121.07540], // Western Edge lower (south of Chancezz)
-          [14.79460, 121.07530], // Western Edge middle (beside Chancezz / B7 Maagap St)
-          [14.79560, 121.07560], // Northwest Flank
-          [14.79600, 121.07590], // Northwest Corner (Amy Ella Panaderia area)
+          // ── 1. Western dividing boundary (along the dividing spine/road) ──
+          [14.79300, 121.08050], // Bottom-left corner (near dividing spine)
+          [14.79420, 121.08020], // Mid dividing boundary
+          [14.79540, 121.08010], // Upper dividing boundary (past BCCCP)
+          [14.79630, 121.08040], // Top-left junction
 
-          // ── 2. West Sector: Northern Perimeter with BCCCP Inset ──
-          [14.79610, 121.07680], // Top boundary lot line
-          [14.79570, 121.07760], // Inward dip/cove near BCCCP lot line
-          [14.79540, 121.07820], // Inset boundary corner
-          [14.79580, 121.07900], // Climbs back to Northern lot line
-          [14.79610, 121.07990], // North perimeter of middle block
-          [14.79630, 121.08060], // Central spine junction / neck
+          // ── 2. Northern Arc & Parang Rd Frontage (near Bekiry & Gourmet) ──
+          [14.79700, 121.08050], // North flank
+          [14.79770, 121.08080], // Upper apex curve
+          [14.79810, 121.08160], // Parang Rd entrance / upper bend
+          [14.79780, 121.08260], // Parang Rd frontage near Bekiry
+          [14.79730, 121.08370], // Near Gourmet & Susana's Kitchen
 
-          // ── 3. Northeast Sector: Fan-Shaped Arch (Top Dome & Parang Rd) ──
-          [14.79690, 121.08040], // Neck transition into right lobe
-          [14.79770, 121.08030], // Western apex of upper fan (near nathan sari-sari)
-          [14.79810, 121.08080], // Topmost northern apex (L&A Laundry Home)
-          [14.79800, 121.08180], // Parang Rd upper bend
-          [14.79750, 121.08280], // Upper Parang Rd frontage
-          [14.79720, 121.08360], // Eastern approach (Bakery area)
-          [14.79660, 121.08430], // Near Susana's Kitchen / North-East Corner
-          [14.79590, 121.08450], // Far East Corner (Goumn / Casa Resort boundary)
+          // ── 3. Eastern Perimeter (Casa Estrella Private Resort area) ──
+          [14.79660, 121.08440], // Casa Estrella Private Resort corner
+          [14.79580, 121.08460], // Far East boundary
+          [14.79500, 121.08380], // Southeast lot lines
 
-          // ── 4. Northeast Sector: Southeastern Perimeter ──
-          [14.79520, 121.08370], // South-east diagonal boundary
-          [14.79450, 121.08270], // Lower east lot lines (near Plk A Book)
-          [14.79390, 121.08180], // Approach to southern neck (near Tea Alley Station)
-          [14.79340, 121.08100], // Inner neck bottom cusp
-
-          // ── 5. West Sector: Southern Perimeter ──
-          [14.79290, 121.08120], // Bottom road corner (below JCS Pandes)
-          [14.79250, 121.08060], // Southern road curve
-          [14.79220, 121.07970], // Southern perimeter road (Farm Fresh)
-          [14.79170, 121.07860], // Southernmost bottom dip
-          [14.79150, 121.07770], // Southern road curve (Mabuti St south)
-          [14.79190, 121.07670], // Southwest perimeter road
-          [14.79230, 121.07610], // Curve back to Southwest corner
+          // ── 4. Southern Flank (TeaAlley Milktea Station area) ──
+          [14.79410, 121.08270], // South approach
+          [14.79350, 121.08160], // Southern road near TeaAlley Milktea Station
+          [14.79300, 121.08050], // Closes back to Southwest base
         ];
 
         // Golden outer glow
         window.L.polygon(polygonCoords, {
-          color: '#F59E0B',
+          color: '#16A34A',
           weight: 6,
           opacity: 0.5,
           fillOpacity: 0,
         }).addTo(map);
 
-        // Main crisp golden boundary polygon
+        // Main crisp boundary polygon
         const polygonLayer = window.L.polygon(polygonCoords, {
-          color: '#EAB308',
-          fillColor: '#F59E0B',
-          fillOpacity: 0.16,
+          color: '#15803D',
+          fillColor: '#16A34A',
+          fillOpacity: 0.22,
           weight: 3.5,
-          dashArray: '8, 5',
+          dashArray: '6, 4',
         }).addTo(map);
 
         polygonLayer.bindPopup(`
           <div style="font-family:sans-serif;padding:6px;min-width:240px;">
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-              <div style="background:#F59E0B;color:#FFF;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:900;">OFFICIAL BOUNDARY</div>
-              <div style="font-size:11px;color:#DC2626;font-weight:800;">312 HOUSING UNITS</div>
+              <div style="background:#16A34A;color:#FFF;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:900;">PHASE 2 OFFICIAL BOUNDARY</div>
+              <div style="font-size:11px;color:#D97706;font-weight:800;">312 HOUSING UNITS</div>
             </div>
             <div style="font-weight:900;font-size:15px;color:#111827;">Northridge Grove Phase 2</div>
-            <div style="font-size:12px;color:#B45309;font-weight:700;margin-top:2px;">NRG PH2 HOA INC Jurisdiction</div>
+            <div style="font-size:12px;color:#166534;font-weight:700;margin-top:2px;">NRG PH2 HOA INC Jurisdiction</div>
             <div style="font-size:12px;color:#4B5563;margin-top:6px;line-height:1.4;">
               📍 B7 Maagap St, Barangay Tungkong Mangga, San Jose del Monte, Bulacan 3023
             </div>
             <div style="margin-top:8px;padding-top:8px;border-top:1px solid #E5E7EB;font-size:11.5px;color:#374151;">
               • <strong>Coverage:</strong> Blocks 1, 2, 3, 4, 5, 6, 7, 8, and 9<br/>
+              • <strong>Landmarks:</strong> Bekiry, Gourmet, Casa Estrella, TeaAlley Milktea<br/>
               • <strong>Streets:</strong> Maagap St, Mabuti St, Mapayapa St, Magiting St<br/>
-              • <strong>Key Amenities:</strong> Clubhouse, Covered Basketball Court, Swimming Pools, Playground, 24/7 RFID Gate
+              • <strong>Key Amenities:</strong> Clubhouse, Covered Basketball Court, Swimming Pools, 24/7 RFID Gate
             </div>
           </div>
         `);
@@ -389,61 +373,68 @@ export default function SubdivisionMap() {
                   viewBox="0 0 100 100"
                   preserveAspectRatio="none"
                 >
-                  {/* Phase 2 Polygon Border (Bekiry, Walisons, TeaAlley, Parang Rd) */}
+                  {/* Phase 2 Polygon Border (Bekiry, Gourmet, Casa Estrella, TeaAlley, Parang Rd) */}
                   <polygon
-                    points="52,10 92,28 92,60 58,78 52,48"
-                    fill="rgba(34, 197, 94, 0.25)"
-                    stroke="#166534"
-                    strokeWidth="1.5"
-                    strokeDasharray="2 1"
+                    points="26,62 38,48 52,32 66,15 78,5 98,24 98,58 78,82 56,88 38,82 26,62"
+                    fill="rgba(34, 197, 94, 0.22)"
+                    stroke="#16A34A"
+                    strokeWidth="2"
+                    strokeDasharray="3 1.5"
+                  />
+                  <polygon
+                    points="26,62 38,48 52,32 66,15 78,5 98,24 98,58 78,82 56,88 38,82 26,62"
+                    fill="none"
+                    stroke="#EAB308"
+                    strokeWidth="0.8"
+                    strokeDasharray="1.5 1.5"
                   />
                 </svg>
 
                 {/* Interactive Landmark Pins Overlaid on Map Image */}
-                {/* 1. TeaAlley Milktea Station Pin (Corner Entrance) */}
+                {/* 1. TeaAlley Milktea Station Pin */}
                 <div
                   style={{
-                    position: 'absolute', top: '56%', left: '57%',
+                    position: 'absolute', top: '58%', left: '55%',
                     background: '#EA580C', color: '#FFF',
                     padding: '4px 10px', borderRadius: 16,
-                    fontSize: 11, fontWeight: 800,
+                    fontSize: 10.5, fontWeight: 800,
                     boxShadow: '0 4px 12px rgba(234, 88, 12, 0.5)',
                     display: 'flex', alignItems: 'center', gap: 4,
                     border: '2px solid #FFF', zIndex: 10
                   }}
-                  title="TeaAlley Milktea Station — Phase 2 Entrance Landmark"
+                  title="TeaAlley Milktea Station"
                 >
                   <span>☕</span>
                   <span>TeaAlley Milktea Station</span>
                 </div>
 
-                {/* 2. Parang Rd Landmark */}
+                {/* 2. Parang Rd & Bekiry */}
                 <div
                   style={{
-                    position: 'absolute', top: '18%', left: '68%',
+                    position: 'absolute', top: '16%', left: '66%',
                     background: '#1F2937', color: '#F9FAFB',
                     padding: '3px 8px', borderRadius: 12,
                     fontSize: 10, fontWeight: 700,
-                    border: '1px solid #4B5563', zIndex: 10
+                    border: '1px solid #4B5563', zIndex: 10,
+                    display: 'flex', alignItems: 'center', gap: 4
                   }}
                 >
-                  <span>🛣️ Parang Rd (North Boundary)</span>
+                  <span>🥖 Bekiry • Parang Rd</span>
                 </div>
 
-                {/* 3. NRG PH2 Basketball Court & Gate Pin */}
+                {/* 3. Casa Estrella Private Resort */}
                 <div
                   style={{
-                    position: 'absolute', top: '38%', left: '72%',
-                    background: '#DC2626', color: '#FFF',
-                    padding: '4px 10px', borderRadius: 16,
-                    fontSize: 11, fontWeight: 800,
-                    boxShadow: '0 4px 12px rgba(220, 38, 38, 0.5)',
+                    position: 'absolute', top: '44%', left: '76%',
+                    background: '#7C3AED', color: '#FFF',
+                    padding: '3px 9px', borderRadius: 14,
+                    fontSize: 10, fontWeight: 800,
+                    boxShadow: '0 4px 12px rgba(124, 58, 237, 0.4)',
                     display: 'flex', alignItems: 'center', gap: 4,
-                    border: '2px solid #FFF', zIndex: 10
+                    border: '1.5px solid #FFF', zIndex: 10
                   }}
                 >
-                  <span>🏀</span>
-                  <span>NRG PH2 Covered Court</span>
+                  <span>🏊 Casa Estrella Resort</span>
                 </div>
 
                 {/* Floating Phase 2 Badge Overlay */}
