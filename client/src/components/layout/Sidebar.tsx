@@ -336,29 +336,29 @@ export default function Sidebar() {
       </div>
 
       {/* Bottom User Card */}
-      <div className="sidebar-footer" ref={userMenuRef} style={{ padding: 10, borderTop: '1px solid var(--sidebar-border)' }}>
+      <div className="sidebar-footer" ref={userMenuRef} style={{ padding: 10, borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
         {showMenu && (
           <div className="user-popover-menu" style={{
             position: 'absolute',
-            bottom: 64,
+            bottom: 74,
             left: 10,
             right: 10,
-            background: 'var(--popover-bg)',
-            border: '1px solid var(--popover-border)',
+            background: '#0F172A',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
             borderRadius: 8,
-            boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.4)',
             padding: 4,
             zIndex: 100
           }}>
-            <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border)' }}>
-              <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--popover-text)' }}>{user.fullName}</div>
-              <div style={{ fontSize: 11, color: 'var(--popover-sub)' }}>{user.email}</div>
+            <div style={{ padding: '8px 10px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+              <div style={{ fontSize: 12.5, fontWeight: 700, color: '#F8FAFC' }}>{user.fullName}</div>
+              <div style={{ fontSize: 11, color: '#94A3B8' }}>{user.email}</div>
             </div>
             <button
               type="button"
               onClick={() => { setShowMenu(false); navigate('/profile'); }}
               className="user-menu-item"
-              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: 'var(--popover-text)', fontSize: 12, cursor: 'pointer' }}
+              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#E2E8F0', fontSize: 12, cursor: 'pointer', borderRadius: 4 }}
             >
               Account Settings
             </button>
@@ -366,7 +366,7 @@ export default function Sidebar() {
               type="button"
               onClick={handleLogout}
               className="user-menu-item"
-              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#DC2626', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#F87171', fontSize: 12, fontWeight: 600, cursor: 'pointer', borderRadius: 4 }}
             >
               Logout
             </button>
@@ -382,7 +382,7 @@ export default function Sidebar() {
             padding: '8px 10px',
             borderRadius: 6,
             cursor: 'pointer',
-            background: showMenu ? 'var(--sidebar-nav-hover)' : 'transparent',
+            background: showMenu ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
             transition: 'all 0.15s ease'
           }}
         >
@@ -391,7 +391,8 @@ export default function Sidebar() {
           ) : (
             <div style={{
               width: 28, height: 28, borderRadius: '50%',
-              background: '#111827', color: '#FFFFFF',
+              background: '#1E293B', color: '#F8FAFC',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
               fontSize: 11, fontWeight: 700,
               display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}>
@@ -399,10 +400,10 @@ export default function Sidebar() {
             </div>
           )}
           <div style={{ flex: 1, overflow: 'hidden' }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--sidebar-text-title)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#F8FAFC', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {user.fullName}
             </div>
-            <div style={{ fontSize: 10.5, color: 'var(--text-muted)' }}>
+            <div style={{ fontSize: 10.5, color: '#94A3B8' }}>
               {user.roleName.replace(/_/g, ' ')}
             </div>
           </div>
@@ -413,8 +414,8 @@ export default function Sidebar() {
         .minimalist-sidebar {
           width: 240px;
           min-width: 240px;
-          background: var(--sidebar-bg);
-          border-right: 1px solid var(--sidebar-border);
+          background: #0B1120;
+          border-right: 1px solid rgba(255, 255, 255, 0.08);
           display: flex;
           flex-direction: column;
           height: 100vh;
@@ -431,32 +432,36 @@ export default function Sidebar() {
           align-items: center;
           gap: 12px;
           padding: 0 18px;
-          border-bottom: 1px solid var(--sidebar-border);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          background: #0B1120;
+        }
+        .sidebar-brand-title {
+          color: #FFFFFF !important;
+        }
+        .sidebar-brand-sub {
+          color: #94A3B8 !important;
         }
         .sidebar-nav-link {
           display: flex;
           align-items: center;
           gap: 10px;
-          padding: 7px 10px;
+          padding: 8px 10px;
           border-radius: 6px;
           font-size: 12.5px;
           font-weight: 500;
-          color: var(--sidebar-nav-color);
+          color: #94A3B8;
           text-decoration: none;
           transition: all 0.15s ease;
         }
         .sidebar-nav-link:hover {
-          background: var(--sidebar-nav-hover);
-          color: var(--sidebar-nav-hover-t);
+          background: rgba(255, 255, 255, 0.05);
+          color: #F8FAFC;
         }
         .sidebar-nav-link.active {
-          background: var(--sidebar-nav-hover);
-          color: #111827;
-          font-weight: 600;
-        }
-        [data-theme="dark"] .sidebar-nav-link.active {
-          color: #FFFFFF;
           background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          color: #FFFFFF;
+          font-weight: 600;
         }
       `}</style>
     </aside>
