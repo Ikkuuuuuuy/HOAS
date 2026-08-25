@@ -463,18 +463,28 @@
   backdrop-filter: blur(8px) !important;
 }
 
-[data-theme="light"] .user-popover-menu {
-  background: #FFFFFF !important;
-  border-color: #E2E8F0 !important;
-  box-shadow: 0 -8px 30px rgba(15, 23, 42, 0.15) !important;
+.user-popover-menu {
+  background: #0F172A !important;
+  border: 1px solid rgba(245, 158, 11, 0.45) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.8) !important;
 }
 
-[data-theme="light"] .menu-header-name {
-  color: #0F172A !important;
+.user-popover-menu .user-menu-item {
+  color: #F8FAFC !important;
 }
 
-[data-theme="light"] .menu-header-email {
-  color: #64748B !important;
+.user-popover-menu .user-menu-item:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #FDE68A !important;
+}
+
+.user-popover-menu .logout-btn {
+  color: #F87171 !important;
+}
+
+.user-popover-menu .logout-btn:hover {
+  background: rgba(239, 68, 68, 0.18) !important;
+  color: #EF4444 !important;
 }
 
 /* Notification Popover Light Mode */

@@ -348,35 +348,35 @@ export default function Sidebar() {
         {showMenu && (
           <div className="user-popover-menu" style={{
             position: 'absolute',
-            bottom: 78,
+            bottom: 72,
             left: 10,
             right: 10,
-            background: '#0F172A',
-            border: '1px solid rgba(245, 158, 11, 0.4)',
+            backgroundColor: '#0F172A',
+            border: '1px solid rgba(245, 158, 11, 0.45)',
             borderRadius: 8,
-            boxShadow: '0 10px 30px rgba(0,0,0,0.6)',
-            padding: 4,
+            boxShadow: '0 12px 36px rgba(0,0,0,0.85)',
+            padding: 6,
             zIndex: 100
           }}>
-            <div style={{ padding: '8px 10px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+            <div style={{ padding: '8px 10px', borderBottom: '1px solid rgba(255, 255, 255, 0.12)', marginBottom: 4 }}>
               <div style={{ fontSize: 12.5, fontWeight: 700, color: '#FFFFFF' }}>{user.fullName}</div>
-              <div style={{ fontSize: 11, color: '#FCD34D' }}>{user.email}</div>
+              <div style={{ fontSize: 11, color: '#FCD34D', marginTop: 2 }}>{user.email}</div>
             </div>
             <button
               type="button"
               onClick={() => { setShowMenu(false); navigate('/profile'); }}
               className="user-menu-item"
-              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#F8FAFC', fontSize: 12, cursor: 'pointer', borderRadius: 4 }}
+              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#F8FAFC', fontSize: 12, fontWeight: 600, cursor: 'pointer', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 8 }}
             >
-              Account Settings
+              <span>⚙️</span> Account Settings
             </button>
             <button
               type="button"
               onClick={handleLogout}
-              className="user-menu-item"
-              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#F87171', fontSize: 12, fontWeight: 600, cursor: 'pointer', borderRadius: 4 }}
+              className="user-menu-item logout-btn"
+              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#F87171', fontSize: 12, fontWeight: 700, cursor: 'pointer', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 8, marginTop: 2 }}
             >
-              Logout
+              <span>🚪</span> Logout
             </button>
           </div>
         )}
