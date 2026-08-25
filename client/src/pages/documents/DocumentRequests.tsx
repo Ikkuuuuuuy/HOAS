@@ -222,6 +222,7 @@ export default function DocumentRequests() {
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<string>('date-desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -497,7 +498,7 @@ export default function DocumentRequests() {
 
   // Filtered requests
   const filteredRequests = useMemo(() => {
-    return requests.filter(r => {
+    let result = requests.filter(r => {
       const q = searchQuery.toLowerCase();
       const meta = getRequestTypeMeta(r.request_type);
       const matchesQuery =
@@ -515,7 +516,20 @@ export default function DocumentRequests() {
 
       return matchesQuery && matchesType && matchesStatus && matchesPriority;
     });
-  }, [requests, searchQuery, typeFilter, statusFilter, priorityFilter]);
+
+    const priorityWeight: Record<string, number> = { emergency: 4, high: 3, medium: 2, low: 1 };
+
+    result.sort((a, b) => {
+      if (sortBy === 'date-desc') return new Date(b.submitted_date || '2026-08-01').getTime() - new Date(a.submitted_date || '2026-08-01').getTime();
+      if (sortBy === 'date-asc') return new Date(a.submitted_date || '2026-08-01').getTime() - new Date(b.submitted_date || '2026-08-01').getTime();
+      if (sortBy === 'priority-desc') return (priorityWeight[b.priority] || 0) - (priorityWeight[a.priority] || 0);
+      if (sortBy === 'name-asc') return a.requester_name.localeCompare(b.requester_name);
+      if (sortBy === 'ref-asc') return a.ref_no.localeCompare(b.ref_no);
+      return 0;
+    });
+
+    return result;
+  }, [requests, searchQuery, typeFilter, statusFilter, priorityFilter, sortBy]);
 
   const paginatedRequests = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
@@ -631,6 +645,16 @@ export default function DocumentRequests() {
                 <option value="completed">Completed</option>
                 <option value="rejected">Rejected</option>
                 <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+            <div>
+              <label className="form-label" style={{ fontSize: 11 }}>Sort By</label>
+              <select className="form-select" value={sortBy} onChange={e => setSortBy(e.target.value)}>
+                <option value="date-desc">Filed Date (Newest)</option>
+                <option value="date-asc">Filed Date (Oldest)</option>
+                <option value="priority-desc">Priority (High/Emergency)</option>
+                <option value="name-asc">Requester (A-Z)</option>
+                <option value="ref-asc">Reference # (Asc)</option>
               </select>
             </div>
           </div>

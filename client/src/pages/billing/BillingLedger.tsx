@@ -126,7 +126,7 @@ export default function BillingLedger() {
 
   // Filtered Ledgers
   const filteredLedgers = useMemo(() => {
-    return localLedgers.filter(item => {
+    let result = localLedgers.filter(item => {
       const matchesSearch =
         item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.resident_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -134,7 +134,18 @@ export default function BillingLedger() {
       const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
-  }, [localLedgers, searchQuery, statusFilter]);
+
+    result.sort((a, b) => {
+      if (sortBy === 'period-desc') return b.billing_period.localeCompare(a.billing_period);
+      if (sortBy === 'period-asc') return a.billing_period.localeCompare(b.billing_period);
+      if (sortBy === 'amount-desc') return b.amount - a.amount;
+      if (sortBy === 'name-asc') return a.resident_name.localeCompare(b.resident_name);
+      if (sortBy === 'balance-desc') return (b.balance || 0) - (a.balance || 0);
+      return 0;
+    });
+
+    return result;
+  }, [localLedgers, searchQuery, statusFilter, sortBy]);
 
   const paginatedLedgers = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
@@ -199,6 +210,19 @@ export default function BillingLedger() {
                 <option value="pending_approval">Pending Approval</option>
                 <option value="paid">Paid</option>
                 <option value="overdue">Overdue</option>
+              </select>
+
+              <select
+                className="form-select"
+                style={{ width: 190 }}
+                value={sortBy}
+                onChange={e => setSortBy(e.target.value)}
+              >
+                <option value="period-desc">Sort: Period (Newest)</option>
+                <option value="period-asc">Sort: Period (Oldest)</option>
+                <option value="amount-desc">Sort: Dues (Highest)</option>
+                <option value="name-asc">Sort: Resident (A-Z)</option>
+                <option value="balance-desc">Sort: Balance (Highest)</option>
               </select>
             </div>
           </div>

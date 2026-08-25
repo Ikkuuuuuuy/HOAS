@@ -20,6 +20,7 @@ export default function TenantsManagement() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('name-asc');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [showModal, setShowModal] = useState(false);
@@ -32,14 +33,24 @@ export default function TenantsManagement() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const filteredTenants = useMemo(() => {
-    return tenants.filter((t: any) => {
+    let result = tenants.filter((t: any) => {
       const matchesSearch = !searchQuery ||
         t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (t.location && t.location.toLowerCase().includes(searchQuery.toLowerCase()));
       const matchesType = typeFilter === 'all' || t.type === typeFilter;
       return matchesSearch && matchesType;
     });
-  }, [tenants, searchQuery, typeFilter]);
+
+    result.sort((a: any, b: any) => {
+      if (sortBy === 'name-asc') return a.name.localeCompare(b.name);
+      if (sortBy === 'type-asc') return (a.type || '').localeCompare(b.type || '');
+      if (sortBy === 'users-desc') return (b.user_count || 0) - (a.user_count || 0);
+      if (sortBy === 'date-desc') return new Date(b.created_at || '2025-01-01').getTime() - new Date(a.created_at || '2025-01-01').getTime();
+      return 0;
+    });
+
+    return result;
+  }, [tenants, searchQuery, typeFilter, sortBy]);
 
   const paginatedTenants = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
@@ -117,6 +128,18 @@ export default function TenantsManagement() {
                 <option value="all">All Types</option>
                 <option value="hoa">HOA Associations</option>
                 <option value="barangay">Barangay Councils</option>
+              </select>
+
+              <select
+                className="form-select"
+                style={{ width: 180 }}
+                value={sortBy}
+                onChange={e => setSortBy(e.target.value)}
+              >
+                <option value="name-asc">Sort: Name (A-Z)</option>
+                <option value="type-asc">Sort: Type</option>
+                <option value="users-desc">Sort: Most Users</option>
+                <option value="date-desc">Sort: Date (Newest)</option>
               </select>
             </div>
 

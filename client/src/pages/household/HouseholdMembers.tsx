@@ -63,6 +63,7 @@ export default function HouseholdMembers() {
   const [selectedRel, setSelectedRel] = useState('ALL');
   const [filterEmergencyOnly, setFilterEmergencyOnly] = useState(false);
   const [filterRfidOnly, setFilterRfidOnly] = useState(false);
+  const [sortBy, setSortBy] = useState('name-asc');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -194,20 +195,33 @@ export default function HouseholdMembers() {
   const seniorsOrMinorsCount = allMembers.filter(m => (m.age !== undefined && (m.age < 18 || m.age >= 60))).length;
 
   // Filtered list
-  const filteredMembers = allMembers.filter(m => {
-    const matchesSearch =
-      !searchQuery ||
-      m.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      m.relationship.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (m.contact_number && m.contact_number.includes(searchQuery)) ||
-      (m.occupation && m.occupation.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredMembers = useMemo(() => {
+    let result = allMembers.filter(m => {
+      const matchesSearch =
+        !searchQuery ||
+        m.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        m.relationship.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (m.contact_number && m.contact_number.includes(searchQuery)) ||
+        (m.occupation && m.occupation.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    const matchesRel = selectedRel === 'ALL' || m.relationship === selectedRel;
-    const matchesEmergency = !filterEmergencyOnly || m.is_emergency_contact === 1;
-    const matchesRfid = !filterRfidOnly || m.has_rfid_access === 1;
+      const matchesRel = selectedRel === 'ALL' || m.relationship === selectedRel;
+      const matchesEmergency = !filterEmergencyOnly || m.is_emergency_contact === 1;
+      const matchesRfid = !filterRfidOnly || m.has_rfid_access === 1;
 
-    return matchesSearch && matchesRel && matchesEmergency && matchesRfid;
-  });
+      return matchesSearch && matchesRel && matchesEmergency && matchesRfid;
+    });
+
+    result.sort((a, b) => {
+      if (sortBy === 'name-asc') return a.full_name.localeCompare(b.full_name);
+      if (sortBy === 'name-desc') return b.full_name.localeCompare(a.full_name);
+      if (sortBy === 'age-desc') return (b.age || 0) - (a.age || 0);
+      if (sortBy === 'age-asc') return (a.age || 0) - (b.age || 0);
+      if (sortBy === 'relationship-asc') return a.relationship.localeCompare(b.relationship);
+      return 0;
+    });
+
+    return result;
+  }, [allMembers, searchQuery, selectedRel, filterEmergencyOnly, filterRfidOnly, sortBy]);
 
   const paginatedMembers = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
@@ -345,6 +359,19 @@ export default function HouseholdMembers() {
               >
                 🚗 RFID Pass Holders {filterRfidOnly ? '✓' : ''}
               </button>
+
+              <select
+                className="form-select"
+                value={sortBy}
+                onChange={e => setSortBy(e.target.value)}
+                style={{ width: 170, height: 42 }}
+              >
+                <option value="name-asc">Sort: Name (A-Z)</option>
+                <option value="name-desc">Sort: Name (Z-A)</option>
+                <option value="age-desc">Sort: Age (Oldest)</option>
+                <option value="age-asc">Sort: Age (Youngest)</option>
+                <option value="relationship-asc">Sort: Relationship</option>
+              </select>
             </div>
 
             <div>

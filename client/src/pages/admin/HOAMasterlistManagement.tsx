@@ -87,6 +87,7 @@ export default function HOAMasterlistManagement() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBlock, setSelectedBlock] = useState('ALL');
   const [selectedOwnership, setSelectedOwnership] = useState('ALL');
+  const [sortBy, setSortBy] = useState('account-asc');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -326,9 +327,9 @@ export default function HOAMasterlistManagement() {
     document.body.removeChild(link);
   };
 
-  // Filtered Masterlist Records
+  // Filtered & Sorted Masterlist Records
   const filteredList = useMemo(() => {
-    return masterlist.filter(rec => {
+    let result = masterlist.filter(rec => {
       const q = searchQuery.toLowerCase().trim();
       const matchesSearch = !q ||
         rec.ownerName.toLowerCase().includes(q) ||
@@ -343,7 +344,18 @@ export default function HOAMasterlistManagement() {
       const matchesOwnership = selectedOwnership === 'ALL' || rec.ownershipType === selectedOwnership;
       return matchesSearch && matchesBlock && matchesOwnership;
     });
-  }, [masterlist, searchQuery, selectedBlock, selectedOwnership]);
+
+    result.sort((a, b) => {
+      if (sortBy === 'name-asc') return a.ownerName.localeCompare(b.ownerName);
+      if (sortBy === 'name-desc') return b.ownerName.localeCompare(a.ownerName);
+      if (sortBy === 'account-asc') return a.accountNo.localeCompare(b.accountNo);
+      if (sortBy === 'block-asc') return a.block.localeCompare(b.block) || a.lot.localeCompare(b.lot);
+      if (sortBy === 'turnover-desc') return (b.turnoverDate || '').localeCompare(a.turnoverDate || '');
+      return 0;
+    });
+
+    return result;
+  }, [masterlist, searchQuery, selectedBlock, selectedOwnership, sortBy]);
 
   // Paginated Masterlist Records
   const paginatedList = useMemo(() => {
@@ -529,6 +541,20 @@ export default function HOAMasterlistManagement() {
                 <option value="Turned-over Owner">Turned-over Owner</option>
                 <option value="Registered Buyer">Registered Buyer</option>
                 <option value="Co-Owner">Co-Owner</option>
+              </select>
+
+              {/* Sorting Dropdown */}
+              <select
+                className="form-select"
+                value={sortBy}
+                onChange={e => setSortBy(e.target.value)}
+                style={{ width: 185, fontSize: 13 }}
+              >
+                <option value="account-asc">Sort: Account # (Asc)</option>
+                <option value="name-asc">Sort: Owner Name (A-Z)</option>
+                <option value="name-desc">Sort: Owner Name (Z-A)</option>
+                <option value="block-asc">Sort: Block & Lot (Asc)</option>
+                <option value="turnover-desc">Sort: Turnover (Newest)</option>
               </select>
             </div>
 

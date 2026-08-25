@@ -23,6 +23,7 @@ export default function AllUsersManagement() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('name-asc');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [showModal, setShowModal] = useState(false);
@@ -42,14 +43,26 @@ export default function AllUsersManagement() {
   const [editIsActive, setEditIsActive] = useState<number>(1);
 
   const filteredUsers = useMemo(() => {
-    return users.filter((u: any) => {
+    let result = users.filter((u: any) => {
       const matchesSearch = !searchQuery ||
         (u.full_name || u.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
         (u.email || '').toLowerCase().includes(searchQuery.toLowerCase());
       const matchesRole = roleFilter === 'all' || u.role_name === roleFilter;
       return matchesSearch && matchesRole;
     });
-  }, [users, searchQuery, roleFilter]);
+
+    result.sort((a: any, b: any) => {
+      const nameA = a.full_name || a.name || '';
+      const nameB = b.full_name || b.name || '';
+      if (sortBy === 'name-asc') return nameA.localeCompare(nameB);
+      if (sortBy === 'name-desc') return nameB.localeCompare(nameA);
+      if (sortBy === 'role-asc') return (a.role_name || '').localeCompare(b.role_name || '');
+      if (sortBy === 'date-desc') return new Date(b.created_at || '2025-01-01').getTime() - new Date(a.created_at || '2025-01-01').getTime();
+      return 0;
+    });
+
+    return result;
+  }, [users, searchQuery, roleFilter, sortBy]);
 
   const paginatedUsers = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
@@ -150,6 +163,18 @@ export default function AllUsersManagement() {
                 <option value="admin_staff">Admin Staff</option>
                 <option value="security_guard">Security Guard</option>
                 <option value="resident">Homeowner</option>
+              </select>
+
+              <select
+                className="form-select"
+                style={{ width: 180 }}
+                value={sortBy}
+                onChange={e => setSortBy(e.target.value)}
+              >
+                <option value="name-asc">Sort: Name (A-Z)</option>
+                <option value="name-desc">Sort: Name (Z-A)</option>
+                <option value="role-asc">Sort: Role</option>
+                <option value="date-desc">Sort: Date (Newest)</option>
               </select>
             </div>
 
