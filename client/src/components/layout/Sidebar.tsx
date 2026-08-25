@@ -432,7 +432,7 @@ export default function Sidebar() {
           align-items: center;
           gap: 12px;
           padding: 0 18px;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          border-bottom: 2px solid #16A34A;
           background: #062E22;
         }
         .sidebar-brand-title {

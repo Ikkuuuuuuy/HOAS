@@ -230,7 +230,7 @@ export default function Navbar({ title }: NavbarProps) {
           max-height: 68px;
           box-sizing: border-box;
           background: var(--navbar-bg);
-          border-bottom: 1px solid var(--navbar-border);
+          border-bottom: 2px solid #16A34A;
           display: flex;
           align-items: center;
           justify-content: space-between;
