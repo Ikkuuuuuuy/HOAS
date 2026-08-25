@@ -23,7 +23,7 @@ import HOAOfficersDirectory from './pages/admin/HOAOfficersDirectory';
 import HOAMasterlistManagement from './pages/admin/HOAMasterlistManagement';
 import UserProfileSettings from './pages/profile/UserProfileSettings';
 
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
+function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: string[] }) {
   const { user, isLoading } = useAuth();
   if (isLoading) {
     return (
@@ -36,6 +36,20 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     );
   }
   if (!user) return <Navigate to="/login" replace />;
+
+  if (allowedRoles && allowedRoles.length > 0) {
+    const isAllowed = allowedRoles.some(r => {
+      if (r === 'resident' || r === 'homeowner') {
+        return user.roleName === 'resident' || user.roleName === 'homeowner';
+      }
+      return user.roleName === r;
+    });
+
+    if (!isAllowed) {
+      return <Navigate to="/dashboard" replace />;
+    }
+  }
+
   return <>{children}</>;
 }
 
@@ -55,23 +69,23 @@ export default function App() {
       <Route path="/household-members" element={<ProtectedRoute><HouseholdMembers /></ProtectedRoute>} />
       <Route path="/events" element={<ProtectedRoute><CalendarEvents /></ProtectedRoute>} />
       <Route path="/calendar-events" element={<ProtectedRoute><CalendarEvents /></ProtectedRoute>} />
-      <Route path="/hoa-manage" element={<ProtectedRoute><HOAAdminManagement /></ProtectedRoute>} />
-      <Route path="/tenants" element={<ProtectedRoute><TenantsManagement /></ProtectedRoute>} />
-      <Route path="/users" element={<ProtectedRoute><AllUsersManagement /></ProtectedRoute>} />
-      <Route path="/all-users" element={<ProtectedRoute><AllUsersManagement /></ProtectedRoute>} />
-      <Route path="/all-user" element={<ProtectedRoute><AllUsersManagement /></ProtectedRoute>} />
-      <Route path="/financial-reports" element={<ProtectedRoute><SearchableFinancialReports /></ProtectedRoute>} />
+      <Route path="/hoa-manage" element={<ProtectedRoute allowedRoles={['super_admin', 'hoa_admin', 'admin_staff']}><HOAAdminManagement /></ProtectedRoute>} />
+      <Route path="/tenants" element={<ProtectedRoute allowedRoles={['super_admin']}><TenantsManagement /></ProtectedRoute>} />
+      <Route path="/users" element={<ProtectedRoute allowedRoles={['super_admin', 'hoa_admin']}><AllUsersManagement /></ProtectedRoute>} />
+      <Route path="/all-users" element={<ProtectedRoute allowedRoles={['super_admin', 'hoa_admin']}><AllUsersManagement /></ProtectedRoute>} />
+      <Route path="/all-user" element={<ProtectedRoute allowedRoles={['super_admin', 'hoa_admin']}><AllUsersManagement /></ProtectedRoute>} />
+      <Route path="/financial-reports" element={<ProtectedRoute allowedRoles={['super_admin', 'hoa_admin', 'admin_staff']}><SearchableFinancialReports /></ProtectedRoute>} />
       <Route path="/documents" element={<ProtectedRoute><DocumentRequests /></ProtectedRoute>} />
       <Route path="/billing" element={<ProtectedRoute><BillingLedger /></ProtectedRoute>} />
       <Route path="/facilities" element={<ProtectedRoute><FacilityCalendar /></ProtectedRoute>} />
-      <Route path="/visitors" element={<ProtectedRoute><VisitorLogbook /></ProtectedRoute>} />
+      <Route path="/visitors" element={<ProtectedRoute allowedRoles={['super_admin', 'hoa_admin', 'admin_staff', 'security_guard']}><VisitorLogbook /></ProtectedRoute>} />
       <Route path="/alerts" element={<ProtectedRoute><EmergencyAlerts /></ProtectedRoute>} />
-      <Route path="/residents" element={<ProtectedRoute><ResidentsPage /></ProtectedRoute>} />
+      <Route path="/residents" element={<ProtectedRoute allowedRoles={['super_admin', 'hoa_admin', 'admin_staff']}><ResidentsPage /></ProtectedRoute>} />
       <Route path="/officers" element={<ProtectedRoute><HOAOfficersDirectory /></ProtectedRoute>} />
       <Route path="/hoa-officers" element={<ProtectedRoute><HOAOfficersDirectory /></ProtectedRoute>} />
       <Route path="/directory" element={<ProtectedRoute><HOAOfficersDirectory /></ProtectedRoute>} />
-      <Route path="/masterlist" element={<ProtectedRoute><HOAMasterlistManagement /></ProtectedRoute>} />
-      <Route path="/hoa-masterlist" element={<ProtectedRoute><HOAMasterlistManagement /></ProtectedRoute>} />
+      <Route path="/masterlist" element={<ProtectedRoute allowedRoles={['super_admin', 'hoa_admin', 'admin_staff']}><HOAMasterlistManagement /></ProtectedRoute>} />
+      <Route path="/hoa-masterlist" element={<ProtectedRoute allowedRoles={['super_admin', 'hoa_admin', 'admin_staff']}><HOAMasterlistManagement /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><UserProfileSettings /></ProtectedRoute>} />
       <Route path="/account-settings" element={<ProtectedRoute><UserProfileSettings /></ProtectedRoute>} />
 

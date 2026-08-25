@@ -231,7 +231,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const hasRole = useCallback((...roles: string[]) => {
     if (!user) return false;
-    return roles.includes(user.roleName);
+    return roles.some(r => {
+      if (r === 'resident' || r === 'homeowner') {
+        return user.roleName === 'resident' || user.roleName === 'homeowner';
+      }
+      return user.roleName === r;
+    });
   }, [user]);
 
   const updateUserProfile = useCallback((updates: Partial<User>) => {

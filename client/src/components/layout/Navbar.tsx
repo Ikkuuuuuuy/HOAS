@@ -85,13 +85,58 @@ export default function Navbar({ title }: NavbarProps) {
 
   const unreadCount = notifications.filter(n => !n.read).length + activeAlerts.length;
 
+  // Dynamic Breadcrumb Section based on current route
+  const getSectionCategory = (pathname: string): string => {
+    const path = pathname.toLowerCase();
+    if (path === '/dashboard' || path === '/masterlist' || path === '/hoa-masterlist') {
+      return 'Main';
+    }
+    if (
+      path === '/homeowner-portal' ||
+      path === '/officers' ||
+      path === '/hoa-officers' ||
+      path === '/directory' ||
+      path === '/household' ||
+      path === '/household-members' ||
+      path === '/events' ||
+      path === '/calendar-events' ||
+      path === '/residents'
+    ) {
+      return 'Community';
+    }
+    if (
+      path === '/documents' ||
+      path === '/hoa-manage' ||
+      path === '/facilities' ||
+      path === '/visitors'
+    ) {
+      return 'Operations';
+    }
+    if (
+      path === '/billing' ||
+      path === '/financial-reports' ||
+      path === '/tenants' ||
+      path === '/users' ||
+      path === '/all-users' ||
+      path === '/all-user' ||
+      path === '/alerts' ||
+      path === '/profile' ||
+      path === '/account-settings'
+    ) {
+      return 'Finance & Administration';
+    }
+    return 'Main';
+  };
+
+  const sectionCategory = getSectionCategory(location.pathname);
+
   return (
     <header className="navbar minimalist-navbar">
       {/* Left: Clean Breadcrumb Trail */}
       <div className="navbar-left">
         <div className="breadcrumb-trail" style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14 }}>
-          <span style={{ color: 'var(--text-muted)', cursor: 'pointer', fontWeight: 500 }} onClick={() => navigate('/dashboard')}>
-            Dashboard
+          <span style={{ color: 'var(--text-muted)', fontWeight: 500, userSelect: 'none' }}>
+            {sectionCategory}
           </span>
           <span style={{ color: 'var(--border)', fontSize: 13 }}>›</span>
           <span style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: 14.5 }}>

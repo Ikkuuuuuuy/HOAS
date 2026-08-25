@@ -207,6 +207,31 @@ const INITIAL_REQUESTS: ServiceRequestItem[] = [
     },
     remarks: 'Sports committee weekend friendly match.',
   },
+  {
+    id: 'sr-210',
+    ref_no: 'REF-2026-SR-9420',
+    block: 'Block 5',
+    lot: 'Lot 22',
+    street_name: 'Mahogany Street',
+    registered_owner_name: 'Ricardo Dalisay',
+    requester_name: 'Ricardo Dalisay',
+    relationship_to_owner: 'Self (Owner)',
+    contact_number: '0917-555-4321',
+    email: 'resident@palmera-hoa.com',
+    request_type: 'car_sticker',
+    priority: 'medium',
+    due_date: '2026-08-27',
+    status: 'under_review',
+    submitted_date: '2026-08-24',
+    specific_data: {
+      make_model: 'Toyota Fortuner 2.8 2025',
+      plate_number: 'NGL-8899',
+      vehicle_color: 'Attitude Black',
+      or_cr_file: 'or_cr_scanned_fortuner.pdf (Uploaded)',
+      driver_license_file: 'dl_dalisay_ricardo.jpg (Uploaded)',
+    },
+    remarks: 'Additional RFID sticker for family SUV.',
+  },
 ];
 
 export default function DocumentRequests() {
@@ -290,7 +315,8 @@ export default function DocumentRequests() {
   const [adminStatusInput, setAdminStatusInput] = useState<RequestStatus>('in_progress');
   const [adminNotesInput, setAdminNotesInput] = useState('');
 
-  const isHOAAdmin = user?.roleName === 'hoa_admin' || user?.roleName === 'super_admin';
+  const isStaffOrAdmin = ['hoa_admin', 'admin_staff', 'super_admin', 'barangay_official'].includes(user?.roleName || '');
+  const isHOAAdmin = user?.roleName === 'hoa_admin' || user?.roleName === 'super_admin' || user?.roleName === 'admin_staff';
 
   // Calculate Due Date based on priority
   const calculateDueDate = (pri: PriorityLevel): string => {
@@ -496,9 +522,21 @@ export default function DocumentRequests() {
     setSelectedRequest(null);
   };
 
+  // Scoped requests (Homeowners only see their own requests)
+  const scopedRequests = useMemo(() => {
+    if (isStaffOrAdmin) return requests;
+    const userFirst = (user?.fullName || '').split(' ')[0].toLowerCase();
+    const userEmail = (user?.email || '').toLowerCase();
+    return requests.filter(r => {
+      return (user?.fullName && r.registered_owner_name.toLowerCase().includes(userFirst)) ||
+             (user?.fullName && r.requester_name.toLowerCase().includes(userFirst)) ||
+             (userEmail && r.email.toLowerCase() === userEmail);
+    });
+  }, [requests, isStaffOrAdmin, user]);
+
   // Filtered requests
   const filteredRequests = useMemo(() => {
-    let result = requests.filter(r => {
+    let result = scopedRequests.filter(r => {
       const q = searchQuery.toLowerCase();
       const meta = getRequestTypeMeta(r.request_type);
       const matchesQuery =
@@ -529,7 +567,7 @@ export default function DocumentRequests() {
     });
 
     return result;
-  }, [requests, searchQuery, typeFilter, statusFilter, priorityFilter, sortBy]);
+  }, [scopedRequests, searchQuery, typeFilter, statusFilter, priorityFilter, sortBy]);
 
   const paginatedRequests = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
@@ -539,46 +577,85 @@ export default function DocumentRequests() {
   return (
     <PageContainer
       title="Service Request Module"
-      subtitle="NRG PH2 HOA INC — Multi-Category Ticket Queuing & Document Tracking Portal"
+      subtitle={isStaffOrAdmin ? "NRG PH2 HOA INC — Multi-Category Ticket Queuing & Document Tracking Portal" : `My Submitted Requests & Processing Status — ${user?.fullName || 'Resident'}`}
     >
       <div style={{ animation: 'fadeInUp 0.4s ease' }}>
 
         {/* TOP METRIC CARDS */}
         <div className="grid grid-4" style={{ marginBottom: 24 }}>
-          <div className="stat-card">
-            <div className="stat-icon" style={{ background: '#2563EB20', color: '#2563EB' }}>📊</div>
-            <div>
-              <div className="stat-value" style={{ color: '#2563EB' }}>{requests.length}</div>
-              <div className="stat-label">Total Active Tickets</div>
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon" style={{ background: '#F59E0B20', color: '#F59E0B' }}>⏳</div>
-            <div>
-              <div className="stat-value" style={{ color: '#F59E0B' }}>
-                {requests.filter(r => r.status === 'submitted' || r.status === 'under_review').length}
+          {isStaffOrAdmin ? (
+            <>
+              <div className="stat-card">
+                <div className="stat-icon" style={{ background: '#2563EB20', color: '#2563EB' }}>📊</div>
+                <div>
+                  <div className="stat-value" style={{ color: '#2563EB' }}>{requests.length}</div>
+                  <div className="stat-label">Total Active Tickets</div>
+                </div>
               </div>
-              <div className="stat-label">Pending / Under Review</div>
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon" style={{ background: '#16653420', color: '#166534' }}>✅</div>
-            <div>
-              <div className="stat-value" style={{ color: '#166534' }}>
-                {requests.filter(r => r.status === 'approved' || r.status === 'completed').length}
+              <div className="stat-card">
+                <div className="stat-icon" style={{ background: '#F59E0B20', color: '#F59E0B' }}>⏳</div>
+                <div>
+                  <div className="stat-value" style={{ color: '#F59E0B' }}>
+                    {requests.filter(r => r.status === 'submitted' || r.status === 'under_review').length}
+                  </div>
+                  <div className="stat-label">Pending / Under Review</div>
+                </div>
               </div>
-              <div className="stat-label">Approved & Completed</div>
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon" style={{ background: '#DC262620', color: '#DC2626' }}>🚨</div>
-            <div>
-              <div className="stat-value" style={{ color: '#DC2626' }}>
-                {requests.filter(r => r.priority === 'emergency').length}
+              <div className="stat-card">
+                <div className="stat-icon" style={{ background: '#16653420', color: '#166534' }}>✅</div>
+                <div>
+                  <div className="stat-value" style={{ color: '#166534' }}>
+                    {requests.filter(r => r.status === 'approved' || r.status === 'completed').length}
+                  </div>
+                  <div className="stat-label">Approved & Completed</div>
+                </div>
               </div>
-              <div className="stat-label">Emergency Priority (&lt;4h)</div>
-            </div>
-          </div>
+              <div className="stat-card">
+                <div className="stat-icon" style={{ background: '#DC262620', color: '#DC2626' }}>🚨</div>
+                <div>
+                  <div className="stat-value" style={{ color: '#DC2626' }}>
+                    {requests.filter(r => r.priority === 'emergency').length}
+                  </div>
+                  <div className="stat-label">Emergency Priority (&lt;4h)</div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="stat-card">
+                <div className="stat-icon" style={{ background: '#2563EB20', color: '#2563EB' }}>📋</div>
+                <div>
+                  <div className="stat-value" style={{ color: '#2563EB' }}>{scopedRequests.length}</div>
+                  <div className="stat-label">My Total Requests</div>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon" style={{ background: '#F59E0B20', color: '#F59E0B' }}>⏳</div>
+                <div>
+                  <div className="stat-value" style={{ color: '#F59E0B' }}>
+                    {scopedRequests.filter(r => r.status === 'submitted' || r.status === 'under_review').length}
+                  </div>
+                  <div className="stat-label">Under Review</div>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon" style={{ background: '#16653420', color: '#166534' }}>✅</div>
+                <div>
+                  <div className="stat-value" style={{ color: '#166534' }}>
+                    {scopedRequests.filter(r => r.status === 'approved' || r.status === 'completed').length}
+                  </div>
+                  <div className="stat-label">Approved / Completed</div>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon" style={{ background: '#7C3AED20', color: '#7C3AED' }}>⚡</div>
+                <div>
+                  <div className="stat-value" style={{ color: '#7C3AED', fontSize: 18 }}>3-5 Days SLA</div>
+                  <div className="stat-label">Average Turnaround</div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* HEADER BAR */}

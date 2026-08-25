@@ -26,6 +26,8 @@ const INITIAL_LEDGERS: LedgerItem[] = [
   { id: 'led-2', resident_name: 'Maria Santos (Blk 4 Lot 05)', billing_period: '2026-08', description: 'Monthly & Association Dues (Combined)', amount: 2500, paid_amount: 1500, balance: 1000, due_date: '2026-08-10', status: 'pending_approval', payment_type: 'partial', payment_method: 'gcash', reference_no: 'GCASH-98214-88', proof_url: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&h=300&fit=crop' },
   { id: 'led-3', resident_name: 'Pedro Penduko (Blk 1 Lot 02)', billing_period: '2026-07', description: 'Monthly & Association Dues (Combined)', amount: 2500, paid_amount: 2500, balance: 0, due_date: '2026-07-10', status: 'paid', payment_type: 'full', payment_method: 'bank_transfer', reference_no: 'BDO-TRX-441209' },
   { id: 'led-4', resident_name: 'Ana Reyes (Blk 8 Lot 14)', billing_period: '2026-06', description: 'Monthly & Association Dues (Combined)', amount: 2500, paid_amount: 0, balance: 2500, due_date: '2026-06-10', status: 'overdue' },
+  { id: 'led-5', resident_name: 'Ricardo Dalisay (Blk 5 Lot 22)', billing_period: '2026-08', description: 'Monthly & Association Dues (Combined)', amount: 2500, paid_amount: 0, balance: 2500, due_date: '2026-08-10', status: 'unpaid' },
+  { id: 'led-6', resident_name: 'Ricardo Dalisay (Blk 5 Lot 22)', billing_period: '2026-07', description: 'Monthly & Association Dues (Combined)', amount: 2500, paid_amount: 2500, balance: 0, due_date: '2026-07-10', status: 'paid', payment_type: 'full', payment_method: 'gcash', reference_no: 'GCASH-11928-40' },
 ];
 
 export default function BillingLedger() {
@@ -51,7 +53,8 @@ export default function BillingLedger() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const isHOAAdmin = user?.roleName === 'hoa_admin' || user?.roleName === 'super_admin';
+  const isStaffOrAdmin = ['hoa_admin', 'admin_staff', 'super_admin', 'barangay_official'].includes(user?.roleName || '');
+  const isHOAAdmin = user?.roleName === 'hoa_admin' || user?.roleName === 'super_admin' || user?.roleName === 'admin_staff';
 
   // Open Payment Modal
   const handleOpenPaymentModal = (item: LedgerItem) => {
@@ -124,9 +127,18 @@ export default function BillingLedger() {
     }
   };
 
-  // Filtered Ledgers
+  // Filtered Ledgers (Role-Scoped: Homeowners only see their own bills)
+  const scopedLedgers = useMemo(() => {
+    if (isStaffOrAdmin) return localLedgers;
+    const userFirstName = (user?.fullName || '').split(' ')[0].toLowerCase();
+    return localLedgers.filter(item => {
+      return item.resident_name.toLowerCase().includes(userFirstName) ||
+             (user?.fullName && item.resident_name.toLowerCase().includes(user.fullName.toLowerCase()));
+    });
+  }, [localLedgers, isStaffOrAdmin, user]);
+
   const filteredLedgers = useMemo(() => {
-    let result = localLedgers.filter(item => {
+    let result = scopedLedgers.filter(item => {
       const matchesSearch =
         item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.resident_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -145,47 +157,92 @@ export default function BillingLedger() {
     });
 
     return result;
-  }, [localLedgers, searchQuery, statusFilter, sortBy]);
+  }, [scopedLedgers, searchQuery, statusFilter, sortBy]);
 
   const paginatedLedgers = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
     return filteredLedgers.slice(start, start + pageSize);
   }, [filteredLedgers, currentPage, pageSize]);
 
+  // Dynamic Metrics for Cards
+  const totalBalanceDue = scopedLedgers.filter(i => i.status !== 'paid').reduce((sum, i) => sum + (i.balance !== undefined ? i.balance : i.amount), 0);
+  const totalPaidSum = scopedLedgers.reduce((sum, i) => sum + (i.paid_amount || 0), 0);
+  const pendingCount = scopedLedgers.filter(i => i.status === 'pending_approval').length;
+
   return (
-    <PageContainer title="Financial Module" subtitle="NRG PH2 HOA INC — Unified Monthly & Association Dues">
+    <PageContainer
+      title="Financial Module"
+      subtitle={isStaffOrAdmin ? "NRG PH2 HOA INC — Unified Monthly & Association Dues Ledger" : `Statement of Account & Dues History — ${user?.fullName || 'Resident'}`}
+    >
       <div style={{ animation: 'fadeInUp 0.4s ease' }}>
         
         {/* SUMMARY CARDS */}
         <div className="grid grid-4" style={{ marginBottom: 24 }}>
-          <div className="stat-card">
-            <div className="stat-icon" style={{ background: '#16653420', color: '#166534' }}>💰</div>
-            <div>
-              <div className="stat-value" style={{ color: '#166534' }}>₱142,500</div>
-              <div className="stat-label">Total Dues Collected (Aug)</div>
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon" style={{ background: '#F59E0B20', color: '#F59E0B' }}>⏳</div>
-            <div>
-              <div className="stat-value" style={{ color: '#F59E0B' }}>₱32,500</div>
-              <div className="stat-label">Pending Verification</div>
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon" style={{ background: '#DC262620', color: '#DC2626' }}>🔴</div>
-            <div>
-              <div className="stat-value" style={{ color: '#DC2626' }}>₱7,500</div>
-              <div className="stat-label">Overdue Balance</div>
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon" style={{ background: '#2563EB20', color: '#2563EB' }}>📄</div>
-            <div>
-              <div className="stat-value" style={{ color: '#2563EB' }}>100%</div>
-              <div className="stat-label">Unified Dues Structure</div>
-            </div>
-          </div>
+          {isStaffOrAdmin ? (
+            <>
+              <div className="stat-card">
+                <div className="stat-icon" style={{ background: '#16653420', color: '#166534' }}>💰</div>
+                <div>
+                  <div className="stat-value" style={{ color: '#166534' }}>₱142,500</div>
+                  <div className="stat-label">Total Dues Collected (Aug)</div>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon" style={{ background: '#F59E0B20', color: '#F59E0B' }}>⏳</div>
+                <div>
+                  <div className="stat-value" style={{ color: '#F59E0B' }}>₱32,500</div>
+                  <div className="stat-label">Pending Verification</div>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon" style={{ background: '#DC262620', color: '#DC2626' }}>🔴</div>
+                <div>
+                  <div className="stat-value" style={{ color: '#DC2626' }}>₱7,500</div>
+                  <div className="stat-label">Overdue Balance</div>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon" style={{ background: '#2563EB20', color: '#2563EB' }}>📄</div>
+                <div>
+                  <div className="stat-value" style={{ color: '#2563EB' }}>100%</div>
+                  <div className="stat-label">Unified Dues Structure</div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="stat-card">
+                <div className="stat-icon" style={{ background: '#DC262620', color: '#DC2626' }}>💳</div>
+                <div>
+                  <div className="stat-value" style={{ color: totalBalanceDue > 0 ? '#DC2626' : '#166534' }}>
+                    ₱{totalBalanceDue.toLocaleString()}
+                  </div>
+                  <div className="stat-label">Outstanding Balance</div>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon" style={{ background: '#16653420', color: '#166534' }}>✅</div>
+                <div>
+                  <div className="stat-value" style={{ color: '#166534' }}>₱{totalPaidSum.toLocaleString()}</div>
+                  <div className="stat-label">Total Paid (2026)</div>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon" style={{ background: '#F59E0B20', color: '#F59E0B' }}>⏳</div>
+                <div>
+                  <div className="stat-value" style={{ color: '#F59E0B' }}>{pendingCount}</div>
+                  <div className="stat-label">Pending Verification</div>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon" style={{ background: '#2563EB20', color: '#2563EB' }}>📅</div>
+                <div>
+                  <div className="stat-value" style={{ color: '#2563EB', fontSize: 18 }}>10th of Month</div>
+                  <div className="stat-label">Due Date Schedule</div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* SEARCH & FILTERS */}

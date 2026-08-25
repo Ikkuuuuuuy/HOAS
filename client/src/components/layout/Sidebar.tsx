@@ -236,13 +236,17 @@ export default function Sidebar() {
 
   if (!user) return null;
 
-  let sections: NavSection[] = SUPER_ADMIN_SECTIONS;
-  if (user.roleName === 'hoa_admin' || user.roleName === 'admin_staff') {
+  let sections: NavSection[] = RESIDENT_SECTIONS;
+  if (user.roleName === 'super_admin') {
+    sections = SUPER_ADMIN_SECTIONS;
+  } else if (user.roleName === 'hoa_admin' || user.roleName === 'admin_staff') {
     sections = HOA_ADMIN_SECTIONS;
-  } else if (user.roleName === 'resident') {
-    sections = RESIDENT_SECTIONS;
   } else if (user.roleName === 'security_guard') {
     sections = SECURITY_GUARD_SECTIONS;
+  } else if (user.roleName === 'resident' || user.roleName === 'homeowner') {
+    sections = RESIDENT_SECTIONS;
+  } else {
+    sections = RESIDENT_SECTIONS;
   }
 
   const handleLogout = () => {
