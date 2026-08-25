@@ -80,7 +80,7 @@
   --sidebar-card-bdr:    rgba(52, 211, 153, 0.25);
 
   --navbar-bg:           #FFFFFF; /* Clean Top Bar */
-  --navbar-border:       #E5E7EB; /* Subtle Bottom Border */
+  --navbar-border:       #16A34A; /* Northridge Green Border Line */
   --navbar-text-title:   #111827;
   --navbar-text-sub:     #6B7280;
 
@@ -159,7 +159,7 @@
   --sidebar-card-bdr:    rgba(52, 211, 153, 0.25);
 
   --navbar-bg:           #FFFFFF;
-  --navbar-border:       #E5E7EB;
+  --navbar-border:       #16A34A;
   --navbar-text-title:   #111827;
   --navbar-text-sub:     #6B7280;
 
@@ -399,10 +399,12 @@
   border: 1px solid var(--sidebar-border) !important;
 }
 
+.navbar,
+.minimalist-navbar,
 [data-theme="light"] .navbar {
-  background: #FFFFFF !important;
-  border-bottom: 1px solid #E5E7EB !important;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
+  background: var(--navbar-bg) !important;
+  border-bottom: 2px solid #16A34A !important; /* Northridge Green Border Line */
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04) !important;
 }
 
 [data-theme="light"] .navbar-title {
