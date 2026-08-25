@@ -40,80 +40,7 @@
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --radius: 8px;
 
-  /* Backgrounds */
-  --bg-base:      #080C14;
-  --bg-surface:   #0F1729;
-  --bg-elevated:  #1A2440;
-  --bg-glass:     rgba(26, 36, 64, 0.70);
-  --bg-glass-light: rgba(255, 255, 255, 0.05);
-  --bg-hover:     rgba(255, 255, 255, 0.06);
-  --bg-input:     rgba(255, 255, 255, 0.07);
-
-  /* Borders */
-  --border:       rgba(255, 255, 255, 0.08);
-  --border-focus: rgba(124, 58, 237, 0.60);
-  --border-light: rgba(255, 255, 255, 0.12);
-
-  /* Text - High Contrast WCAG Compliant for Dark Mode */
-  --text-primary:   #F8FAFC;
-  --text-secondary: #CBD5E1;
-  --text-muted:     #94A3B8;
-  --text-inverse:   #080C14;
-
-  /* Brand accent — Electric Violet */
-  --accent:         #7C3AED;
-  --accent-hover:   #9655F5;
-  --accent-glow:    rgba(124, 58, 237, 0.35);
-  --accent-soft:    rgba(124, 58, 237, 0.15);
-
-  /* ── Public Landing Page Tokens (default = light/warm) ── */
-  --landing-bg:          #FDFBF7;
-  --landing-bg-alt:      #F5F1EB;
-  --landing-bg-dark:     #090E17;
-  --landing-bg-dark-alt: #0D1526;
-  --landing-card-bg:     #FFFFFF;
-  --landing-card-border: #E5E7EB;
-  --landing-card-shadow: 0 4px 24px rgba(0,0,0,0.08);
-  --landing-text:        #111827;
-  --landing-text-sub:    #374151;
-  --landing-text-muted:  #6B7280;
-  --landing-nav-bg:      rgba(255,255,255,0.95);
-  --landing-nav-border:  rgba(229,231,235,0.8);
-  --landing-nav-text:    #1F2937;
-  --landing-nav-scrolled-bg: rgba(255,255,255,0.98);
-  --landing-hero-overlay: linear-gradient(110deg, rgba(8,12,20,0.92) 38%, rgba(8,12,20,0.52) 100%);
-  --landing-metrics-bg:  rgba(8,12,20,0.85);
-  --landing-section-warm: #F5F1EB;
-  --landing-section-news: #F3F0E6;
-  --landing-guidelines-bg: #090E17;
-  --landing-input-bg:    #FFFFFF;
-  --landing-input-border: #D1D5DB;
-  --landing-footer-bg:   #090E17;
-}
-
-/* ── Landing Page Dark Mode Token Overrides ──────────────── */
-[data-theme="dark"] {
-  --landing-bg:          #080C14;
-  --landing-bg-alt:      #0D1526;
-  --landing-card-bg:     rgba(15, 23, 42, 0.8);
-  --landing-card-border: rgba(255,255,255,0.08);
-  --landing-card-shadow: 0 4px 24px rgba(0,0,0,0.4);
-  --landing-text:        #F8FAFC;
-  --landing-text-sub:    #CBD5E1;
-  --landing-text-muted:  #94A3B8;
-  --landing-nav-bg:      rgba(8,12,20,0.92);
-  --landing-nav-border:  rgba(255,255,255,0.08);
-  --landing-nav-text:    rgba(255,255,255,0.9);
-  --landing-nav-scrolled-bg: rgba(10,15,30,0.98);
-  --landing-section-warm: #0D1526;
-  --landing-section-news: #0B1120;
-  --landing-guidelines-bg: #030609;
-  --landing-input-bg:    rgba(255,255,255,0.06);
-  --landing-input-border: rgba(255,255,255,0.12);
-}
-
-/* ── Light Mode Custom Theme Tokens (Modern Minimalist Clean & Airy) ── */
-[data-theme="light"] {
+  /* Backgrounds — Default Light Mode */
   --bg-base:        #F9FAFB; /* Minimalist neutral off-white background */
   --bg-surface:     #FFFFFF; /* Pure white card surfaces */
   --bg-elevated:    #FFFFFF;
@@ -122,17 +49,25 @@
   --bg-hover:       #F3F4F6; /* Soft gray hover */
   --bg-input:       #FFFFFF;
 
+  /* Borders — Default Light Mode */
   --border:         #E5E7EB; /* Minimalist clean 1px border */
   --border-focus:   #16A34A;
   --border-light:   #E5E7EB;
 
+  /* Text — Default Light Mode (High Contrast Clean Slate) */
   --text-primary:   #111827; /* Deep Slate 900 */
   --text-secondary: #4B5563; /* Refined Slate 600 */
   --text-muted:     #6B7280; /* Slate 500 */
   --text-inverse:   #FFFFFF;
 
-  /* Modern Clean Slate (#F9FAFB) & Pure White (#FFFFFF) Minimalist Sidebar */
-  --sidebar-bg:          #FFFFFF; /* Clean Pure White Sidebar */
+  /* Brand accent */
+  --accent:         #16A34A;
+  --accent-hover:   #15803D;
+  --accent-glow:    rgba(22, 163, 74, 0.25);
+  --accent-soft:    rgba(22, 163, 74, 0.12);
+
+  /* Sidebar & Navbar Tokens — Default Light Mode */
+  --sidebar-bg:          #FFFFFF; /* Pure White Sidebar */
   --sidebar-border:      #E5E7EB; /* Subtle 1px Divider */
   --sidebar-text-title:  #111827; /* Clean Heading */
   --sidebar-text-sub:    #15803D; /* Subtle Green Accent */
@@ -166,10 +101,98 @@
   --popover-border:      #E5E7EB;
   --popover-text:        #111827;
   --popover-sub:         #6B7280;
+
+  /* ── Public Landing Page Tokens (default = light/warm) ── */
+  --landing-bg:          #FDFBF7;
+  --landing-bg-alt:      #F5F1EB;
+  --landing-bg-dark:     #090E17;
+  --landing-bg-dark-alt: #0D1526;
+  --landing-card-bg:     #FFFFFF;
+  --landing-card-border: #E5E7EB;
+  --landing-card-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --landing-text:        #111827;
+  --landing-text-sub:    #374151;
+  --landing-text-muted:  #6B7280;
+  --landing-nav-bg:      rgba(255,255,255,0.95);
+  --landing-nav-border:  rgba(229,231,235,0.8);
+  --landing-nav-text:    #1F2937;
+  --landing-nav-scrolled-bg: rgba(255,255,255,0.98);
+  --landing-hero-overlay: linear-gradient(110deg, rgba(8,12,20,0.92) 38%, rgba(8,12,20,0.52) 100%);
+  --landing-metrics-bg:  rgba(8,12,20,0.85);
+  --landing-section-warm: #F5F1EB;
+  --landing-section-news: #F3F0E6;
+  --landing-guidelines-bg: #090E17;
+  --landing-input-bg:    #FFFFFF;
+  --landing-input-border: #D1D5DB;
+  --landing-footer-bg:   #090E17;
 }
 
-:root, [data-theme="dark"] {
-  /* Dark Mode Variables */
+/* ── Light Mode Token Explicit Declarations ──────────────── */
+[data-theme="light"] {
+  --bg-base:        #F9FAFB;
+  --bg-surface:     #FFFFFF;
+  --bg-elevated:    #FFFFFF;
+  --bg-glass:       rgba(255, 255, 255, 0.98);
+  --bg-glass-light: rgba(0, 0, 0, 0.02);
+  --bg-hover:       #F3F4F6;
+  --bg-input:       #FFFFFF;
+
+  --border:         #E5E7EB;
+  --border-focus:   #16A34A;
+  --border-light:   #E5E7EB;
+
+  --text-primary:   #111827;
+  --text-secondary: #4B5563;
+  --text-muted:     #6B7280;
+  --text-inverse:   #FFFFFF;
+
+  --sidebar-bg:          #FFFFFF;
+  --sidebar-border:      #E5E7EB;
+  --sidebar-text-title:  #111827;
+  --sidebar-text-sub:    #15803D;
+  --sidebar-nav-color:   #4B5563;
+  --sidebar-nav-hover:   #F3F4F6;
+  --sidebar-nav-hover-t: #111827;
+  --sidebar-nav-act-bg:  #DC2626;
+  --sidebar-nav-act-t:   #FFFFFF;
+  --sidebar-card-bg:     #F9FAFB;
+  --sidebar-card-bdr:    #E5E7EB;
+
+  --navbar-bg:           #FFFFFF;
+  --navbar-border:       #E5E7EB;
+  --navbar-text-title:   #111827;
+  --navbar-text-sub:     #6B7280;
+
+  --popover-bg:          #FFFFFF;
+  --popover-border:      #E5E7EB;
+  --popover-text:        #111827;
+  --popover-sub:         #6B7280;
+}
+
+/* ── Dark Mode Token Explicit Declarations (Only activated when data-theme="dark") ── */
+[data-theme="dark"] {
+  --bg-base:        #080C14;
+  --bg-surface:     #0F1729;
+  --bg-elevated:    #1A2440;
+  --bg-glass:       rgba(26, 36, 64, 0.70);
+  --bg-glass-light: rgba(255, 255, 255, 0.05);
+  --bg-hover:       rgba(255, 255, 255, 0.06);
+  --bg-input:       rgba(255, 255, 255, 0.07);
+
+  --border:         rgba(255, 255, 255, 0.08);
+  --border-focus:   rgba(124, 58, 237, 0.60);
+  --border-light:   rgba(255, 255, 255, 0.12);
+
+  --text-primary:   #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted:     #94A3B8;
+  --text-inverse:   #080C14;
+
+  --accent:         #7C3AED;
+  --accent-hover:   #9655F5;
+  --accent-glow:    rgba(124, 58, 237, 0.35);
+  --accent-soft:    rgba(124, 58, 237, 0.15);
+
   --sidebar-bg:          #0B1120;
   --sidebar-border:      rgba(255, 255, 255, 0.1);
   --sidebar-text-title:  #FFFFFF;
@@ -187,22 +210,28 @@
   --navbar-text-title:   #FFFFFF;
   --navbar-text-sub:     #94A3B8;
 
-  --shell-bg:            var(--sidebar-bg);
-  --shell-border:        var(--sidebar-border);
-  --shell-text-title:    var(--sidebar-text-title);
-  --shell-text-sub:      var(--sidebar-text-sub);
-  --shell-nav-color:     var(--sidebar-nav-color);
-  --shell-nav-hover:     var(--sidebar-nav-hover);
-  --shell-nav-hover-t:   var(--sidebar-nav-hover-t);
-  --shell-nav-act-bg:    var(--sidebar-nav-act-bg);
-  --shell-nav-act-t:     var(--sidebar-nav-act-t);
-  --shell-card-bg:       var(--sidebar-card-bg);
-  --shell-card-bdr:      var(--sidebar-card-bdr);
-
   --popover-bg:          #0F172A;
   --popover-border:      rgba(255, 255, 255, 0.15);
   --popover-text:        #FFFFFF;
   --popover-sub:         #9CA3AF;
+
+  --landing-bg:          #080C14;
+  --landing-bg-alt:      #0D1526;
+  --landing-card-bg:     rgba(15, 23, 42, 0.8);
+  --landing-card-border: rgba(255,255,255,0.08);
+  --landing-card-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --landing-text:        #F8FAFC;
+  --landing-text-sub:    #CBD5E1;
+  --landing-text-muted:  #94A3B8;
+  --landing-nav-bg:      rgba(8,12,20,0.92);
+  --landing-nav-border:  rgba(255,255,255,0.08);
+  --landing-nav-text:    rgba(255,255,255,0.9);
+  --landing-nav-scrolled-bg: rgba(10,15,30,0.98);
+  --landing-section-warm: #0D1526;
+  --landing-section-news: #0B1120;
+  --landing-guidelines-bg: #030609;
+  --landing-input-bg:    rgba(255,255,255,0.06);
+  --landing-input-border: rgba(255,255,255,0.12);
 }
 
 [data-theme="light"] body {

@@ -326,19 +326,19 @@ export default function VisitorLogbook() {
 
                 {/* Visitor Logbook Privacy Notice */}
                 <div style={{
-                  background: 'rgba(15, 23, 42, 0.65)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  padding: '8px 12px',
-                  borderRadius: 6,
-                  fontSize: 11,
-                  color: 'var(--text-muted)',
+                  background: 'var(--bg-hover)',
+                  border: '1px solid var(--border)',
+                  padding: '10px 14px',
+                  borderRadius: 8,
+                  fontSize: 12,
+                  color: 'var(--text-secondary)',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 6
+                  gap: 8
                 }}>
-                  <span>🛡️</span>
+                  <span style={{ fontSize: 16 }}>🛡️</span>
                   <span>
-                    <strong>Gate Logbook Privacy (R.A. 10173):</strong> Visitor details are recorded solely for subdivision physical security and perimeter monitoring. Records are protected and auto-purged on scheduled cycles.
+                    <strong style={{ color: 'var(--text-primary)' }}>Gate Logbook Privacy (R.A. 10173):</strong> Visitor details are recorded solely for subdivision physical security and perimeter monitoring. Records are protected and auto-purged on scheduled cycles.
                   </span>
                 </div>
 
