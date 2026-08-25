@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useAlerts } from '../../context/AlertContext';
 
@@ -101,7 +101,7 @@ const SUPER_ADMIN_SECTIONS: NavSection[] = [
   {
     title: 'Main',
     items: [
-      { path: '/dashboard', label: 'Dashboard', icon: Icons.Overview },
+      { path: '/dashboard', label: 'Dashboard Overview', icon: Icons.Overview },
       { path: '/masterlist', label: 'HOA Masterlist', icon: Icons.Masterlist },
     ]
   },
@@ -139,7 +139,7 @@ const HOA_ADMIN_SECTIONS: NavSection[] = [
   {
     title: 'Main',
     items: [
-      { path: '/dashboard', label: 'Dashboard', icon: Icons.Overview },
+      { path: '/dashboard', label: 'Dashboard Overview', icon: Icons.Overview },
       { path: '/masterlist', label: 'HOA Masterlist', icon: Icons.Masterlist },
     ]
   },
@@ -176,7 +176,7 @@ const RESIDENT_SECTIONS: NavSection[] = [
     title: 'Main',
     items: [
       { path: '/homeowner-portal', label: 'My Portal', icon: Icons.HomeownerPortal },
-      { path: '/dashboard', label: 'Dashboard', icon: Icons.Overview },
+      { path: '/dashboard', label: 'Dashboard Overview', icon: Icons.Overview },
     ]
   },
   {
@@ -252,7 +252,7 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar minimalist-sidebar">
-      {/* Brand Header */}
+      {/* ── TOP HIGHLIGHT: BRAND HEADER (Rich Northridge Burgundy/Pine Accent) ── */}
       <div className="sidebar-brand">
         <div style={{
           width: 44, height: 44, borderRadius: '50%', overflow: 'hidden', flexShrink: 0,
@@ -265,32 +265,32 @@ export default function Sidebar() {
           />
         </div>
         <div style={{ overflow: 'hidden' }}>
-          <div style={{ fontSize: 14.5, fontWeight: 800, color: '#FFFFFF', whiteSpace: 'nowrap', lineHeight: 1.2, letterSpacing: '-0.01em' }}>
+          <div style={{ fontSize: 14.5, fontWeight: 800, color: '#FFFFFF', whiteSpace: 'nowrap', lineHeight: 1.2, letterSpacing: '0.02em' }}>
             NRG PH2 HOA
           </div>
-          <div style={{ fontSize: 11.5, color: '#6EE7B7', fontWeight: 600, whiteSpace: 'nowrap', letterSpacing: '0.02em' }}>
+          <div style={{ fontSize: 11, color: '#FCD34D', fontWeight: 700, whiteSpace: 'nowrap', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
             Phase 2 Cloud Portal
           </div>
         </div>
       </div>
 
-      {/* Nav List */}
-      <div className="sidebar-nav-container" style={{ flex: 1, overflowY: 'auto', padding: '12px 10px' }}>
+      {/* ── MIDDLE NAV BODY: DEEP CHARCOAL/BLACK SLATE ── */}
+      <div className="sidebar-nav-container" style={{ flex: 1, overflowY: 'auto', padding: '14px 10px', background: '#0A0E17' }}>
         {sections.map((sec, secIdx) => (
           <div key={sec.title} style={{ marginBottom: 18 }}>
             <div style={{
               fontSize: 10,
-              fontWeight: 700,
+              fontWeight: 800,
               textTransform: 'uppercase',
               letterSpacing: '0.08em',
-              color: 'var(--text-muted)',
+              color: '#64748B',
               padding: '0 8px 6px',
-              opacity: 0.8
+              opacity: 0.9
             }}>
               {sec.title}
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               {sec.items.map(item => {
                 const IconComponent = item.icon;
                 return (
@@ -308,7 +308,7 @@ export default function Sidebar() {
                     {item.badgeKey === 'alerts' && activeAlerts.length > 0 && (
                       <span style={{
                         fontSize: 10,
-                        fontWeight: 700,
+                        fontWeight: 800,
                         background: '#DC2626',
                         color: '#FFFFFF',
                         padding: '1px 6px',
@@ -325,11 +325,11 @@ export default function Sidebar() {
         ))}
 
         {/* Public Website Link */}
-        <div style={{ marginTop: 8, borderTop: '1px solid var(--sidebar-border)', paddingTop: 12 }}>
+        <div style={{ marginTop: 8, borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: 12 }}>
           <NavLink
             to="/"
             className="sidebar-nav-link"
-            style={{ color: 'var(--text-muted)' }}
+            style={{ color: '#64748B' }}
           >
             <span className="nav-icon-wrap" style={{ display: 'flex', alignItems: 'center' }}>
               <Icons.External />
@@ -339,11 +339,11 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Bottom User Card */}
+      {/* ── BOTTOM HIGHLIGHT: USER PROFILE FOOTER ── */}
       <div className="sidebar-footer" ref={userMenuRef} style={{
         padding: '12px 12px',
-        borderTop: '1px solid rgba(52, 211, 153, 0.25)',
-        background: '#06281E'
+        borderTop: '1px solid rgba(245, 158, 11, 0.3)',
+        background: '#070B12'
       }}>
         {showMenu && (
           <div className="user-popover-menu" style={{
@@ -351,22 +351,22 @@ export default function Sidebar() {
             bottom: 78,
             left: 10,
             right: 10,
-            background: '#073327',
-            border: '1px solid rgba(110, 231, 183, 0.35)',
+            background: '#0F172A',
+            border: '1px solid rgba(245, 158, 11, 0.4)',
             borderRadius: 8,
-            boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.6)',
             padding: 4,
             zIndex: 100
           }}>
             <div style={{ padding: '8px 10px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
               <div style={{ fontSize: 12.5, fontWeight: 700, color: '#FFFFFF' }}>{user.fullName}</div>
-              <div style={{ fontSize: 11, color: '#A7F3D0' }}>{user.email}</div>
+              <div style={{ fontSize: 11, color: '#FCD34D' }}>{user.email}</div>
             </div>
             <button
               type="button"
               onClick={() => { setShowMenu(false); navigate('/profile'); }}
               className="user-menu-item"
-              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#ECFDF5', fontSize: 12, cursor: 'pointer', borderRadius: 4 }}
+              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#F8FAFC', fontSize: 12, cursor: 'pointer', borderRadius: 4 }}
             >
               Account Settings
             </button>
@@ -374,7 +374,7 @@ export default function Sidebar() {
               type="button"
               onClick={handleLogout}
               className="user-menu-item"
-              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#FCA5A5', fontSize: 12, fontWeight: 600, cursor: 'pointer', borderRadius: 4 }}
+              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#F87171', fontSize: 12, fontWeight: 600, cursor: 'pointer', borderRadius: 4 }}
             >
               Logout
             </button>
@@ -390,31 +390,32 @@ export default function Sidebar() {
             padding: '8px 10px',
             borderRadius: 6,
             cursor: 'pointer',
-            background: showMenu ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
+            background: showMenu ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
             transition: 'all 0.15s ease'
           }}
         >
           {user.avatarUrl ? (
-            <img src={user.avatarUrl} alt={user.fullName} style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover' }} />
+            <img src={user.avatarUrl} alt={user.fullName} style={{ width: 30, height: 30, borderRadius: '50%', objectFit: 'cover', border: '1.5px solid #F59E0B' }} />
           ) : (
             <div style={{
-              width: 28, height: 28, borderRadius: '50%',
-              background: '#059669', color: '#FFFFFF',
-              border: '1px solid rgba(167, 243, 208, 0.4)',
-              fontSize: 11, fontWeight: 700,
+              width: 30, height: 30, borderRadius: '50%',
+              background: '#1E293B', color: '#FCD34D',
+              border: '1.5px solid #F59E0B',
+              fontSize: 11.5, fontWeight: 800,
               display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}>
               {user.fullName.charAt(0)}
             </div>
           )}
           <div style={{ flex: 1, overflow: 'hidden' }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: '#FFFFFF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <div style={{ fontSize: 12.5, fontWeight: 700, color: '#FFFFFF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {user.fullName}
             </div>
-            <div style={{ fontSize: 10.5, color: '#A7F3D0' }}>
+            <div style={{ fontSize: 10.5, color: '#FBBF24', fontWeight: 600 }}>
               {user.roleName.replace(/_/g, ' ')}
             </div>
           </div>
+          <span style={{ color: '#94A3B8', fontSize: 11 }}>▾</span>
         </div>
       </div>
 
@@ -422,8 +423,8 @@ export default function Sidebar() {
         .minimalist-sidebar {
           width: 240px;
           min-width: 240px;
-          background: #0D4A36;
-          border-right: 1px solid rgba(255, 255, 255, 0.12);
+          background: #0A0E17;
+          border-right: 1px solid rgba(255, 255, 255, 0.08);
           display: flex;
           flex-direction: column;
           height: 100vh;
@@ -441,35 +442,40 @@ export default function Sidebar() {
           gap: 12px;
           padding: 0 18px;
           border-bottom: 2px solid #16A34A;
-          background: #06281E;
+          background: #064E3B; /* Rich Northridge Pine Header */
         }
         .sidebar-brand-title {
           color: #FFFFFF !important;
         }
         .sidebar-brand-sub {
-          color: #6EE7B7 !important;
+          color: #FCD34D !important;
         }
         .sidebar-nav-link {
           display: flex;
           align-items: center;
           gap: 10px;
-          padding: 8px 10px;
+          padding: 8px 12px;
           border-radius: 6px;
           font-size: 12.5px;
           font-weight: 500;
-          color: #D1FAE5;
+          color: #94A3B8;
           text-decoration: none;
           transition: all 0.15s ease;
+          border: 1px solid transparent;
         }
         .sidebar-nav-link:hover {
-          background: rgba(255, 255, 255, 0.1);
-          color: #FFFFFF;
+          background: rgba(255, 255, 255, 0.05);
+          color: #F8FAFC;
         }
         .sidebar-nav-link.active {
-          background: rgba(255, 255, 255, 0.2);
-          border: 1px solid rgba(255, 255, 255, 0.25);
-          color: #FFFFFF;
-          font-weight: 600;
+          background: rgba(245, 158, 11, 0.12);
+          border: 1px solid rgba(245, 158, 11, 0.5);
+          color: #FDE68A;
+          font-weight: 700;
+          box-shadow: 0 0 12px rgba(245, 158, 11, 0.1);
+        }
+        .sidebar-nav-link.active .nav-icon-wrap {
+          color: #FBBF24;
         }
       `}</style>
     </aside>
