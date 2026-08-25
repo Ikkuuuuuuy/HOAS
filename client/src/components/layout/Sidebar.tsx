@@ -423,14 +423,14 @@ export default function Sidebar() {
           z-index: 50;
         }
         .sidebar-brand {
-          height: 56px;
-          min-height: 56px;
-          max-height: 56px;
+          height: 68px;
+          min-height: 68px;
+          max-height: 68px;
           box-sizing: border-box;
           display: flex;
           align-items: center;
-          gap: 10px;
-          padding: 0 16px;
+          gap: 12px;
+          padding: 0 18px;
           border-bottom: 1px solid var(--sidebar-border);
         }
         .sidebar-nav-link {

@@ -89,19 +89,19 @@ export default function Navbar({ title }: NavbarProps) {
     <header className="navbar minimalist-navbar">
       {/* Left: Clean Breadcrumb Trail */}
       <div className="navbar-left">
-        <div className="breadcrumb-trail" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
-          <span style={{ color: 'var(--text-muted)', cursor: 'pointer' }} onClick={() => navigate('/dashboard')}>
+        <div className="breadcrumb-trail" style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14 }}>
+          <span style={{ color: 'var(--text-muted)', cursor: 'pointer', fontWeight: 500 }} onClick={() => navigate('/dashboard')}>
             Dashboard
           </span>
-          <span style={{ color: 'var(--border)', fontSize: 11 }}>›</span>
-          <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
+          <span style={{ color: 'var(--border)', fontSize: 13 }}>›</span>
+          <span style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: 14.5 }}>
             {title}
           </span>
         </div>
       </div>
 
       {/* Right Controls */}
-      <div className="navbar-right" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div className="navbar-right" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         {/* Theme Toggle Pill */}
         <button
           type="button"
@@ -120,7 +120,7 @@ export default function Navbar({ title }: NavbarProps) {
             onClick={() => setShowNotifications(prev => !prev)}
             title="Notifications"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" />
             </svg>
             {unreadCount > 0 && (
@@ -131,9 +131,9 @@ export default function Navbar({ title }: NavbarProps) {
           {showNotifications && (
             <div className="notification-dropdown" style={{
               position: 'absolute',
-              top: 40,
+              top: 46,
               right: 0,
-              width: 280,
+              width: 300,
               background: 'var(--bg-surface)',
               border: '1px solid var(--border)',
               borderRadius: 8,
@@ -141,10 +141,10 @@ export default function Navbar({ title }: NavbarProps) {
               zIndex: 100,
               padding: 6
             }}>
-              <div style={{ padding: '8px 10px', fontSize: 12, fontWeight: 700, borderBottom: '1px solid var(--border)', color: 'var(--text-primary)' }}>
+              <div style={{ padding: '10px 12px', fontSize: 13, fontWeight: 700, borderBottom: '1px solid var(--border)', color: 'var(--text-primary)' }}>
                 Notifications
               </div>
-              <div style={{ maxHeight: 240, overflowY: 'auto' }}>
+              <div style={{ maxHeight: 260, overflowY: 'auto' }}>
                 {notifications.map(n => (
                   <div
                     key={n.id}
@@ -153,9 +153,9 @@ export default function Navbar({ title }: NavbarProps) {
                       setShowNotifications(false);
                     }}
                     style={{
-                      padding: '8px 10px',
+                      padding: '9px 12px',
                       borderRadius: 6,
-                      fontSize: 12,
+                      fontSize: 12.5,
                       cursor: 'pointer',
                       display: 'flex',
                       justifyContent: 'space-between',
@@ -164,7 +164,7 @@ export default function Navbar({ title }: NavbarProps) {
                     }}
                   >
                     <span>{n.title}</span>
-                    <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>{n.time}</span>
+                    <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{n.time}</span>
                   </div>
                 ))}
               </div>
@@ -174,11 +174,11 @@ export default function Navbar({ title }: NavbarProps) {
 
         {/* Live Clock */}
         <div style={{
-          fontSize: 11.5,
+          fontSize: 12.5,
           fontFamily: 'monospace',
           color: 'var(--text-muted)',
-          padding: '4px 8px',
-          borderRadius: 4,
+          padding: '6px 12px',
+          borderRadius: 6,
           background: 'var(--bg-hover)',
           border: '1px solid var(--border)'
         }}>
@@ -194,28 +194,29 @@ export default function Navbar({ title }: NavbarProps) {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 8,
+              gap: 10,
               background: 'var(--bg-surface)',
               border: '1px solid var(--border)',
-              borderRadius: 6,
-              padding: '3px 8px 3px 4px',
+              borderRadius: 8,
+              padding: '4px 12px 4px 6px',
               cursor: 'pointer',
-              color: 'var(--text-primary)'
+              color: 'var(--text-primary)',
+              transition: 'all 0.15s ease'
             }}
           >
             {user.avatarUrl ? (
-              <img src={user.avatarUrl} alt={user.fullName} style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover' }} />
+              <img src={user.avatarUrl} alt={user.fullName} style={{ width: 26, height: 26, borderRadius: '50%', objectFit: 'cover' }} />
             ) : (
               <div style={{
-                width: 22, height: 22, borderRadius: '50%',
+                width: 26, height: 26, borderRadius: '50%',
                 background: '#111827', color: '#FFFFFF',
-                fontSize: 10, fontWeight: 700,
+                fontSize: 11, fontWeight: 700,
                 display: 'flex', alignItems: 'center', justifyContent: 'center'
               }}>
                 {user.fullName.charAt(0)}
               </div>
             )}
-            <span style={{ fontSize: 12, fontWeight: 600, maxWidth: 90, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <span style={{ fontSize: 13, fontWeight: 600, maxWidth: 110, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {user.fullName.split(' ')[0]}
             </span>
           </button>
@@ -224,37 +225,38 @@ export default function Navbar({ title }: NavbarProps) {
 
       <style>{`
         .minimalist-navbar {
-          height: 56px;
-          min-height: 56px;
-          max-height: 56px;
+          height: 68px;
+          min-height: 68px;
+          max-height: 68px;
           box-sizing: border-box;
           background: var(--navbar-bg);
           border-bottom: 1px solid var(--navbar-border);
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 0 20px;
+          padding: 0 28px;
           position: sticky;
           top: 0;
           z-index: 40;
         }
         .btn-theme-minimal {
-          padding: 4px 10px;
+          padding: 6px 12px;
           border-radius: 6px;
           background: var(--bg-hover);
           border: 1px solid var(--border);
           color: var(--text-secondary);
-          font-size: 11.5px;
+          font-size: 12px;
           font-weight: 500;
           cursor: pointer;
+          transition: all 0.15s ease;
         }
         .btn-theme-minimal:hover {
           background: var(--bg-surface);
           color: var(--text-primary);
         }
         .btn-icon-minimal {
-          width: 32px;
-          height: 32px;
+          width: 36px;
+          height: 36px;
           border-radius: 6px;
           background: var(--bg-hover);
           border: 1px solid var(--border);
@@ -264,6 +266,7 @@ export default function Navbar({ title }: NavbarProps) {
           justify-content: center;
           cursor: pointer;
           position: relative;
+          transition: all 0.15s ease;
         }
         .btn-icon-minimal:hover {
           background: var(--bg-surface);
@@ -275,10 +278,13 @@ export default function Navbar({ title }: NavbarProps) {
           right: -4px;
           background: #DC2626;
           color: #FFFFFF;
-          font-size: 9px;
+          font-size: 10px;
           font-weight: 700;
-          padding: 1px 4px;
+          padding: 1px 5px;
           border-radius: 10px;
+        }
+        .navbar-profile-btn:hover {
+          background: var(--bg-hover) !important;
         }
       `}</style>
     </header>
