@@ -351,32 +351,68 @@ export default function Sidebar() {
             bottom: 72,
             left: 10,
             right: 10,
-            backgroundColor: '#0F172A',
-            border: '1px solid rgba(245, 158, 11, 0.45)',
-            borderRadius: 8,
+            backgroundColor: '#0B132B',
+            background: '#0B132B',
+            border: '1px solid rgba(245, 158, 11, 0.5)',
+            borderRadius: 10,
             boxShadow: '0 12px 36px rgba(0,0,0,0.85)',
-            padding: 6,
+            padding: 8,
             zIndex: 100
           }}>
-            <div style={{ padding: '8px 10px', borderBottom: '1px solid rgba(255, 255, 255, 0.12)', marginBottom: 4 }}>
-              <div style={{ fontSize: 12.5, fontWeight: 700, color: '#FFFFFF' }}>{user.fullName}</div>
-              <div style={{ fontSize: 11, color: '#FCD34D', marginTop: 2 }}>{user.email}</div>
+            <div style={{ padding: '8px 10px', borderBottom: '1px solid rgba(255, 255, 255, 0.12)', marginBottom: 6 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#FFFFFF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {user.fullName}
+              </div>
+              <div style={{ fontSize: 11, color: '#FCD34D', marginTop: 2, wordBreak: 'break-all' }}>
+                {user.email}
+              </div>
             </div>
             <button
               type="button"
               onClick={() => { setShowMenu(false); navigate('/profile'); }}
               className="user-menu-item"
-              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#F8FAFC', fontSize: 12, fontWeight: 600, cursor: 'pointer', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 8 }}
+              style={{
+                padding: '9px 12px',
+                width: '100%',
+                textAlign: 'left',
+                background: 'transparent',
+                border: 'none',
+                color: '#F8FAFC',
+                fontSize: 12.5,
+                fontWeight: 600,
+                cursor: 'pointer',
+                borderRadius: 6,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                transition: 'background 0.15s ease'
+              }}
             >
-              <span>⚙️</span> Account Settings
+              <span style={{ fontSize: 14 }}>⚙️</span> <span>Account Settings</span>
             </button>
             <button
               type="button"
               onClick={handleLogout}
               className="user-menu-item logout-btn"
-              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#F87171', fontSize: 12, fontWeight: 700, cursor: 'pointer', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 8, marginTop: 2 }}
+              style={{
+                padding: '9px 12px',
+                width: '100%',
+                textAlign: 'left',
+                background: 'transparent',
+                border: 'none',
+                color: '#F87171',
+                fontSize: 12.5,
+                fontWeight: 700,
+                cursor: 'pointer',
+                borderRadius: 6,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                marginTop: 3,
+                transition: 'background 0.15s ease'
+              }}
             >
-              <span>🚪</span> Logout
+              <span style={{ fontSize: 14 }}>🚪</span> <span>Logout</span>
             </button>
           </div>
         )}
@@ -479,6 +515,27 @@ export default function Sidebar() {
         }
         .sidebar-nav-link.active .nav-icon-wrap {
           color: #FBBF24;
+        }
+        .user-popover-menu {
+          background: #0B132B !important;
+          background-color: #0B132B !important;
+          border: 1px solid rgba(245, 158, 11, 0.5) !important;
+          border-radius: 10px !important;
+          box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85) !important;
+        }
+        .user-popover-menu .user-menu-item {
+          color: #F8FAFC !important;
+        }
+        .user-popover-menu .user-menu-item:hover {
+          background: rgba(255, 255, 255, 0.1) !important;
+          color: #FDE68A !important;
+        }
+        .user-popover-menu .logout-btn {
+          color: #F87171 !important;
+        }
+        .user-popover-menu .logout-btn:hover {
+          background: rgba(239, 68, 68, 0.2) !important;
+          color: #EF4444 !important;
         }
       `}</style>
     </aside>
