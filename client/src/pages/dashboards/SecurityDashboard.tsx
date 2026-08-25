@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import PageContainer from '../../components/layout/PageContainer';
 import { useApi } from '../../hooks/useApi';
 import { useAuth } from '../../context/AuthContext';
@@ -7,7 +6,6 @@ import { useAlerts } from '../../context/AlertContext';
 
 export default function SecurityDashboard() {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const { activeAlerts } = useAlerts();
   const { data: visitors } = useApi<any[]>('/api/visitors');
   const { data: stats } = useApi<any>('/api/visitors/stats');
@@ -19,327 +17,166 @@ export default function SecurityDashboard() {
   }) || [];
 
   const CCTV_CAMERAS = [
-    { id: 1, label: 'Main Gate Boom Barrier', status: 'online' },
-    { id: 2, label: 'Clubhouse Entrance', status: 'online' },
+    { id: 1, label: 'Main Gate', status: 'online' },
+    { id: 2, label: 'Clubhouse Front', status: 'online' },
     { id: 3, label: 'Basketball Court', status: 'online' },
-    { id: 4, label: 'Block 3 North Perimeter', status: 'online' },
+    { id: 4, label: 'Pool Area', status: 'online' },
+    { id: 5, label: 'Block 3 Street', status: 'online' },
+    { id: 6, label: 'Block 5 Street', status: 'offline' },
+    { id: 7, label: 'Block 7 Perimeter', status: 'online' },
+    { id: 8, label: 'Admin Building', status: 'online' },
   ];
 
-  const currentDateStr = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-
   return (
-    <PageContainer
-      title="Security & Gate Operations Center"
-      subtitle={`NRG Phase 2 Perimeter & Access Control — ${user?.fullName || 'Security Officer'}`}
-    >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 20, animation: 'fadeInUp 0.25s ease' }}>
-
-        {/* ── 1. MINIMALIST HERO BANNER ── */}
-        <div style={{
-          background: 'linear-gradient(135deg, #0B1120 0%, #111827 50%, #1E293B 100%)',
-          borderRadius: 12,
-          padding: '22px 26px',
-          color: '#FFFFFF',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 16,
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
-        }}>
-          <div>
-            <div style={{
-              fontSize: 10.5,
-              fontWeight: 700,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              color: '#94A3B8',
-              marginBottom: 4
-            }}>
-              Gate Pass & Security Monitoring
-            </div>
-            <h1 style={{ fontSize: 22, fontWeight: 800, margin: '0 0 6px 0', color: '#FFFFFF' }}>
-              Welcome, Officer {user?.fullName?.split(' ')[0] || 'Guard'}.
-            </h1>
-            <p style={{ margin: 0, fontSize: 12.5, color: '#CBD5E1', maxWidth: 640 }}>
-              Real-time vehicle license plate logging, visitor QR gate passes, and perimeter alert monitoring.
-            </p>
-            <div style={{ marginTop: 10, fontSize: 11, color: '#94A3B8', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span>{currentDateStr}</span>
-              <span>•</span>
-              <span style={{ color: '#4ADE80' }}>Perimeter Surveillance Active</span>
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button
-              type="button"
-              onClick={() => navigate('/visitors')}
-              style={{
-                padding: '7px 14px',
-                borderRadius: 6,
-                background: '#166534',
-                color: '#FFFFFF',
-                border: 'none',
-                fontSize: 12,
-                fontWeight: 600,
-                cursor: 'pointer'
-              }}
-            >
-              Gate Visitor Log
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/alerts')}
-              style={{
-                padding: '7px 14px',
-                borderRadius: 6,
-                background: 'rgba(255, 255, 255, 0.1)',
-                color: '#FFFFFF',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                fontSize: 12,
-                fontWeight: 600,
-                cursor: 'pointer'
-              }}
-            >
-              Emergency Alerts
-            </button>
-          </div>
-        </div>
-
-        {/* ── 2. STAT CARDS ── */}
-        <div className="grid grid-3" style={{ gap: 16 }}>
-          <div className="stat-card" style={{ padding: '20px 22px' }}>
-            <div style={{ marginBottom: 12 }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Today's Gate Entries</div>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>24-Hour Cycle</div>
-            </div>
-
-            <div style={{ fontSize: 26, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 14 }}>
-              {stats?.total_today ?? todaysVisitors.length} Visitors
-            </div>
-
-            <div style={{
-              background: 'var(--bg-hover)',
-              padding: '10px 12px',
-              borderRadius: 8,
-              fontSize: 11.5,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 6
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>Vehicles In</span>
-                <strong style={{ color: 'var(--text-primary)' }}>12 Vehicles</strong>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>Walk-in / Couriers</span>
-                <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>4 Entries</span>
+    <PageContainer title="Security Command Center" subtitle={`Gate & Patrol Management — ${user?.fullName}`}>
+      <div style={{ animation: 'fadeInUp 0.4s ease' }}>
+        {/* Alert status bar */}
+        {activeAlerts.length > 0 && (
+          <div className="card" style={{
+            background: 'linear-gradient(135deg, #7F1D1D, #991B1B)',
+            border: '1px solid rgba(239,68,68,0.4)',
+            marginBottom: 'var(--space-6)',
+            display: 'flex', alignItems: 'center', gap: 'var(--space-4)',
+          }}>
+            <div style={{ animation: 'pulse 1s infinite', fontSize: '2rem' }}>🚨</div>
+            <div>
+              <div style={{ color: '#FCA5A5', fontWeight: 700 }}>ACTIVE EMERGENCY ALERT</div>
+              <div style={{ color: '#FECACA', fontSize: 'var(--font-sm)' }}>
+                {activeAlerts[0].alertType.toUpperCase()}: {activeAlerts[0].message}
               </div>
             </div>
           </div>
+        )}
 
-          <div className="stat-card" style={{ padding: '20px 22px' }}>
-            <div style={{ marginBottom: 12 }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Currently Inside</div>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Active Gate Passes</div>
-            </div>
-
-            <div style={{ fontSize: 26, fontWeight: 800, color: '#D97706', marginBottom: 14 }}>
-              {stats?.currently_inside ?? currentlyInside.length} Active
-            </div>
-
-            <div style={{
-              background: 'var(--bg-hover)',
-              padding: '10px 12px',
-              borderRadius: 8,
-              fontSize: 11.5,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 6
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>Checked Out Today</span>
-                <strong style={{ color: '#166534' }}>{stats?.checked_out ?? 8} Vehicles</strong>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>Overnight Allowed</span>
-                <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>0 Units</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="stat-card" style={{ padding: '20px 22px' }}>
-            <div style={{ marginBottom: 12 }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Perimeter Alerts</div>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>Emergency Radio & CCTV</div>
-            </div>
-
-            <div style={{ fontSize: 26, fontWeight: 800, color: activeAlerts.length > 0 ? '#DC2626' : '#166534', marginBottom: 14 }}>
-              {activeAlerts.length > 0 ? `${activeAlerts.length} Active` : '0 All Clear'}
-            </div>
-
-            <div style={{
-              background: 'var(--bg-hover)',
-              padding: '10px 12px',
-              borderRadius: 8,
-              fontSize: 11.5,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 6
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>CCTV Network</span>
-                <strong style={{ color: '#166534' }}>4/4 Feeds Online</strong>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>Barrier Status</span>
-                <span style={{ color: '#166534', fontWeight: 600 }}>Automated Mode</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ── 3. CCTV MONITOR & LIVE VISITORS ── */}
-        <div className="grid grid-2" style={{ gap: 16 }}>
-          {/* CCTV Feeds */}
-          <div className="card" style={{ padding: '20px 22px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+        {/* Stats */}
+        <div className="grid grid-4" style={{ marginBottom: 'var(--space-6)' }}>
+          {[
+            { label: "Today's Visitors", value: stats?.total_today ?? todaysVisitors.length, icon: '🚗', color: 'var(--security-color)', bg: 'var(--security-soft)' },
+            { label: 'Currently Inside', value: stats?.currently_inside ?? currentlyInside.length, icon: '🏠', color: 'var(--info)', bg: 'var(--info-soft)' },
+            { label: 'Checked Out', value: stats?.checked_out ?? 0, icon: '✅', color: 'var(--success)', bg: 'var(--success-soft)' },
+            { label: 'Active Alerts', value: activeAlerts.length, icon: '🚨', color: 'var(--danger)', bg: 'var(--danger-soft)' },
+          ].map((card, i) => (
+            <div key={i} className="stat-card">
+              <div className="stat-icon" style={{ background: card.bg, color: card.color }}>{card.icon}</div>
               <div>
-                <h3 style={{ fontSize: 14, fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
-                  Perimeter CCTV Monitor Grid
-                </h3>
-                <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>Main Gate & Subdivision Perimeter</div>
+                <div className="stat-value" style={{ color: card.color }}>{card.value}</div>
+                <div className="stat-label">{card.label}</div>
               </div>
-              <span style={{ fontSize: 11, background: '#DCFCE7', color: '#166534', padding: '2px 8px', borderRadius: 12, fontWeight: 600 }}>
-                4 Feeds Online
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-2" style={{ marginBottom: 'var(--space-6)' }}>
+          {/* Live CCTV Grid */}
+          <div className="card">
+            <div className="section-title">
+              CCTV Monitor Grid
+              <span style={{ fontSize: 'var(--font-xs)', color: 'var(--success)', fontWeight: 600, background: 'var(--success-soft)', padding: '2px 8px', borderRadius: 'var(--radius-full)' }}>
+                LIVE
               </span>
             </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-2)' }}>
               {CCTV_CAMERAS.map(cam => (
                 <div key={cam.id} style={{
                   aspectRatio: '16/9',
-                  background: '#0F172A',
-                  borderRadius: 8,
-                  border: '1px solid var(--border)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'relative',
-                  padding: 8
+                  background: cam.status === 'online' ? 'linear-gradient(135deg, #0A1628, #1A2A44)' : '#1A1A1A',
+                  borderRadius: 'var(--radius-sm)',
+                  border: `1px solid ${cam.status === 'online' ? 'rgba(37,99,235,0.3)' : 'rgba(100,100,100,0.2)'}`,
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  position: 'relative', overflow: 'hidden',
+                  fontSize: 'var(--font-xs)',
+                  padding: 'var(--space-1)',
                 }}>
-                  <div style={{ color: '#E2E8F0', fontSize: 11, fontWeight: 600, marginTop: 4, textAlign: 'center' }}>
-                    {cam.label}
-                  </div>
-                  <div style={{
-                    position: 'absolute', top: 6, right: 6,
-                    width: 6, height: 6, borderRadius: '50%',
-                    background: '#22C55E'
-                  }} />
+                  {cam.status === 'online' ? (
+                    <>
+                      <div style={{ fontSize: '1.2rem', opacity: 0.5 }}>📹</div>
+                      <div style={{ color: 'rgba(37,99,235,0.8)', fontSize: '9px', textAlign: 'center', marginTop: 2 }}>
+                        {cam.label}
+                      </div>
+                      <div style={{
+                        position: 'absolute', top: 3, right: 3,
+                        width: 6, height: 6, borderRadius: '50%',
+                        background: 'var(--success)',
+                        animation: 'pulse 2s infinite',
+                      }} />
+                    </>
+                  ) : (
+                    <>
+                      <div style={{ fontSize: '1rem', opacity: 0.3 }}>📷</div>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '9px', textAlign: 'center', marginTop: 2 }}>{cam.label}</div>
+                      <div style={{ fontSize: '8px', color: 'var(--danger)', marginTop: 2 }}>OFFLINE</div>
+                    </>
+                  )}
                 </div>
               ))}
             </div>
+            <div className="flex gap-4 mt-4" style={{ fontSize: 'var(--font-xs)', color: 'var(--text-muted)' }}>
+              <div className="flex items-center gap-2">
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--success)' }} />
+                Online: {CCTV_CAMERAS.filter(c => c.status === 'online').length}
+              </div>
+              <div className="flex items-center gap-2">
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--danger)' }} />
+                Offline: {CCTV_CAMERAS.filter(c => c.status === 'offline').length}
+              </div>
+            </div>
           </div>
 
-          {/* Recent Visitor Entries */}
-          <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <h3 style={{ fontSize: 14, fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
-                  Recent Visitor Entries
-                </h3>
-                <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>Live timestamped vehicle entry log</div>
-              </div>
-              <button
-                type="button"
-                onClick={() => navigate('/visitors')}
-                style={{ fontSize: 11.5, color: '#166534', background: 'none', border: 'none', fontWeight: 600, cursor: 'pointer' }}
-              >
-                Logbook →
-              </button>
-            </div>
-
-            <div style={{ padding: '10px 18px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {visitors && visitors.length > 0 ? (
-                visitors.slice(0, 3).map((v: any) => (
-                  <div key={v.id} style={{
-                    background: 'var(--bg-hover)',
-                    border: '1px solid var(--border)',
-                    padding: '10px 14px',
-                    borderRadius: 8,
-                    fontSize: 12,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                  }}>
-                    <div>
-                      <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{v.visitor_name}</div>
-                      <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Plate: {v.plate_number || 'No Plate'} • {v.host_resident}</div>
-                    </div>
-                    <span style={{
-                      fontSize: 10.5,
-                      padding: '2px 6px',
-                      borderRadius: 4,
-                      background: v.time_out ? '#DCFCE7' : '#EFF6FF',
-                      color: v.time_out ? '#166534' : '#1E40AF',
-                      fontWeight: 600
-                    }}>
-                      {v.time_out ? 'OUT' : 'INSIDE'}
-                    </span>
+          {/* Currently inside */}
+          <div className="card">
+            <div className="section-title">Currently Inside</div>
+            {currentlyInside.length > 0 ? (
+              currentlyInside.slice(0, 5).map((v: any) => (
+                <div key={v.id} className="flex items-center gap-3" style={{ padding: 'var(--space-3) 0', borderBottom: '1px solid var(--border)' }}>
+                  <div style={{
+                    width: 38, height: 38, borderRadius: 'var(--radius-full)',
+                    background: 'var(--security-soft)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: 'var(--security-color)', fontSize: '1rem', flexShrink: 0,
+                  }}>👤</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{v.visitor_name}</div>
+                    <div className="text-xs text-muted">Host: {v.host_name} • {v.purpose}</div>
                   </div>
-                ))
-              ) : (
-                <div style={{ textAlign: 'center', padding: '24px 0', color: 'var(--text-muted)', fontSize: 12 }}>
-                  No vehicle logs recorded today.
+                  <span className="badge badge-inside">Inside</span>
                 </div>
-              )}
-            </div>
+              ))
+            ) : (
+              <div className="empty-state"><div className="empty-state-icon">🏠</div><h3>No active visitors</h3></div>
+            )}
           </div>
         </div>
 
-        {/* ── 4. QUICK SHORTCUTS ── */}
-        <div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>
-            Security Guard Quick Actions
-          </div>
-          <div style={{ fontSize: 11.5, color: 'var(--text-muted)', marginBottom: 12 }}>
-            Instant shortcuts for vehicle entry, gate permits, and emergency response.
-          </div>
-
-          <div className="grid grid-4" style={{ gap: 12 }}>
-            {[
-              { label: 'Issue Gate Pass', path: '/visitors' },
-              { label: 'Check Permits', path: '/documents' },
-              { label: 'Broadcast Alert', path: '/alerts' },
-              { label: 'HOA Officers Directory', path: '/officers' },
-            ].map((tool, i) => (
-              <div
-                key={i}
-                onClick={() => navigate(tool.path)}
-                className="card"
-                style={{
-                  padding: '14px 18px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease'
-                }}
-              >
-                <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-primary)' }}>{tool.label}</span>
-                <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>→</span>
-              </div>
-            ))}
-          </div>
+        {/* Recent visitor log */}
+        <div className="card">
+          <div className="section-title">Recent Visitor Log</div>
+          {todaysVisitors.length > 0 ? (
+            <table className="data-table">
+              <thead>
+                <tr><th>Visitor</th><th>Host</th><th>Purpose</th><th>Vehicle</th><th>Time In</th><th>Time Out</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                {todaysVisitors.slice(0, 8).map((v: any) => (
+                  <tr key={v.id}>
+                    <td className="font-semibold" style={{ color: 'var(--text-primary)' }}>{v.visitor_name}</td>
+                    <td>{v.host_name}</td>
+                    <td className="truncate" style={{ maxWidth: 120 }}>{v.purpose}</td>
+                    <td>{v.vehicle_plate || '—'}</td>
+                    <td className="text-xs">{new Date(v.time_in).toLocaleTimeString('en-PH')}</td>
+                    <td className="text-xs">{v.time_out ? new Date(v.time_out).toLocaleTimeString('en-PH') : '—'}</td>
+                    <td>
+                      <span className={`badge ${v.time_out ? 'badge-resolved' : 'badge-inside'}`}>
+                        {v.time_out ? 'Out' : 'Inside'}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="empty-state"><div className="empty-state-icon">🚗</div><h3>No visitors today</h3></div>
+          )}
         </div>
-
       </div>
     </PageContainer>
   );

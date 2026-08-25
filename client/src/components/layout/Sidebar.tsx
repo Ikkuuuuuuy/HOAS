@@ -1,199 +1,226 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useAlerts } from '../../context/AlertContext';
 
-interface NavItem {
-  path: string;
-  label: string;
-}
-
-interface NavGroup {
-  section: string;
-  items: NavItem[];
-}
-
-const ROLE_CONFIG: Record<string, {
-  label: string;
-  color: string;
-  groups: NavGroup[];
-}> = {
-  super_admin: {
-    label: 'Super Admin',
-    color: '#7C3AED',
-    groups: [
-      {
-        section: 'Main',
-        items: [
-          { path: '/dashboard', label: 'Dashboard' },
-          { path: '/homeowner-portal', label: 'Homeowner Portal' },
-        ]
-      },
-      {
-        section: 'HOA Management',
-        items: [
-          { path: '/masterlist', label: 'HOA Masterlist & Excel' },
-          { path: '/officers', label: 'HOA Officers' },
-          { path: '/household', label: 'Household Members' },
-          { path: '/events', label: 'Calendar Events' },
-          { path: '/documents', label: 'Service Requests' },
-          { path: '/hoa-manage', label: 'Admin Staff Hub' },
-        ]
-      },
-      {
-        section: 'Administration & Finance',
-        items: [
-          { path: '/tenants', label: 'Tenants' },
-          { path: '/users', label: 'All Users' },
-          { path: '/billing', label: 'Billing Ledger' },
-          { path: '/financial-reports', label: 'Financial Reports' },
-        ]
-      },
-      {
-        section: 'Security & Community',
-        items: [
-          { path: '/facilities', label: 'Basketball Reservation' },
-          { path: '/visitors', label: 'Visitor Logs' },
-          { path: '/alerts', label: 'Emergency Alerts' },
-        ]
-      }
-    ]
-  },
-
-  hoa_admin: {
-    label: 'Main Administrator',
-    color: '#DC2626',
-    groups: [
-      {
-        section: 'Main',
-        items: [
-          { path: '/dashboard', label: 'Dashboard' },
-          { path: '/homeowner-portal', label: 'Homeowner View' },
-        ]
-      },
-      {
-        section: 'Community & Records',
-        items: [
-          { path: '/masterlist', label: 'HOA Masterlist & Excel' },
-          { path: '/officers', label: 'HOA Officers' },
-          { path: '/household', label: 'Household Members' },
-          { path: '/events', label: 'Calendar Events' },
-          { path: '/documents', label: 'Service Requests' },
-          { path: '/hoa-manage', label: 'Admin Staff & Approvals' },
-        ]
-      },
-      {
-        section: 'Finance & Utilities',
-        items: [
-          { path: '/billing', label: 'Billing Ledger' },
-          { path: '/financial-reports', label: 'Financial Reports' },
-          { path: '/facilities', label: 'Basketball Reservation' },
-        ]
-      },
-      {
-        section: 'Security & Access',
-        items: [
-          { path: '/visitors', label: 'Visitor Logs' },
-          { path: '/alerts', label: 'Emergency Alerts' },
-        ]
-      }
-    ]
-  },
-
-  admin_staff: {
-    label: 'Admin Staff',
-    color: '#3B82F6',
-    groups: [
-      {
-        section: 'Main',
-        items: [
-          { path: '/dashboard', label: 'Dashboard' },
-          { path: '/homeowner-portal', label: 'Homeowner View' },
-        ]
-      },
-      {
-        section: 'Operations',
-        items: [
-          { path: '/masterlist', label: 'HOA Masterlist & Excel' },
-          { path: '/officers', label: 'HOA Officers' },
-          { path: '/household', label: 'Household Members' },
-          { path: '/events', label: 'Calendar Events' },
-          { path: '/documents', label: 'Service Requests' },
-          { path: '/hoa-manage', label: 'Approvals & Publishing' },
-        ]
-      },
-      {
-        section: 'Finance & Logistics',
-        items: [
-          { path: '/billing', label: 'Billing Ledger' },
-          { path: '/financial-reports', label: 'Financial Reports' },
-          { path: '/facilities', label: 'Basketball Reservation' },
-          { path: '/visitors', label: 'Visitor Logs' },
-        ]
-      }
-    ]
-  },
-
-  security_guard: {
-    label: 'Security Guard',
-    color: '#D97706',
-    groups: [
-      {
-        section: 'Main',
-        items: [
-          { path: '/dashboard', label: 'Guard Dashboard' },
-        ]
-      },
-      {
-        section: 'Perimeter & Gate Access',
-        items: [
-          { path: '/visitors', label: 'Visitor Logbook' },
-          { path: '/officers', label: 'HOA Officers' },
-          { path: '/events', label: 'Community Events' },
-          { path: '/documents', label: 'Gate Permits & Passes' },
-          { path: '/alerts', label: 'Emergency Broadcast' },
-        ]
-      }
-    ]
-  },
-
-  resident: {
-    label: 'Registered Homeowner',
-    color: '#0891B2',
-    groups: [
-      {
-        section: 'Main',
-        items: [
-          { path: '/homeowner-portal', label: 'Homeowner Portal' },
-          { path: '/dashboard', label: 'My Dashboard' },
-        ]
-      },
-      {
-        section: 'Household & Requests',
-        items: [
-          { path: '/household', label: 'Household Members' },
-          { path: '/documents', label: 'Service Requests' },
-          { path: '/billing', label: 'My Billing Statements' },
-        ]
-      },
-      {
-        section: 'Community & Amenities',
-        items: [
-          { path: '/officers', label: 'HOA Officers' },
-          { path: '/events', label: 'Calendar Events' },
-          { path: '/facilities', label: 'Facility Reservation' },
-          { path: '/alerts', label: 'Emergency Alerts' },
-        ]
-      }
-    ]
-  },
+// Clean Minimalist Stroke Icons (Enterprise SVG)
+const Icons = {
+  Overview: () => (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" />
+    </svg>
+  ),
+  Masterlist: () => (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" />
+    </svg>
+  ),
+  HomeownerPortal: () => (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" />
+    </svg>
+  ),
+  Officers: () => (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  ),
+  Household: () => (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  ),
+  Calendar: () => (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+    </svg>
+  ),
+  Documents: () => (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
+    </svg>
+  ),
+  AdminHub: () => (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+    </svg>
+  ),
+  Tenants: () => (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 21h18" /><path d="M9 8h1" /><path d="M9 12h1" /><path d="M9 16h1" /><path d="M14 8h1" /><path d="M14 12h1" /><path d="M14 16h1" /><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16" />
+    </svg>
+  ),
+  Users: () => (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+    </svg>
+  ),
+  Billing: () => (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="1" y="4" width="22" height="16" rx="2" ry="2" /><line x1="1" y1="10" x2="23" y2="10" />
+    </svg>
+  ),
+  Facilities: () => (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    </svg>
+  ),
+  Visitors: () => (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="1" y="3" width="15" height="13" rx="2" /><polygon points="16 8 20 8 23 11 23 16 16 16 16 8" /><circle cx="5.5" cy="18.5" r="2.5" /><circle cx="18.5" cy="18.5" r="2.5" />
+    </svg>
+  ),
+  Reports: () => (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" />
+    </svg>
+  ),
+  Alerts: () => (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" />
+    </svg>
+  ),
+  External: () => (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" />
+    </svg>
+  )
 };
+
+interface NavSection {
+  title: string;
+  items: {
+    path: string;
+    label: string;
+    icon: React.ComponentType;
+    badgeKey?: 'alerts';
+  }[];
+}
+
+const SUPER_ADMIN_SECTIONS: NavSection[] = [
+  {
+    title: 'Main',
+    items: [
+      { path: '/dashboard', label: 'Dashboard', icon: Icons.Overview },
+      { path: '/masterlist', label: 'HOA Masterlist', icon: Icons.Masterlist },
+    ]
+  },
+  {
+    title: 'Community',
+    items: [
+      { path: '/homeowner-portal', label: 'Homeowner View', icon: Icons.HomeownerPortal },
+      { path: '/officers', label: 'HOA Officers', icon: Icons.Officers },
+      { path: '/household', label: 'Household Members', icon: Icons.Household },
+      { path: '/events', label: 'Events Calendar', icon: Icons.Calendar },
+    ]
+  },
+  {
+    title: 'Operations',
+    items: [
+      { path: '/documents', label: 'Service Requests', icon: Icons.Documents },
+      { path: '/hoa-manage', label: 'Staff Hub & Approvals', icon: Icons.AdminHub },
+      { path: '/facilities', label: 'Facility Reservation', icon: Icons.Facilities },
+      { path: '/visitors', label: 'Visitor Logbook', icon: Icons.Visitors },
+    ]
+  },
+  {
+    title: 'Finance & Administration',
+    items: [
+      { path: '/billing', label: 'Billing & Ledger', icon: Icons.Billing },
+      { path: '/financial-reports', label: 'Financial Reports', icon: Icons.Reports },
+      { path: '/tenants', label: 'Tenants Directory', icon: Icons.Tenants },
+      { path: '/users', label: 'All User Accounts', icon: Icons.Users },
+      { path: '/alerts', label: 'Security & Alerts', icon: Icons.Alerts, badgeKey: 'alerts' },
+    ]
+  }
+];
+
+const HOA_ADMIN_SECTIONS: NavSection[] = [
+  {
+    title: 'Main',
+    items: [
+      { path: '/dashboard', label: 'Dashboard', icon: Icons.Overview },
+      { path: '/masterlist', label: 'HOA Masterlist', icon: Icons.Masterlist },
+    ]
+  },
+  {
+    title: 'Community',
+    items: [
+      { path: '/homeowner-portal', label: 'Homeowner View', icon: Icons.HomeownerPortal },
+      { path: '/officers', label: 'HOA Officers', icon: Icons.Officers },
+      { path: '/household', label: 'Household Members', icon: Icons.Household },
+      { path: '/events', label: 'Events Calendar', icon: Icons.Calendar },
+    ]
+  },
+  {
+    title: 'Operations',
+    items: [
+      { path: '/documents', label: 'Service Requests', icon: Icons.Documents },
+      { path: '/hoa-manage', label: 'Approvals & Admin', icon: Icons.AdminHub },
+      { path: '/facilities', label: 'Facility Reservation', icon: Icons.Facilities },
+      { path: '/visitors', label: 'Visitor Logbook', icon: Icons.Visitors },
+    ]
+  },
+  {
+    title: 'Finance & Security',
+    items: [
+      { path: '/billing', label: 'Billing Ledger', icon: Icons.Billing },
+      { path: '/financial-reports', label: 'Financial Reports', icon: Icons.Reports },
+      { path: '/alerts', label: 'Security & Alerts', icon: Icons.Alerts, badgeKey: 'alerts' },
+    ]
+  }
+];
+
+const RESIDENT_SECTIONS: NavSection[] = [
+  {
+    title: 'Main',
+    items: [
+      { path: '/homeowner-portal', label: 'My Portal', icon: Icons.HomeownerPortal },
+      { path: '/dashboard', label: 'Dashboard', icon: Icons.Overview },
+    ]
+  },
+  {
+    title: 'My Residence',
+    items: [
+      { path: '/household', label: 'Household Members', icon: Icons.Household },
+      { path: '/billing', label: 'My Statements & Dues', icon: Icons.Billing },
+      { path: '/documents', label: 'Submit Requests', icon: Icons.Documents },
+    ]
+  },
+  {
+    title: 'Community',
+    items: [
+      { path: '/officers', label: 'HOA Officers', icon: Icons.Officers },
+      { path: '/events', label: 'Events & Notices', icon: Icons.Calendar },
+      { path: '/facilities', label: 'Court Reservations', icon: Icons.Facilities },
+      { path: '/alerts', label: 'Emergency Alerts', icon: Icons.Alerts, badgeKey: 'alerts' },
+    ]
+  }
+];
+
+const SECURITY_GUARD_SECTIONS: NavSection[] = [
+  {
+    title: 'Main',
+    items: [
+      { path: '/dashboard', label: 'Gate Overview', icon: Icons.Overview },
+      { path: '/visitors', label: 'Visitor Logbook', icon: Icons.Visitors },
+    ]
+  },
+  {
+    title: 'Directory & Notices',
+    items: [
+      { path: '/officers', label: 'HOA Officers', icon: Icons.Officers },
+      { path: '/events', label: 'Events Calendar', icon: Icons.Calendar },
+      { path: '/documents', label: 'Service Requests', icon: Icons.Documents },
+      { path: '/alerts', label: 'Security Alerts', icon: Icons.Alerts, badgeKey: 'alerts' },
+    ]
+  }
+];
 
 export default function Sidebar() {
   const { user, logout } = useAuth();
   const { activeAlerts } = useAlerts();
   const navigate = useNavigate();
-
   const [showMenu, setShowMenu] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -209,195 +236,201 @@ export default function Sidebar() {
 
   if (!user) return null;
 
-  const config = ROLE_CONFIG[user.roleName] || ROLE_CONFIG.resident;
+  let sections: NavSection[] = SUPER_ADMIN_SECTIONS;
+  if (user.roleName === 'hoa_admin' || user.roleName === 'admin_staff') {
+    sections = HOA_ADMIN_SECTIONS;
+  } else if (user.roleName === 'resident') {
+    sections = RESIDENT_SECTIONS;
+  } else if (user.roleName === 'security_guard') {
+    sections = SECURITY_GUARD_SECTIONS;
+  }
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
-  const getInitials = (name: string) => {
-    const parts = name.trim().split(' ');
-    if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
-    return name.slice(0, 2).toUpperCase();
-  };
-
   return (
-    <aside className="sidebar">
+    <aside className="sidebar minimalist-sidebar">
       {/* Brand Header */}
       <div className="sidebar-brand">
-        <div className="sidebar-logo">
-          <img src="/nrg-ph2-logo.png" alt="NRG PH2 HOA INC Seal" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <div style={{
+          width: 32, height: 32, borderRadius: 8, overflow: 'hidden', flexShrink: 0,
+          background: '#FFFFFF', border: '1px solid var(--sidebar-border)'
+        }}>
+          <img src="/nrg-ph2-logo.png" alt="NRG PH2 HOA" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
         <div style={{ overflow: 'hidden' }}>
-          <div className="sidebar-brand-title">NRG PH2 HOA INC</div>
-          <div className="sidebar-brand-sub">Phase 2 HOA Portal</div>
+          <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--sidebar-text-title)', whiteSpace: 'nowrap', lineHeight: 1.2 }}>
+            NRG PH2 HOA
+          </div>
+          <div style={{ fontSize: 11, color: 'var(--sidebar-text-sub)', whiteSpace: 'nowrap' }}>
+            Phase 2 Cloud Portal
+          </div>
         </div>
       </div>
 
-      {/* Grouped Navigation List without distracting emojis */}
-      <nav className="sidebar-nav">
-        {config.groups.map((grp) => (
-          <div key={grp.section} className="sidebar-group">
-            <div className="sidebar-group-title">{grp.section}</div>
-            <div className="sidebar-group-items">
-              {grp.items.map((item) => (
-                <NavLink
-                  key={item.path}
-                  to={item.path}
-                  className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
-                >
-                  <span className="nav-bullet"></span>
-                  <span className="nav-label">{item.label}</span>
-                  {item.path === '/alerts' && activeAlerts.length > 0 && (
-                    <span className="nav-badge">{activeAlerts.length}</span>
-                  )}
-                </NavLink>
-              ))}
+      {/* Nav List */}
+      <div className="sidebar-nav-container" style={{ flex: 1, overflowY: 'auto', padding: '12px 10px' }}>
+        {sections.map((sec, secIdx) => (
+          <div key={sec.title} style={{ marginBottom: 18 }}>
+            <div style={{
+              fontSize: 10,
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              color: 'var(--text-muted)',
+              padding: '0 8px 6px',
+              opacity: 0.8
+            }}>
+              {sec.title}
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {sec.items.map(item => {
+                const IconComponent = item.icon;
+                return (
+                  <NavLink
+                    key={item.path}
+                    to={item.path}
+                    className={({ isActive }) => `sidebar-nav-link ${isActive ? 'active' : ''}`}
+                  >
+                    <span className="nav-icon-wrap" style={{ display: 'flex', alignItems: 'center' }}>
+                      <IconComponent />
+                    </span>
+                    <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {item.label}
+                    </span>
+                    {item.badgeKey === 'alerts' && activeAlerts.length > 0 && (
+                      <span style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        background: '#DC2626',
+                        color: '#FFFFFF',
+                        padding: '1px 6px',
+                        borderRadius: 10
+                      }}>
+                        {activeAlerts.length}
+                      </span>
+                    )}
+                  </NavLink>
+                );
+              })}
             </div>
           </div>
         ))}
 
-        {/* Utilities */}
-        <div className="sidebar-group" style={{ marginTop: 'auto', paddingTop: 8 }}>
-          <div className="sidebar-group-title">Utilities & Guides</div>
-          <NavLink to="/" className="sidebar-nav-item">
-            <span className="nav-bullet"></span>
-            <span className="nav-label">Public Website</span>
-          </NavLink>
-          <a
-            href="https://www.facebook.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="sidebar-nav-item"
+        {/* Public Website Link */}
+        <div style={{ marginTop: 8, borderTop: '1px solid var(--sidebar-border)', paddingTop: 12 }}>
+          <NavLink
+            to="/"
+            className="sidebar-nav-link"
+            style={{ color: 'var(--text-muted)' }}
           >
-            <span className="nav-bullet"></span>
-            <span className="nav-label">Community Facebook</span>
-          </a>
+            <span className="nav-icon-wrap" style={{ display: 'flex', alignItems: 'center' }}>
+              <Icons.External />
+            </span>
+            <span>Public Website</span>
+          </NavLink>
         </div>
-      </nav>
+      </div>
 
-      {/* User Profile Capsule (Bottom) */}
-      <div className="sidebar-footer" ref={userMenuRef}>
+      {/* Bottom User Card */}
+      <div className="sidebar-footer" ref={userMenuRef} style={{ padding: 10, borderTop: '1px solid var(--sidebar-border)' }}>
         {showMenu && (
-          <div className="user-popover-menu">
-            <div className="menu-header">
-              <div className="menu-header-name">{user.fullName}</div>
-              <div className="menu-header-email">{user.email}</div>
+          <div className="user-popover-menu" style={{
+            position: 'absolute',
+            bottom: 64,
+            left: 10,
+            right: 10,
+            background: 'var(--popover-bg)',
+            border: '1px solid var(--popover-border)',
+            borderRadius: 8,
+            boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
+            padding: 4,
+            zIndex: 100
+          }}>
+            <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border)' }}>
+              <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--popover-text)' }}>{user.fullName}</div>
+              <div style={{ fontSize: 11, color: 'var(--popover-sub)' }}>{user.email}</div>
             </div>
-
-            <button className="user-menu-item" onClick={() => { setShowMenu(false); navigate('/profile'); }}>
-              <span>Account & Password</span>
+            <button
+              type="button"
+              onClick={() => { setShowMenu(false); navigate('/profile'); }}
+              className="user-menu-item"
+              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: 'var(--popover-text)', fontSize: 12, cursor: 'pointer' }}
+            >
+              Account Settings
             </button>
-
-            <button className="user-menu-item logout-item" onClick={handleLogout}>
-              <span>Logout</span>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="user-menu-item"
+              style={{ padding: '8px 10px', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#DC2626', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+            >
+              Logout
             </button>
           </div>
         )}
 
         <div
-          className={`sidebar-user-clickable ${showMenu ? 'active' : ''}`}
-          onClick={() => setShowMenu(prev => !prev)}
-          title="Click to view Account & Logout"
+          onClick={() => setShowMenu(!showMenu)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            padding: '8px 10px',
+            borderRadius: 6,
+            cursor: 'pointer',
+            background: showMenu ? 'var(--sidebar-nav-hover)' : 'transparent',
+            transition: 'all 0.15s ease'
+          }}
         >
           {user.avatarUrl ? (
-            <img
-              src={user.avatarUrl}
-              alt={user.fullName}
-              className="sidebar-avatar-img"
-            />
+            <img src={user.avatarUrl} alt={user.fullName} style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover' }} />
           ) : (
-            <div className="sidebar-avatar-capsule">
-              {getInitials(user.fullName)}
+            <div style={{
+              width: 28, height: 28, borderRadius: '50%',
+              background: '#111827', color: '#FFFFFF',
+              fontSize: 11, fontWeight: 700,
+              display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}>
+              {user.fullName.charAt(0)}
             </div>
           )}
-          <div className="sidebar-user-info">
-            <div className="sidebar-user-name">{user.fullName}</div>
-            <div className="sidebar-user-role">{config.label}</div>
+          <div style={{ flex: 1, overflow: 'hidden' }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--sidebar-text-title)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {user.fullName}
+            </div>
+            <div style={{ fontSize: 10.5, color: 'var(--text-muted)' }}>
+              {user.roleName.replace(/_/g, ' ')}
+            </div>
           </div>
-          <div className="sidebar-user-chevron">⚙</div>
         </div>
       </div>
 
       <style>{`
-        .sidebar {
+        .minimalist-sidebar {
           width: 240px;
           min-width: 240px;
+          background: var(--sidebar-bg);
+          border-right: 1px solid var(--sidebar-border);
+          display: flex;
+          flex-direction: column;
           height: 100vh;
           position: sticky;
           top: 0;
-          display: flex;
-          flex-direction: column;
-          background: #0B1120;
-          border-right: 1px solid rgba(255, 255, 255, 0.08);
           z-index: 50;
-          box-sizing: border-box;
-          user-select: none;
         }
-
         .sidebar-brand {
-          height: 60px;
-          min-height: 60px;
-          padding: 0 16px;
+          height: 64px;
           display: flex;
           align-items: center;
           gap: 10px;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          background: #080C14;
+          padding: 0 16px;
+          border-bottom: 1px solid var(--sidebar-border);
         }
-
-        .sidebar-logo {
-          width: 28px;
-          height: 28px;
-          border-radius: 6px;
-          overflow: hidden;
-          flex-shrink: 0;
-        }
-
-        .sidebar-brand-title {
-          font-size: 13px;
-          font-weight: 700;
-          color: #F8FAFC;
-          letter-spacing: -0.01em;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .sidebar-brand-sub {
-          font-size: 10.5px;
-          color: #94A3B8;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .sidebar-nav {
-          flex: 1;
-          overflow-y: auto;
-          padding: 12px 8px;
-          display: flex;
-          flex-direction: column;
-          gap: 14px;
-        }
-
-        .sidebar-group-title {
-          font-size: 10px;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.06em;
-          color: #64748B;
-          padding: 0 10px 4px;
-        }
-
-        .sidebar-group-items {
-          display: flex;
-          flex-direction: column;
-          gap: 2px;
-        }
-
-        .sidebar-nav-item {
+        .sidebar-nav-link {
           display: flex;
           align-items: center;
           gap: 10px;
@@ -405,177 +438,22 @@ export default function Sidebar() {
           border-radius: 6px;
           font-size: 12.5px;
           font-weight: 500;
-          color: #94A3B8;
+          color: var(--sidebar-nav-color);
           text-decoration: none;
           transition: all 0.15s ease;
         }
-
-        .sidebar-nav-item:hover {
-          background: rgba(255, 255, 255, 0.05);
-          color: #F8FAFC;
+        .sidebar-nav-link:hover {
+          background: var(--sidebar-nav-hover);
+          color: var(--sidebar-nav-hover-t);
         }
-
-        .sidebar-nav-item.active {
+        .sidebar-nav-link.active {
+          background: var(--sidebar-nav-hover);
+          color: #111827;
+          font-weight: 600;
+        }
+        [data-theme="dark"] .sidebar-nav-link.active {
+          color: #FFFFFF;
           background: rgba(255, 255, 255, 0.1);
-          color: #FFFFFF;
-          font-weight: 600;
-        }
-
-        .nav-bullet {
-          width: 5px;
-          height: 5px;
-          border-radius: 50%;
-          background: #64748B;
-          opacity: 0.6;
-          transition: all 0.15s ease;
-        }
-
-        .sidebar-nav-item.active .nav-bullet {
-          background: #DC2626;
-          opacity: 1;
-          transform: scale(1.3);
-        }
-
-        .nav-label {
-          flex: 1;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .nav-badge {
-          background: #DC2626;
-          color: #FFFFFF;
-          font-size: 9.5px;
-          font-weight: 700;
-          padding: 1px 6px;
-          border-radius: 10px;
-        }
-
-        .sidebar-footer {
-          padding: 10px;
-          border-top: 1px solid rgba(255, 255, 255, 0.08);
-          background: #080C14;
-          position: relative;
-        }
-
-        .sidebar-user-clickable {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          padding: 6px 8px;
-          border-radius: 6px;
-          cursor: pointer;
-          transition: background 0.15s ease;
-        }
-
-        .sidebar-user-clickable:hover {
-          background: rgba(255, 255, 255, 0.06);
-        }
-
-        .sidebar-avatar-capsule {
-          width: 26px;
-          height: 26px;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.15);
-          color: #FFFFFF;
-          font-size: 11px;
-          font-weight: 700;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-        }
-
-        .sidebar-avatar-img {
-          width: 26px;
-          height: 26px;
-          border-radius: 50%;
-          object-fit: cover;
-          flex-shrink: 0;
-        }
-
-        .sidebar-user-info {
-          flex: 1;
-          overflow: hidden;
-        }
-
-        .sidebar-user-name {
-          font-size: 12px;
-          font-weight: 600;
-          color: #F8FAFC;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .sidebar-user-role {
-          font-size: 10px;
-          color: #64748B;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .sidebar-user-chevron {
-          font-size: 11px;
-          color: #64748B;
-        }
-
-        .user-popover-menu {
-          position: absolute;
-          bottom: 58px;
-          left: 8px;
-          right: 8px;
-          background: #0F172A;
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          border-radius: 8px;
-          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-          z-index: 100;
-          overflow: hidden;
-          padding: 4px;
-        }
-
-        .menu-header {
-          padding: 8px 10px;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          margin-bottom: 2px;
-        }
-
-        .menu-header-name {
-          font-size: 11.5px;
-          font-weight: 700;
-          color: #FFFFFF;
-        }
-
-        .menu-header-email {
-          font-size: 10px;
-          color: #94A3B8;
-        }
-
-        .user-menu-item {
-          display: flex;
-          align-items: center;
-          width: 100%;
-          padding: 7px 10px;
-          border-radius: 5px;
-          background: none;
-          border: none;
-          color: #CBD5E1;
-          font-size: 11.5px;
-          font-weight: 500;
-          cursor: pointer;
-          text-align: left;
-        }
-
-        .user-menu-item:hover {
-          background: rgba(255, 255, 255, 0.08);
-          color: #FFFFFF;
-        }
-
-        .user-menu-item.logout-item:hover {
-          background: rgba(220, 38, 38, 0.2);
-          color: #F87171;
         }
       `}</style>
     </aside>

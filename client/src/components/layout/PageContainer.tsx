@@ -21,23 +21,7 @@ export default function PageContainer({ title, subtitle, children }: PageContain
       <main className="main-content" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <EmergencyBanner />
         <Navbar title={title} subtitle={subtitle} />
-        
-        <div className="page-content" style={{ flex: 1, padding: '24px 28px' }}>
-          {/* Minimalist Top Breadcrumb Bar */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            fontSize: 12,
-            color: 'var(--text-muted)',
-            marginBottom: 16,
-            userSelect: 'none'
-          }}>
-            <span style={{ color: 'var(--text-muted)' }}>Dashboard</span>
-            <span style={{ fontSize: 10, opacity: 0.6 }}>›</span>
-            <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{title}</span>
-          </div>
-
+        <div className="page-content" style={{ flex: 1 }}>
           {children}
         </div>
 
