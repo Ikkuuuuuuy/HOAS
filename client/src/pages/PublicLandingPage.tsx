@@ -111,7 +111,7 @@ const GUIDELINES = [
 interface POI {
   id: string;
   name: string;
-  category: 'hoa' | 'grocery' | 'hospital' | 'school' | 'dining' | 'transport';
+  category: 'hoa' | 'bakery' | 'cafe' | 'dining' | 'grocery' | 'hospital' | 'school' | 'transport';
   lat: number;
   lng: number;
   distance: string;
@@ -122,35 +122,279 @@ interface POI {
 }
 
 const POI_DATA: POI[] = [
-  // Primary Subdivision Location & HOA Facilities
-  { id: '1', name: 'North Ridge Grove Pin Location (NRG PH2 HOA INC)', category: 'hoa', lat: 14.793768, lng: 121.082387, distance: 'Official Pin (14.793768, 121.082387)', address: 'Northridge Grove Phase 2, Tungkong Mangga, San Jose del Monte, 3023 Bulacan', iconEmoji: '📍', notes: 'Official North Ridge Grove Pin Location • Jurisdiction: Blocks 1–9, 312 Housing Units, HOA Office & Community Facilities', googleSearchQuery: '14.793768, 121.082387' },
-  { id: '2', name: 'NRG PH2 Main Gate & Guardhouse', category: 'hoa', lat: 14.7928, lng: 121.0760, distance: 'Main Entrance (La Bonita Curve)', address: 'Maagap St Entrance, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🚪', notes: '24/7 Security Guardhouse & Automated RFID Boom Barrier', googleSearchQuery: 'B7 Maagap St SJDM 3023 Bulacan' },
-  { id: '3', name: 'Phase 2 Clubhouse & Admin Office', category: 'hoa', lat: 14.7946, lng: 121.0785, distance: 'Central Spine (Maagap St)', address: 'Block 2, Maagap St, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏛', notes: 'NRG PH2 HOA Board Office & Multipurpose Community Hall', googleSearchQuery: 'Northridge Grove Phase 2 Maagap St San Jose del Monte Bulacan' },
-  { id: '4', name: 'Covered Basketball & Sports Court', category: 'hoa', lat: 14.7938, lng: 121.0772, distance: 'Block 7 Sports Park', address: 'Block 7, Maagap St, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏀', notes: 'Full-court basketball, nightly sports & General Assemblies', googleSearchQuery: 'B7 Maagap St Northridge Grove San Jose del Monte' },
-  { id: '5', name: 'Swimming Pools & Gazebo', category: 'hoa', lat: 14.7955, lng: 121.0795, distance: 'Phase 2 Amenities', address: 'Block 3, Poolside Area, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏊', notes: 'Adult Lap Pool & Kiddie Wading Pool with Gazebo', googleSearchQuery: 'Northridge Grove Phase 2 Swimming Pool Bulacan' },
-  { id: '6', name: 'TeaAlley Milktea Station', category: 'dining', lat: 14.7938, lng: 121.0816, distance: 'Corner Spine Landmark', address: 'Lower Phase 2 Corner, SJDM, 3023 Bulacan', iconEmoji: '☕', notes: 'Popular community beverage and snack stop', googleSearchQuery: 'TeaAlley Milktea Station San Jose del Monte' },
-  { id: '7', name: 'Bekiry (Parang Rd)', category: 'dining', lat: 14.7978, lng: 121.0826, distance: 'Parang Rd North Frontage', address: 'Parang Rd, SJDM, 3023 Bulacan', iconEmoji: '🥖', notes: 'Fresh bread & daily pastries on northern subdivision road', googleSearchQuery: 'Bekiry Parang Rd San Jose del Monte' },
-  { id: '8', name: 'Casa Estrella Private Resort & Events', category: 'dining', lat: 14.7966, lng: 121.0844, distance: 'East Boundary Landmark', address: 'East Side, SJDM, 3023 Bulacan', iconEmoji: '🌴', notes: 'Private pool and events venue adjacent to Phase 2', googleSearchQuery: 'Casa Estrella Private Resort San Jose del Monte' },
-  { id: '9', name: 'La Bonita Cosmetics (Main Gate Curve)', category: 'grocery', lat: 14.7925, lng: 121.0760, distance: 'Southwest Entrance Curve', address: 'Near Main Entrance, SJDM, 3023 Bulacan', iconEmoji: '💄', notes: 'Corner landmark near Phase 2 entrance gate', googleSearchQuery: 'La Bonita Cosmetics San Jose del Monte' },
+  // ── 1. PRIMARY SUBDIVISION PIN ──────────────────────────────
+  {
+    id: '1',
+    name: 'North Ridge Grove Pin Location (NRG PH2 HOA INC)',
+    category: 'hoa',
+    lat: 14.793768,
+    lng: 121.082387,
+    distance: 'Official Pin (14.793768, 121.082387)',
+    address: 'Northridge Grove Phase 2, Tungkong Mangga, San Jose del Monte, 3023 Bulacan',
+    iconEmoji: '📍',
+    notes: 'Official North Ridge Grove Pin Location • Jurisdiction: Blocks 1–9, 312 Housing Units, HOA Office & Community Facilities',
+    googleSearchQuery: '14.793768, 121.082387',
+  },
 
-  // Healthcare
-  { id: '9', name: 'QualiMed Hospital CSJDM', category: 'hospital', lat: 14.7972, lng: 121.0490, distance: '3.4 km (9 mins)', address: 'Altaraza Town Center, CSJDM, Bulacan', iconEmoji: '🏥', notes: '24/7 Emergency Room & Specialty Hospital', googleSearchQuery: 'QualiMed Hospital San Jose del Monte Bulacan' },
-  { id: '10', name: 'Grace General Hospital', category: 'hospital', lat: 14.8100, lng: 121.0600, distance: '3.8 km (10 mins)', address: 'Maharlika Rd, CSJDM, Bulacan', iconEmoji: '🚑', notes: 'Tertiary Care Hospital & ICU', googleSearchQuery: 'Grace General Hospital San Jose del Monte Bulacan' },
-  { id: '11', name: 'Barangay Tungkong Mangga Health Center', category: 'hospital', lat: 14.7940, lng: 121.0545, distance: '2.8 km (6 mins)', address: 'Brgy Hall Compound, CSJDM, Bulacan', iconEmoji: '🩺', notes: 'Public Barangay Clinic & Vaccination Facility', googleSearchQuery: 'Barangay Tungkong Mangga Hall San Jose del Monte' },
+  // ── 2. NEARBY BAKERIES & BAKESHOPS ──────────────────────────
+  {
+    id: '2',
+    name: 'Bekiry (Artisan Breads & Pastries)',
+    category: 'bakery',
+    lat: 14.7978,
+    lng: 121.0826,
+    distance: '350m (1 min walk · Parang Rd)',
+    address: 'Parang Rd, Tungkong Mangga, CSJDM, Bulacan',
+    iconEmoji: '🥖',
+    notes: 'Freshly baked artisan sourdough, croissants, cheese rolls, baguettes & morning treats',
+    googleSearchQuery: 'Bekiry Parang Rd San Jose del Monte Bulacan',
+  },
+  {
+    id: '3',
+    name: 'JCS Pandesal & Merienda Bakeshop',
+    category: 'bakery',
+    lat: 14.7928,
+    lng: 121.0805,
+    distance: '150m (1 min walk · Block 8)',
+    address: 'Block 8 Corner, Phase 2, SJDM, 3023 Bulacan',
+    iconEmoji: '🥐',
+    notes: 'Hot traditional pugon pandesal, Spanish bread, pan de coco & afternoon snacks',
+    googleSearchQuery: 'Pandesal Bakery Northridge Grove San Jose del Monte',
+  },
+  {
+    id: '4',
+    name: 'Amy Ella Panaderia',
+    category: 'bakery',
+    lat: 14.7960,
+    lng: 121.0760,
+    distance: '400m (2 mins · West Gate)',
+    address: 'Maagap St West, Phase 2, SJDM, 3023 Bulacan',
+    iconEmoji: '🍞',
+    notes: 'Daily breakfast bread, soft ensaymada, monay, tasty loaves & snacks',
+    googleSearchQuery: 'Amy Ella Bakery San Jose del Monte Bulacan',
+  },
+  {
+    id: '5',
+    name: 'Goldilocks Bakeshop Tungko',
+    category: 'bakery',
+    lat: 14.7958,
+    lng: 121.0532,
+    distance: '2.8 km (6 mins)',
+    address: 'Quirino Hwy, Tungko Proper, CSJDM, Bulacan',
+    iconEmoji: '🎂',
+    notes: 'Celebration birthday cakes, mocha roll, polvoron, brownies & Filipino sweets',
+    googleSearchQuery: 'Goldilocks Tungkong Mangga San Jose del Monte',
+  },
+  {
+    id: '6',
+    name: 'Red Ribbon Bakeshop SM CSJDM',
+    category: 'bakery',
+    lat: 14.7984,
+    lng: 121.0508,
+    distance: '3.2 km (8 mins)',
+    address: 'Upper Ground Floor, SM City San Jose del Monte',
+    iconEmoji: '🍰',
+    notes: 'Black Forest, Chocolate Dedication Cakes, butter mamon & pastries',
+    googleSearchQuery: 'Red Ribbon SM City San Jose del Monte',
+  },
 
-  // Education
-  { id: '12', name: 'Colegio de San Jose del Monte', category: 'school', lat: 14.7960, lng: 121.0580, distance: '2.6 km (6 mins)', address: 'Tungkong Mangga, CSJDM, Bulacan', iconEmoji: '🏫', notes: 'Private K-12 & College Campus', googleSearchQuery: 'Colegio de San Jose del Monte Tungkong Mangga' },
-  { id: '13', name: 'First City Providential College (FCPC)', category: 'school', lat: 14.8020, lng: 121.0480, distance: '3.9 km (9 mins)', address: 'Narra St, CSJDM, Bulacan', iconEmoji: '🎓', notes: 'Higher Education & Senior High School', googleSearchQuery: 'First City Providential College San Jose del Monte' },
-  { id: '14', name: 'Paradise Farms National High School', category: 'school', lat: 14.7945, lng: 121.0790, distance: '600m (2 mins)', address: 'Paradise Farms, Tungkong Mangga, CSJDM', iconEmoji: '📚', notes: 'Public High School nearest to Phase 2', googleSearchQuery: 'Paradise Farms National High School San Jose del Monte' },
+  // ── 3. NEARBY CAFES & COFFEE SHOPS ──────────────────────────
+  {
+    id: '7',
+    name: 'TeaAlley Milktea Station',
+    category: 'cafe',
+    lat: 14.7938,
+    lng: 121.0816,
+    distance: 'Inside Phase 2 Corner (2 mins walk)',
+    address: 'Corner Spine Road, Phase 2, SJDM, 3023 Bulacan',
+    iconEmoji: '🧋',
+    notes: 'Signature brown sugar boba milk tea, fruit teas, smoothies, frappes & waffle bites',
+    googleSearchQuery: 'TeaAlley Milktea Station San Jose del Monte',
+  },
+  {
+    id: '8',
+    name: 'Kape Isla Community Cafe',
+    category: 'cafe',
+    lat: 14.7965,
+    lng: 121.0790,
+    distance: '250m (1 min walk · Central Link)',
+    address: 'Central Link, Tungkong Mangga, CSJDM, Bulacan',
+    iconEmoji: '☕',
+    notes: 'Specialty brewed Barako & Arabica coffee, Spanish Latte, Matcha & cold brew',
+    googleSearchQuery: 'Coffee Shop Tungkong Mangga San Jose del Monte',
+  },
+  {
+    id: '9',
+    name: 'Starbucks Coffee SM CSJDM',
+    category: 'cafe',
+    lat: 14.7986,
+    lng: 121.0512,
+    distance: '3.2 km (8 mins)',
+    address: 'Ground Floor, SM City San Jose del Monte',
+    iconEmoji: '☕',
+    notes: 'Handcrafted espresso, Caramel Macchiato, Frappuccino & cozy cafe dining',
+    googleSearchQuery: 'Starbucks SM City San Jose del Monte',
+  },
+  {
+    id: '10',
+    name: 'The Coffee Bean & Tea Leaf Altaraza',
+    category: 'cafe',
+    lat: 14.7976,
+    lng: 121.0500,
+    distance: '3.3 km (8 mins)',
+    address: 'Altaraza Town Center, CSJDM, Bulacan',
+    iconEmoji: '☕',
+    notes: 'Premium loose-leaf tea, ice blended coffees, breakfast bagels & cafe treats',
+    googleSearchQuery: 'Coffee Bean Tea Leaf Altaraza San Jose del Monte',
+  },
+  {
+    id: '11',
+    name: 'CoCo Fresh Tea & Juice SM CSJDM',
+    category: 'cafe',
+    lat: 14.7988,
+    lng: 121.0515,
+    distance: '3.2 km (8 mins)',
+    address: 'SM City San Jose del Monte',
+    iconEmoji: '🧋',
+    notes: 'Taiwanese bubble tea, 3 Brothers Milk Tea, Passion Fruit Green Tea & fresh juices',
+    googleSearchQuery: 'CoCo Fresh Tea SM San Jose del Monte',
+  },
 
-  // Dining
-  { id: '15', name: 'Jollibee Tungko Drive-Thru', category: 'dining', lat: 14.7955, lng: 121.0530, distance: '2.9 km (7 mins)', address: 'Quirino Hwy, Tungko, CSJDM', iconEmoji: '🍗', notes: '24 Hours Fast Food & Drive-Thru', googleSearchQuery: 'Jollibee Tungko San Jose del Monte' },
-  { id: '16', name: "McDonald's Altaraza Drive-Thru", category: 'dining', lat: 14.7978, lng: 121.0505, distance: '3.3 km (8 mins)', address: 'Altaraza Town Center, CSJDM', iconEmoji: '🍔', notes: '24 Hours Burger & Coffee Drive-Thru', googleSearchQuery: 'McDonalds Altaraza San Jose del Monte' },
-  { id: '17', name: 'Starbucks SM San Jose del Monte', category: 'dining', lat: 14.7986, lng: 121.0512, distance: '3.2 km (8 mins)', address: 'Ground Floor, SM City CSJDM', iconEmoji: '☕', notes: 'Coffeehouse & Alfresco Seating', googleSearchQuery: 'Starbucks SM City San Jose del Monte' },
+  // ── 4. FOOD, RESTAURANTS & MERIENDA ─────────────────────────
+  {
+    id: '12',
+    name: 'Gourmet & Dining Hub (Parang Rd)',
+    category: 'dining',
+    lat: 14.7973,
+    lng: 121.0837,
+    distance: '300m (1 min walk · Parang Rd)',
+    address: 'Parang Rd, Tungkong Mangga, CSJDM, Bulacan',
+    iconEmoji: '🍽️',
+    notes: 'Sizzling sisig, chicken inasal, grilled liempo, pasta & family meal combos',
+    googleSearchQuery: 'Gourmet Parang Rd San Jose del Monte',
+  },
+  {
+    id: '13',
+    name: 'Susana\'s Kitchen Homecooked Dishes',
+    category: 'dining',
+    lat: 14.7968,
+    lng: 121.0840,
+    distance: '320m (1 min walk)',
+    address: 'Parang Rd East, Tungkong Mangga, CSJDM',
+    iconEmoji: '🍛',
+    notes: 'Authentic Pinoy lutong bahay, silog all-day breakfast, bulalo, caldereta & party trays',
+    googleSearchQuery: 'Susana Kitchen Parang Rd San Jose del Monte',
+  },
+  {
+    id: '14',
+    name: 'Casa Estrella Private Resort & Events',
+    category: 'dining',
+    lat: 14.7966,
+    lng: 121.0844,
+    distance: '280m (1 min walk · East Boundary)',
+    address: 'East Boundary Road, Phase 2, SJDM, 3023 Bulacan',
+    iconEmoji: '🌴',
+    notes: 'Private swimming resort, outdoor grill pavilion, event catering & family gatherings',
+    googleSearchQuery: 'Casa Estrella Private Resort San Jose del Monte',
+  },
+  {
+    id: '15',
+    name: 'Jollibee Tungko 24/7 Drive-Thru',
+    category: 'dining',
+    lat: 14.7955,
+    lng: 121.0530,
+    distance: '2.9 km (7 mins)',
+    address: 'Quirino Hwy, Tungko Proper, CSJDM, Bulacan',
+    iconEmoji: '🍗',
+    notes: '24/7 Crispy Chickenjoy, Jolly Spaghetti, Yumburger & breakfast drive-thru',
+    googleSearchQuery: 'Jollibee Tungko San Jose del Monte',
+  },
+  {
+    id: '16',
+    name: 'McDonald\'s Altaraza 24/7 Drive-Thru',
+    category: 'dining',
+    lat: 14.7978,
+    lng: 121.0505,
+    distance: '3.3 km (8 mins)',
+    address: 'Altaraza Town Center, Quirino Hwy, CSJDM',
+    iconEmoji: '🍔',
+    notes: '24/7 Big Mac, World Famous Fries, McFlurry, McCafe coffee & Drive-thru',
+    googleSearchQuery: 'McDonalds Altaraza San Jose del Monte',
+  },
+  {
+    id: '17',
+    name: 'Greenwich Pizza & Pasta SM CSJDM',
+    category: 'dining',
+    lat: 14.7982,
+    lng: 121.0514,
+    distance: '3.2 km (8 mins)',
+    address: 'SM City San Jose del Monte',
+    iconEmoji: '🍕',
+    notes: 'Overloaded Hawaiian pizza, cheesy lasagna supreme, garlic sticks & crispy chicken',
+    googleSearchQuery: 'Greenwich SM City San Jose del Monte',
+  },
+  {
+    id: '18',
+    name: 'Mang Inasal Tungko Commercial Strip',
+    category: 'dining',
+    lat: 14.7960,
+    lng: 121.0535,
+    distance: '3.0 km (7 mins)',
+    address: 'Tungko Proper, CSJDM, Bulacan',
+    iconEmoji: '🍗',
+    notes: 'Charcoal-grilled Chicken Inasal, unli-rice, pork BBQ, halo-halo & Palabok',
+    googleSearchQuery: 'Mang Inasal Tungko San Jose del Monte',
+  },
 
-  // Transport
-  { id: '18', name: 'MRT-7 Tungkong Mangga Station', category: 'transport', lat: 14.7990, lng: 121.0500, distance: '3.5 km (9 mins)', address: 'Quirino Hwy MRT Line 7, CSJDM', iconEmoji: '🚆', notes: 'Future Mass Transit Railway Station connecting to QC', googleSearchQuery: 'MRT 7 Tungkong Mangga Station San Jose del Monte' },
-  { id: '19', name: 'Tungko Bus & UV Express Terminal', category: 'transport', lat: 14.7948, lng: 121.0520, distance: '2.9 km (7 mins)', address: 'Quirino Hwy, CSJDM, Bulacan', iconEmoji: '🚌', notes: 'Daily routes to SM Fairview, Cubao, Quezon Ave & PITX', googleSearchQuery: 'Tungkong Mangga Bus Terminal San Jose del Monte' },
+  // ── 5. GROCERIES & LOCAL MARKETS ────────────────────────────
+  {
+    id: '19',
+    name: 'Walisons Grocery & Food Mart',
+    category: 'grocery',
+    lat: 14.7975,
+    lng: 121.0830,
+    distance: '300m (1 min walk · Parang Rd)',
+    address: 'Parang Rd Frontage, Tungkong Mangga, CSJDM',
+    iconEmoji: '🛒',
+    notes: 'Neighborhood mini-mart, snacks, fresh drinks, cooking oil, canned goods & essentials',
+    googleSearchQuery: 'Grocery Parang Rd Tungkong Mangga San Jose del Monte',
+  },
+  {
+    id: '20',
+    name: 'La Bonita Cosmetics & Daily Essentials',
+    category: 'grocery',
+    lat: 14.7925,
+    lng: 121.0760,
+    distance: 'Southwest Entrance Curve',
+    address: 'Near Main Gate, Phase 2, SJDM, 3023 Bulacan',
+    iconEmoji: '💄',
+    notes: 'Beauty products, toiletries, personal care & daily household accessories',
+    googleSearchQuery: 'La Bonita Cosmetics San Jose del Monte',
+  },
+  {
+    id: '21',
+    name: 'Savemore Market Tungkong Mangga',
+    category: 'grocery',
+    lat: 14.7950,
+    lng: 121.0525,
+    distance: '2.9 km (7 mins)',
+    address: 'Quirino Hwy, Tungkong Mangga, CSJDM, Bulacan',
+    iconEmoji: '🛍',
+    notes: 'Fresh pork, poultry, seafood, produce, grocery items & pharmacy',
+    googleSearchQuery: 'Savemore Market Tungkong Mangga San Jose del Monte',
+  },
+  {
+    id: '22',
+    name: 'SM Supermarket San Jose del Monte',
+    category: 'grocery',
+    lat: 14.7985,
+    lng: 121.0510,
+    distance: '3.2 km (8 mins)',
+    address: 'Lower Ground Floor, SM City CSJDM',
+    iconEmoji: '🏬',
+    notes: 'Full-line hypermarket, imported food aisles, fresh bakery & department store',
+    googleSearchQuery: 'SM Supermarket San Jose del Monte',
+  },
 ];
 
 /* ── Animated Counter Hook ───────────────────────────────── */
@@ -1186,7 +1430,14 @@ function GoogleSubdivisionMapSection({ isDark }: { isDark: boolean }) {
       });
       markersRef.current = [];
       filteredPois.forEach(poi => {
-        const bg = poi.category === 'hoa' ? '#DC2626' : poi.category === 'grocery' ? '#2563EB' : poi.category === 'hospital' ? '#EF4444' : poi.category === 'school' ? '#D97706' : '#166534';
+        const bg =
+          poi.category === 'hoa' ? '#DC2626' :
+          poi.category === 'bakery' ? '#D97706' :
+          poi.category === 'cafe' ? '#0D9488' :
+          poi.category === 'dining' ? '#EA580C' :
+          poi.category === 'grocery' ? '#2563EB' :
+          poi.category === 'hospital' ? '#EF4444' :
+          poi.category === 'school' ? '#8B5CF6' : '#166534';
         const customIcon = window.L.divIcon({
           className: 'custom-map-pin',
           html: `<div style="background:${bg};color:#FFF;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 12px rgba(0,0,0,0.4);border:2px solid #FFF;">${poi.iconEmoji}</div>`,
@@ -1218,7 +1469,7 @@ function GoogleSubdivisionMapSection({ isDark }: { isDark: boolean }) {
           <div className="flex items-center gap-3">
             <div style={{ background: 'linear-gradient(135deg,#DC2626,#B91C1C)', color: '#FFF', width: 40, height: 40, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 700, boxShadow: '0 4px 12px rgba(220,38,38,0.35)' }}>🗺</div>
             <div>
-              <div style={{ fontWeight: 800, fontSize: 15, color: 'var(--landing-text)' }}>FIND US HERE — BRIA NORTHRIDGE GROVE</div>
+              <div style={{ fontWeight: 800, fontSize: 15, color: 'var(--landing-text)' }}>FIND US HERE — NORTH RIDGE GROVE</div>
               <div style={{ fontSize: 12, color: 'var(--landing-text-muted)', marginTop: 2 }}>Brgy. Tungkong Mangga, San Jose del Monte, Bulacan 3023</div>
             </div>
           </div>
@@ -1239,7 +1490,7 @@ function GoogleSubdivisionMapSection({ isDark }: { isDark: boolean }) {
               ))}
             </div>
             <a
-              href="https://www.google.com/maps/dir/?api=1&destination=Bria+Homes+Northridge+Grove+San+Jose+del+Monte+Bulacan"
+              href="https://www.google.com/maps/dir/?api=1&destination=14.793768,121.082387"
               target="_blank" rel="noreferrer"
               style={{ padding: '9px 18px', borderRadius: 10, background: 'linear-gradient(135deg,#DC2626,#B91C1C)', color: '#FFFFFF', fontSize: 13, fontWeight: 800, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 4px 14px rgba(220,38,38,0.35)' }}
             >
@@ -1255,7 +1506,7 @@ function GoogleSubdivisionMapSection({ isDark }: { isDark: boolean }) {
               type="text"
               className="landing-map-search"
               style={{ width: '100%', padding: '10px 14px', borderRadius: 9, border: `1.5px solid var(--landing-card-border)`, background: 'var(--landing-input-bg)', color: 'var(--landing-text)', fontSize: 13, outline: 'none', fontFamily: 'var(--font-body)', transition: 'border-color 0.18s' }}
-              placeholder="Search SM City, Puregold, Hospital, Gate, School..."
+              placeholder="Search Bakery, Coffee, Milk Tea, Cafe, Resto, Grocery..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               onFocus={e => (e.target.style.borderColor = '#DC2626')}
@@ -1269,13 +1520,12 @@ function GoogleSubdivisionMapSection({ isDark }: { isDark: boolean }) {
               onChange={e => setSelectedCategory(e.target.value)}
               style={{ width: '100%', padding: '10px 14px', borderRadius: 9, border: `1.5px solid var(--landing-card-border)`, background: 'var(--landing-input-bg)', color: 'var(--landing-text)', fontSize: 13, fontWeight: 600, outline: 'none', fontFamily: 'var(--font-body)' }}
             >
-              <option value="all">🗺 All Categories</option>
-              <option value="hoa">🏠 HOA Facilities</option>
-              <option value="grocery">🛒 Supermarkets & Malls</option>
-              <option value="hospital">🏥 Hospitals & Clinics</option>
-              <option value="school">🏫 Schools</option>
-              <option value="dining">☕ Dining</option>
-              <option value="transport">🚍 Transport</option>
+              <option value="all">🗺 All Categories ({POI_DATA.length})</option>
+              <option value="hoa">📍 North Ridge Grove Pin</option>
+              <option value="bakery">🥖 Bakeries & Bakeshops</option>
+              <option value="cafe">☕ Cafes & Coffee Shops</option>
+              <option value="dining">🍽️ Food & Restaurants</option>
+              <option value="grocery">🛒 Groceries & Supermarkets</option>
             </select>
           </div>
         </div>
@@ -1286,7 +1536,7 @@ function GoogleSubdivisionMapSection({ isDark }: { isDark: boolean }) {
         <div style={{ padding: 0, overflow: 'hidden', border: `1px solid var(--landing-card-border)`, borderRadius: 16, height: 560, position: 'relative', boxShadow: isDark ? '0 4px 20px rgba(0,0,0,0.35)' : '0 4px 20px rgba(0,0,0,0.06)' }}>
           <div ref={mapRef} style={{ width: '100%', height: '100%', zIndex: 1 }} />
           <div style={{ position: 'absolute', bottom: 16, left: 16, zIndex: 1000, background: isDark ? 'rgba(15,23,42,0.95)' : 'rgba(255,255,255,0.97)', backdropFilter: 'blur(8px)', padding: '8px 14px', borderRadius: 8, border: `1px solid var(--landing-card-border)`, fontSize: 11, fontWeight: 700, color: 'var(--landing-text)', boxShadow: '0 2px 12px rgba(0,0,0,0.1)' }}>
-            📍 Pinned Location: <span style={{ color: '#16A34A', fontWeight: 800 }}>Northridge Grove Phase 2 (B7 Maagap St)</span>
+            📍 Pinned Location: <span style={{ color: '#16A34A', fontWeight: 800 }}>North Ridge Grove (14.793768, 121.082387)</span>
           </div>
         </div>
 
