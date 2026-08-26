@@ -20,8 +20,8 @@ interface POI {
 }
 
 const POI_DATA: POI[] = [
-  // Primary Subdivision Location & HOA Facilities (B7 Maagap St)
-  { id: '1', name: 'Northridge Grove Phase 2 (NRG PH2 HOA INC)', category: 'hoa', lat: 14.7948, lng: 121.0795, distance: 'Subdivision Center', address: 'B7 Maagap St, Northridge Grove Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏘️', notes: 'Official Jurisdiction: Blocks 1–9, 312 Housing Units, HOA Office & Community Facilities' },
+  // Primary Subdivision Location & HOA Facilities
+  { id: '1', name: 'North Ridge Grove Pin Location (NRG PH2 HOA INC)', category: 'hoa', lat: 14.793768, lng: 121.082387, distance: 'Official Pin (14.793768, 121.082387)', address: 'Northridge Grove Phase 2, Tungkong Mangga, San Jose del Monte, 3023 Bulacan', iconEmoji: '📍', notes: 'Official North Ridge Grove Pin Location • Jurisdiction: Blocks 1–9, 312 Housing Units, HOA Office & Community Facilities' },
   { id: '2', name: 'NRG PH2 Main Gate & Guardhouse', category: 'hoa', lat: 14.7928, lng: 121.0760, distance: 'Main Entrance (La Bonita Curve)', address: 'Maagap St Entrance, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🚪', notes: '24/7 Security Guardhouse & Automated RFID Boom Barrier' },
   { id: '3', name: 'Phase 2 Clubhouse & Admin Office', category: 'hoa', lat: 14.7946, lng: 121.0785, distance: 'Central Spine (Maagap St)', address: 'Block 2, Maagap St, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏛', notes: 'NRG PH2 HOA Board Office & Multipurpose Community Hall' },
   { id: '4', name: 'Covered Basketball & Sports Court', category: 'hoa', lat: 14.7938, lng: 121.0772, distance: 'Block 7 Sports Park', address: 'Block 7, Maagap St, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏀', notes: 'Full-court basketball, nightly sports & General Assemblies' },
@@ -83,8 +83,8 @@ export default function SubdivisionMap() {
 
     try {
       if (!leafletInstance.current) {
-        // Center directly at Northridge Grove Phase 2
-        const map = window.L.map(mapRef.current).setView([14.7948, 121.0795], 17);
+        // Center directly at North Ridge Grove Pin Location
+        const map = window.L.map(mapRef.current).setView([14.793768, 121.082387], 17);
 
         // Tile Layer Providers
         const streetLayer = window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
