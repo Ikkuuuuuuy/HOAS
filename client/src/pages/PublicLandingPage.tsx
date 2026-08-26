@@ -122,17 +122,16 @@ interface POI {
 }
 
 const POI_DATA: POI[] = [
-  // HOA Facilities inside Northridge Grove Phase 2 (B7 Maagap St)
-  { id: '1', name: 'NRG PH2 Main Entrance & Guardhouse', category: 'hoa', lat: 14.7936, lng: 121.0758, distance: 'B7 Maagap St (Main Gate)', address: 'B7 Maagap St, Northridge Grove Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🚪', notes: '24/7 Security Guardhouse & Automated RFID Boom Barrier Gate', googleSearchQuery: 'B7 Maagap St SJDM 3023 Bulacan' },
-  { id: '2', name: 'Phase 2 Clubhouse & Function Hall', category: 'hoa', lat: 14.7940, lng: 121.0778, distance: 'Inside Phase 2', address: 'Block 2, Maagap St, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏛', notes: 'NRG PH2 HOA Admin Office & Multipurpose Event Center', googleSearchQuery: 'Northridge Grove Phase 2 Maagap St San Jose del Monte Bulacan' },
-  { id: '3', name: 'Phase 2 Swimming Pools & Gazebo', category: 'hoa', lat: 14.7948, lng: 121.0788, distance: 'Phase 2 Amenities', address: 'Block 3, Poolside Area, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏊', notes: 'Adult Lap Pool & Kiddie Wading Pool with Gazebo', googleSearchQuery: 'Northridge Grove Phase 2 Swimming Pool Bulacan' },
-  { id: '4', name: 'Covered Basketball & Sports Court', category: 'hoa', lat: 14.7930, lng: 121.0768, distance: 'Inside Phase 2', address: 'Block 7, Maagap St Park, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏀', notes: 'Full-court basketball, nightly sports & General Assemblies', googleSearchQuery: 'B7 Maagap St Northridge Grove San Jose del Monte' },
-
-  // Commercial & Convenience Landmarks
-  { id: '5', name: 'SM City San Jose del Monte', category: 'grocery', lat: 14.7985, lng: 121.0510, distance: '3.2 km (8 mins)', address: 'Quirino Hwy, Tungkong Mangga, CSJDM, Bulacan', iconEmoji: '🛒', notes: 'SM Supermarket, Department Store, Cinemas & Shops', googleSearchQuery: 'SM City San Jose del Monte Bulacan' },
-  { id: '6', name: 'Savemore Market Tungkong Mangga', category: 'grocery', lat: 14.7950, lng: 121.0525, distance: '2.9 km (7 mins)', address: 'Quirino Hwy, Tungkong Mangga, CSJDM, Bulacan', iconEmoji: '🛍', notes: 'Fresh produce & daily grocery essentials', googleSearchQuery: 'Savemore Market Tungkong Mangga San Jose del Monte' },
-  { id: '7', name: 'Puregold Extra Tungko', category: 'grocery', lat: 14.7962, lng: 121.0538, distance: '3.0 km (7 mins)', address: 'Tungko Proper, CSJDM, Bulacan', iconEmoji: '🏬', notes: 'Wholesale & retail grocery store', googleSearchQuery: 'Puregold Tungkong Mangga San Jose del Monte' },
-  { id: '8', name: 'WalterMart San Jose del Monte', category: 'grocery', lat: 14.8050, lng: 121.0450, distance: '4.5 km (11 mins)', address: 'Quirino Hwy, CSJDM, Bulacan', iconEmoji: '🛒', notes: 'WalterMart Supermarket & Abenson Appliance Store', googleSearchQuery: 'WalterMart San Jose del Monte Bulacan' },
+  // Primary Subdivision Location & HOA Facilities (B7 Maagap St)
+  { id: '1', name: 'Northridge Grove Phase 2 (NRG PH2 HOA INC)', category: 'hoa', lat: 14.7948, lng: 121.0795, distance: 'Subdivision Center', address: 'B7 Maagap St, Northridge Grove Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏘️', notes: 'Official Jurisdiction: Blocks 1–9, 312 Housing Units, HOA Office & Community Facilities', googleSearchQuery: 'Northridge Grove Phase 2 San Jose del Monte Bulacan' },
+  { id: '2', name: 'NRG PH2 Main Gate & Guardhouse', category: 'hoa', lat: 14.7928, lng: 121.0760, distance: 'Main Entrance (La Bonita Curve)', address: 'Maagap St Entrance, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🚪', notes: '24/7 Security Guardhouse & Automated RFID Boom Barrier', googleSearchQuery: 'B7 Maagap St SJDM 3023 Bulacan' },
+  { id: '3', name: 'Phase 2 Clubhouse & Admin Office', category: 'hoa', lat: 14.7946, lng: 121.0785, distance: 'Central Spine (Maagap St)', address: 'Block 2, Maagap St, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏛', notes: 'NRG PH2 HOA Board Office & Multipurpose Community Hall', googleSearchQuery: 'Northridge Grove Phase 2 Maagap St San Jose del Monte Bulacan' },
+  { id: '4', name: 'Covered Basketball & Sports Court', category: 'hoa', lat: 14.7938, lng: 121.0772, distance: 'Block 7 Sports Park', address: 'Block 7, Maagap St, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏀', notes: 'Full-court basketball, nightly sports & General Assemblies', googleSearchQuery: 'B7 Maagap St Northridge Grove San Jose del Monte' },
+  { id: '5', name: 'Swimming Pools & Gazebo', category: 'hoa', lat: 14.7955, lng: 121.0795, distance: 'Phase 2 Amenities', address: 'Block 3, Poolside Area, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏊', notes: 'Adult Lap Pool & Kiddie Wading Pool with Gazebo', googleSearchQuery: 'Northridge Grove Phase 2 Swimming Pool Bulacan' },
+  { id: '6', name: 'TeaAlley Milktea Station', category: 'dining', lat: 14.7938, lng: 121.0816, distance: 'Corner Spine Landmark', address: 'Lower Phase 2 Corner, SJDM, 3023 Bulacan', iconEmoji: '☕', notes: 'Popular community beverage and snack stop', googleSearchQuery: 'TeaAlley Milktea Station San Jose del Monte' },
+  { id: '7', name: 'Bekiry (Parang Rd)', category: 'dining', lat: 14.7978, lng: 121.0826, distance: 'Parang Rd North Frontage', address: 'Parang Rd, SJDM, 3023 Bulacan', iconEmoji: '🥖', notes: 'Fresh bread & daily pastries on northern subdivision road', googleSearchQuery: 'Bekiry Parang Rd San Jose del Monte' },
+  { id: '8', name: 'Casa Estrella Private Resort & Events', category: 'dining', lat: 14.7966, lng: 121.0844, distance: 'East Boundary Landmark', address: 'East Side, SJDM, 3023 Bulacan', iconEmoji: '🌴', notes: 'Private pool and events venue adjacent to Phase 2', googleSearchQuery: 'Casa Estrella Private Resort San Jose del Monte' },
+  { id: '9', name: 'La Bonita Cosmetics (Main Gate Curve)', category: 'grocery', lat: 14.7925, lng: 121.0760, distance: 'Southwest Entrance Curve', address: 'Near Main Entrance, SJDM, 3023 Bulacan', iconEmoji: '💄', notes: 'Corner landmark near Phase 2 entrance gate', googleSearchQuery: 'La Bonita Cosmetics San Jose del Monte' },
 
   // Healthcare
   { id: '9', name: 'QualiMed Hospital CSJDM', category: 'hospital', lat: 14.7972, lng: 121.0490, distance: '3.4 km (9 mins)', address: 'Altaraza Town Center, CSJDM, Bulacan', iconEmoji: '🏥', notes: '24/7 Emergency Room & Specialty Hospital', googleSearchQuery: 'QualiMed Hospital San Jose del Monte Bulacan' },
@@ -1156,7 +1155,7 @@ function GoogleSubdivisionMapSection({ isDark }: { isDark: boolean }) {
     if (!mapRef.current || typeof window === 'undefined' || !window.L) return;
     try {
       if (!leafletInstance.current) {
-        const map = window.L.map(mapRef.current).setView([14.7940, 121.0775], 16);
+        const map = window.L.map(mapRef.current).setView([14.7948, 121.0795], 17);
         window.L.tileLayer('https://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, attribution: '© Google Maps | NRG PH2 HOA INC' }).addTo(map);
         leafletInstance.current = map;
       }

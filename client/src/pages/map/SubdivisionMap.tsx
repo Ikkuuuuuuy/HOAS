@@ -20,36 +20,41 @@ interface POI {
 }
 
 const POI_DATA: POI[] = [
-  // HOA Facilities inside Northridge Grove Phase 2 (B7 Maagap St)
-  { id: '1', name: 'NRG PH2 Main Entrance & Guardhouse', category: 'hoa', lat: 14.7939, lng: 121.0832, distance: 'B7 Maagap St (Main Gate)', address: 'B7 Maagap St, Northridge Grove Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🚪', notes: '24/7 Security Guardhouse & Automated RFID Boom Barrier Gate' },
-  { id: '2', name: 'Phase 2 Clubhouse & Function Hall', category: 'hoa', lat: 14.7946, lng: 121.0838, distance: 'Inside Phase 2', address: 'Block 2, Maagap St, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏛', notes: 'NRG PH2 HOA Admin Office & Multipurpose Event Center' },
-  { id: '3', name: 'Phase 2 Swimming Pools & Gazebo', category: 'hoa', lat: 14.7952, lng: 121.0844, distance: 'Phase 2 Amenities', address: 'Block 3, Poolside Area, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏊', notes: 'Adult Lap Pool & Kiddie Wading Pool with Gazebo' },
-  { id: '4', name: 'Covered Basketball & Sports Court', category: 'hoa', lat: 14.7930, lng: 121.0820, distance: 'Inside Phase 2', address: 'Block 7, Maagap St Park, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏀', notes: 'Full-court basketball, nightly sports & General Assemblies' },
+  // Primary Subdivision Location & HOA Facilities (B7 Maagap St)
+  { id: '1', name: 'Northridge Grove Phase 2 (NRG PH2 HOA INC)', category: 'hoa', lat: 14.7948, lng: 121.0795, distance: 'Subdivision Center', address: 'B7 Maagap St, Northridge Grove Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏘️', notes: 'Official Jurisdiction: Blocks 1–9, 312 Housing Units, HOA Office & Community Facilities' },
+  { id: '2', name: 'NRG PH2 Main Gate & Guardhouse', category: 'hoa', lat: 14.7928, lng: 121.0760, distance: 'Main Entrance (La Bonita Curve)', address: 'Maagap St Entrance, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🚪', notes: '24/7 Security Guardhouse & Automated RFID Boom Barrier' },
+  { id: '3', name: 'Phase 2 Clubhouse & Admin Office', category: 'hoa', lat: 14.7946, lng: 121.0785, distance: 'Central Spine (Maagap St)', address: 'Block 2, Maagap St, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏛', notes: 'NRG PH2 HOA Board Office & Multipurpose Community Hall' },
+  { id: '4', name: 'Covered Basketball & Sports Court', category: 'hoa', lat: 14.7938, lng: 121.0772, distance: 'Block 7 Sports Park', address: 'Block 7, Maagap St, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏀', notes: 'Full-court basketball, nightly sports & General Assemblies' },
+  { id: '5', name: 'Swimming Pools & Gazebo', category: 'hoa', lat: 14.7955, lng: 121.0795, distance: 'Phase 2 Amenities', address: 'Block 3, Poolside Area, Phase 2, SJDM, 3023 Bulacan', iconEmoji: '🏊', notes: 'Adult Lap Pool & Kiddie Wading Pool with Gazebo' },
+  { id: '6', name: 'TeaAlley Milktea Station', category: 'dining', lat: 14.7938, lng: 121.0816, distance: 'Corner Spine Landmark', address: 'Lower Phase 2 Corner, SJDM, 3023 Bulacan', iconEmoji: '☕', notes: 'Popular community beverage and snack stop' },
+  { id: '7', name: 'Bekiry (Parang Rd)', category: 'dining', lat: 14.7978, lng: 121.0826, distance: 'Parang Rd North Frontage', address: 'Parang Rd, SJDM, 3023 Bulacan', iconEmoji: '🥖', notes: 'Fresh bread & daily pastries on northern subdivision road' },
+  { id: '8', name: 'Casa Estrella Private Resort & Events', category: 'dining', lat: 14.7966, lng: 121.0844, distance: 'East Boundary Landmark', address: 'East Side, SJDM, 3023 Bulacan', iconEmoji: '🌴', notes: 'Private pool and events venue adjacent to Phase 2' },
+  { id: '9', name: 'La Bonita Cosmetics (Main Gate Curve)', category: 'grocery', lat: 14.7925, lng: 121.0760, distance: 'Southwest Entrance Curve', address: 'Near Main Entrance, SJDM, 3023 Bulacan', iconEmoji: '💄', notes: 'Corner landmark near Phase 2 entrance gate' },
 
   // Commercial & Convenience Landmarks
-  { id: '5', name: 'SM City San Jose del Monte', category: 'grocery', lat: 14.7985, lng: 121.0510, distance: '3.2 km (8 mins)', address: 'Quirino Hwy, Tungkong Mangga, CSJDM', iconEmoji: '🛒', notes: 'SM Supermarket, Department Store, Cinemas & Shops' },
-  { id: '6', name: 'Savemore Market Tungkong Mangga', category: 'grocery', lat: 14.7950, lng: 121.0525, distance: '2.9 km (7 mins)', address: 'Quirino Hwy, CSJDM', iconEmoji: '🛍', notes: 'Fresh produce & daily grocery essentials' },
-  { id: '7', name: 'Puregold Extra Tungko', category: 'grocery', lat: 14.7962, lng: 121.0538, distance: '3.0 km (7 mins)', address: 'Tungko Proper, CSJDM', iconEmoji: '🏬', notes: 'Wholesale & retail grocery store' },
-  { id: '8', name: 'WalterMart San Jose del Monte', category: 'grocery', lat: 14.8050, lng: 121.0450, distance: '4.5 km (11 mins)', address: 'Quirino Hwy, CSJDM', iconEmoji: '🛒', notes: 'WalterMart Supermarket & Abenson' },
+  { id: '10', name: 'SM City San Jose del Monte', category: 'grocery', lat: 14.7985, lng: 121.0510, distance: '3.2 km (8 mins)', address: 'Quirino Hwy, Tungkong Mangga, CSJDM', iconEmoji: '🛒', notes: 'SM Supermarket, Department Store, Cinemas & Shops' },
+  { id: '11', name: 'Savemore Market Tungkong Mangga', category: 'grocery', lat: 14.7950, lng: 121.0525, distance: '2.9 km (7 mins)', address: 'Quirino Hwy, CSJDM', iconEmoji: '🛍', notes: 'Fresh produce & daily grocery essentials' },
+  { id: '12', name: 'Puregold Extra Tungko', category: 'grocery', lat: 14.7962, lng: 121.0538, distance: '3.0 km (7 mins)', address: 'Tungko Proper, CSJDM', iconEmoji: '🏬', notes: 'Wholesale & retail grocery store' },
+  { id: '13', name: 'WalterMart San Jose del Monte', category: 'grocery', lat: 14.8050, lng: 121.0450, distance: '4.5 km (11 mins)', address: 'Quirino Hwy, CSJDM', iconEmoji: '🛒', notes: 'WalterMart Supermarket & Abenson' },
 
   // Hospitals & Healthcare
-  { id: '9', name: 'QualiMed Hospital CSJDM', category: 'hospital', lat: 14.7972, lng: 121.0490, distance: '3.4 km (9 mins)', address: 'Altaraza Town Center, CSJDM', iconEmoji: '🏥', notes: '24/7 Emergency Room & Specialty Hospital' },
-  { id: '10', name: 'Grace General Hospital', category: 'hospital', lat: 14.8100, lng: 121.0600, distance: '3.8 km (10 mins)', address: 'Maharlika Rd, CSJDM', iconEmoji: '🚑', notes: 'Tertiary Care Hospital & ICU' },
-  { id: '11', name: 'Barangay Tungkong Mangga Health Center', category: 'hospital', lat: 14.7940, lng: 121.0545, distance: '2.8 km (6 mins)', address: 'Brgy Hall Compound, CSJDM', iconEmoji: '🩺', notes: 'Public Barangay Clinic & Vaccination Facility' },
+  { id: '14', name: 'QualiMed Hospital CSJDM', category: 'hospital', lat: 14.7972, lng: 121.0490, distance: '3.4 km (9 mins)', address: 'Altaraza Town Center, CSJDM', iconEmoji: '🏥', notes: '24/7 Emergency Room & Specialty Hospital' },
+  { id: '15', name: 'Grace General Hospital', category: 'hospital', lat: 14.8100, lng: 121.0600, distance: '3.8 km (10 mins)', address: 'Maharlika Rd, CSJDM', iconEmoji: '🚑', notes: 'Tertiary Care Hospital & ICU' },
+  { id: '16', name: 'Barangay Tungkong Mangga Health Center', category: 'hospital', lat: 14.7940, lng: 121.0545, distance: '2.8 km (6 mins)', address: 'Brgy Hall Compound, CSJDM', iconEmoji: '🩺', notes: 'Public Barangay Clinic & Vaccination Facility' },
 
   // Schools & Education
-  { id: '12', name: 'Colegio de San Jose del Monte', category: 'school', lat: 14.7960, lng: 121.0580, distance: '2.6 km (6 mins)', address: 'Tungkong Mangga, CSJDM', iconEmoji: '🏫', notes: 'Private K-12 & College Campus' },
-  { id: '13', name: 'First City Providential College (FCPC)', category: 'school', lat: 14.8020, lng: 121.0480, distance: '3.9 km (9 mins)', address: 'Narra St, CSJDM', iconEmoji: '🎓', notes: 'Higher Education & Senior High School' },
-  { id: '14', name: 'Paradise Farms National High School', category: 'school', lat: 14.7945, lng: 121.0790, distance: '600m (2 mins)', address: 'Paradise Farms, Tungkong Mangga, CSJDM', iconEmoji: '📚', notes: 'Public High School nearest to Phase 2' },
+  { id: '17', name: 'Colegio de San Jose del Monte', category: 'school', lat: 14.7960, lng: 121.0580, distance: '2.6 km (6 mins)', address: 'Tungkong Mangga, CSJDM', iconEmoji: '🏫', notes: 'Private K-12 & College Campus' },
+  { id: '18', name: 'First City Providential College (FCPC)', category: 'school', lat: 14.8020, lng: 121.0480, distance: '3.9 km (9 mins)', address: 'Narra St, CSJDM', iconEmoji: '🎓', notes: 'Higher Education & Senior High School' },
+  { id: '19', name: 'Paradise Farms National High School', category: 'school', lat: 14.7945, lng: 121.0790, distance: '600m (2 mins)', address: 'Paradise Farms, Tungkong Mangga, CSJDM', iconEmoji: '📚', notes: 'Public High School nearest to Phase 2' },
 
   // Dining & Restaurants
-  { id: '15', name: 'Jollibee Tungko Drive-Thru', category: 'dining', lat: 14.7955, lng: 121.0530, distance: '2.9 km (7 mins)', address: 'Quirino Hwy, Tungko', iconEmoji: '🍗', notes: '24 Hours Fast Food & Drive-Thru' },
-  { id: '16', name: "McDonald's Altaraza Drive-Thru", category: 'dining', lat: 14.7978, lng: 121.0505, distance: '3.3 km (8 mins)', address: 'Altaraza Town Center', iconEmoji: '🍔', notes: '24 Hours Burger & Coffee Drive-Thru' },
-  { id: '17', name: 'Starbucks SM San Jose del Monte', category: 'dining', lat: 14.7986, lng: 121.0512, distance: '3.2 km (8 mins)', address: 'Ground Floor, SM City CSJDM', iconEmoji: '☕', notes: 'Coffeehouse & Alfresco Seating' },
+  { id: '20', name: 'Jollibee Tungko Drive-Thru', category: 'dining', lat: 14.7955, lng: 121.0530, distance: '2.9 km (7 mins)', address: 'Quirino Hwy, Tungko', iconEmoji: '🍗', notes: '24 Hours Fast Food & Drive-Thru' },
+  { id: '21', name: "McDonald's Altaraza Drive-Thru", category: 'dining', lat: 14.7978, lng: 121.0505, distance: '3.3 km (8 mins)', address: 'Altaraza Town Center', iconEmoji: '🍔', notes: '24 Hours Burger & Coffee Drive-Thru' },
+  { id: '22', name: 'Starbucks SM San Jose del Monte', category: 'dining', lat: 14.7986, lng: 121.0512, distance: '3.2 km (8 mins)', address: 'Ground Floor, SM City CSJDM', iconEmoji: '☕', notes: 'Coffeehouse & Alfresco Seating' },
 
   // Transport & Terminals
-  { id: '18', name: 'MRT-7 Tungkong Mangga Station (Under Construction)', category: 'transport', lat: 14.7990, lng: 121.0500, distance: '3.5 km (9 mins)', address: 'Quirino Hwy MRT Line 7', iconEmoji: '🚆', notes: 'Future Mass Transit Railway Station connecting to North Ave Quezon City' },
-  { id: '19', name: 'Tungko Bus & UV Express Terminal', category: 'transport', lat: 14.7948, lng: 121.0520, distance: '2.9 km (7 mins)', address: 'Quirino Hwy, CSJDM', iconEmoji: '🚌', notes: 'Daily routes to SM Fairview, Cubao, Quezon Ave & PITX' },
+  { id: '23', name: 'MRT-7 Tungkong Mangga Station (Under Construction)', category: 'transport', lat: 14.7990, lng: 121.0500, distance: '3.5 km (9 mins)', address: 'Quirino Hwy MRT Line 7', iconEmoji: '🚆', notes: 'Future Mass Transit Railway Station connecting to North Ave Quezon City' },
+  { id: '24', name: 'Tungko Bus & UV Express Terminal', category: 'transport', lat: 14.7948, lng: 121.0520, distance: '2.9 km (7 mins)', address: 'Quirino Hwy, CSJDM', iconEmoji: '🚌', notes: 'Daily routes to SM Fairview, Cubao, Quezon Ave & PITX' },
 ];
 
 export default function SubdivisionMap() {
@@ -78,8 +83,8 @@ export default function SubdivisionMap() {
 
     try {
       if (!leafletInstance.current) {
-        // Center directly at Northridge Grove Phase 2 (Right sector)
-        const map = window.L.map(mapRef.current).setView([14.7956, 121.0824], 17);
+        // Center directly at Northridge Grove Phase 2
+        const map = window.L.map(mapRef.current).setView([14.7948, 121.0795], 17);
 
         // Tile Layer Providers
         const streetLayer = window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
