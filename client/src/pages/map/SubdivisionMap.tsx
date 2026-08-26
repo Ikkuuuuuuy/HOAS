@@ -89,69 +89,6 @@ export default function SubdivisionMap() {
 
         streetLayer.addTo(map);
         leafletInstance.current = map;
-
-        // Draw Accurate Phase 2 Boundary Polygon (Right Side / Phase 2 Sector)
-        const polygonCoords = [
-          // ── 1. Western dividing boundary (along the dividing spine/road) ──
-          [14.79300, 121.08050], // Bottom-left corner (near dividing spine)
-          [14.79420, 121.08020], // Mid dividing boundary
-          [14.79540, 121.08010], // Upper dividing boundary (past BCCCP)
-          [14.79630, 121.08040], // Top-left junction
-
-          // ── 2. Northern Arc & Parang Rd Frontage (near Bekiry & Gourmet) ──
-          [14.79700, 121.08050], // North flank
-          [14.79770, 121.08080], // Upper apex curve
-          [14.79810, 121.08160], // Parang Rd entrance / upper bend
-          [14.79780, 121.08260], // Parang Rd frontage near Bekiry
-          [14.79730, 121.08370], // Near Gourmet & Susana's Kitchen
-
-          // ── 3. Eastern Perimeter (Casa Estrella Private Resort area) ──
-          [14.79660, 121.08440], // Casa Estrella Private Resort corner
-          [14.79580, 121.08460], // Far East boundary
-          [14.79500, 121.08380], // Southeast lot lines
-
-          // ── 4. Southern Flank (TeaAlley Milktea Station area) ──
-          [14.79410, 121.08270], // South approach
-          [14.79350, 121.08160], // Southern road near TeaAlley Milktea Station
-          [14.79300, 121.08050], // Closes back to Southwest base
-        ];
-
-        // Golden outer glow
-        window.L.polygon(polygonCoords, {
-          color: '#16A34A',
-          weight: 6,
-          opacity: 0.5,
-          fillOpacity: 0,
-        }).addTo(map);
-
-        // Main crisp boundary polygon
-        const polygonLayer = window.L.polygon(polygonCoords, {
-          color: '#15803D',
-          fillColor: '#16A34A',
-          fillOpacity: 0.22,
-          weight: 3.5,
-          dashArray: '6, 4',
-        }).addTo(map);
-
-        polygonLayer.bindPopup(`
-          <div style="font-family:sans-serif;padding:6px;min-width:240px;">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-              <div style="background:#16A34A;color:#FFF;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:900;">PHASE 2 OFFICIAL BOUNDARY</div>
-              <div style="font-size:11px;color:#D97706;font-weight:800;">312 HOUSING UNITS</div>
-            </div>
-            <div style="font-weight:900;font-size:15px;color:#111827;">Northridge Grove Phase 2</div>
-            <div style="font-size:12px;color:#166534;font-weight:700;margin-top:2px;">NRG PH2 HOA INC Jurisdiction</div>
-            <div style="font-size:12px;color:#4B5563;margin-top:6px;line-height:1.4;">
-              📍 B7 Maagap St, Barangay Tungkong Mangga, San Jose del Monte, Bulacan 3023
-            </div>
-            <div style="margin-top:8px;padding-top:8px;border-top:1px solid #E5E7EB;font-size:11.5px;color:#374151;">
-              • <strong>Coverage:</strong> Blocks 1, 2, 3, 4, 5, 6, 7, 8, and 9<br/>
-              • <strong>Landmarks:</strong> Bekiry, Gourmet, Casa Estrella, TeaAlley Milktea<br/>
-              • <strong>Streets:</strong> Maagap St, Mabuti St, Mapayapa St, Magiting St<br/>
-              • <strong>Key Amenities:</strong> Clubhouse, Covered Basketball Court, Swimming Pools, 24/7 RFID Gate
-            </div>
-          </div>
-        `);
       }
     } catch {
       // Map error fallback
@@ -278,7 +215,7 @@ export default function SubdivisionMap() {
                 style={viewMode === 'image_layout' ? { background: '#166534', borderColor: '#166534', fontWeight: 800 } : {}}
                 onClick={() => setViewMode('image_layout')}
               >
-                🗺️ Official Layout & Phase 2 Border
+                🗺️ Official Subdivision Map Layout & Pins
               </button>
               <button
                 className={`btn btn-sm ${viewMode === 'leaflet' ? 'btn-primary' : 'btn-secondary'}`}
@@ -366,29 +303,6 @@ export default function SubdivisionMap() {
                   alt="Subdivision Layout Phase 1 and Phase 2"
                   style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                 />
-                
-                {/* SVG Overlay Drawing Phase 2 Green Border */}
-                <svg
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
-                  viewBox="0 0 100 100"
-                  preserveAspectRatio="none"
-                >
-                  {/* Phase 2 Polygon Border (Bekiry, Gourmet, Casa Estrella, TeaAlley, Parang Rd) */}
-                  <polygon
-                    points="26,62 38,48 52,32 66,15 78,5 98,24 98,58 78,82 56,88 38,82 26,62"
-                    fill="rgba(34, 197, 94, 0.22)"
-                    stroke="#16A34A"
-                    strokeWidth="2"
-                    strokeDasharray="3 1.5"
-                  />
-                  <polygon
-                    points="26,62 38,48 52,32 66,15 78,5 98,24 98,58 78,82 56,88 38,82 26,62"
-                    fill="none"
-                    stroke="#EAB308"
-                    strokeWidth="0.8"
-                    strokeDasharray="1.5 1.5"
-                  />
-                </svg>
 
                 {/* Interactive Landmark Pins Overlaid on Map Image */}
                 {/* 1. TeaAlley Milktea Station Pin */}

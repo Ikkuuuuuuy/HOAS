@@ -1156,88 +1156,9 @@ function GoogleSubdivisionMapSection({ isDark }: { isDark: boolean }) {
     if (!mapRef.current || typeof window === 'undefined' || !window.L) return;
     try {
       if (!leafletInstance.current) {
-        const map = window.L.map(mapRef.current).setView([14.7946, 121.0800], 16);
-        window.L.tileLayer('https://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, attribution: '© Google Maps | NRG PH2 HOA INC Boundary' }).addTo(map);
+        const map = window.L.map(mapRef.current).setView([14.7940, 121.0775], 16);
+        window.L.tileLayer('https://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, attribution: '© Google Maps | NRG PH2 HOA INC' }).addTo(map);
         leafletInstance.current = map;
-
-        // EXACT NORTHRIDGE GROVE PHASE 2 SUBDIVISION PERIMETER BORDER
-        const borderPolygonCoords = [
-          // ── 1. West Sector: Left Edge & Southwest Entrance Corner ──
-          [14.79250, 121.07580], // Southwest Corner (near La Bonita Cosmetics & Main Gate)
-          [14.79350, 121.07540], // Western Edge lower (south of Chancezz)
-          [14.79460, 121.07530], // Western Edge middle (beside Chancezz / B7 Maagap St)
-          [14.79560, 121.07560], // Northwest Flank
-          [14.79600, 121.07590], // Northwest Corner (Amy Ella Panaderia area)
-
-          // ── 2. West Sector: Northern Perimeter with BCCCP Inset ──
-          [14.79610, 121.07680], // Top boundary lot line
-          [14.79570, 121.07760], // Inward dip/cove near BCCCP lot line
-          [14.79540, 121.07820], // Inset boundary corner
-          [14.79580, 121.07900], // Climbs back to Northern lot line
-          [14.79610, 121.07990], // North perimeter of middle block
-          [14.79630, 121.08060], // Central spine junction / neck
-
-          // ── 3. Northeast Sector: Fan-Shaped Arch (Top Dome & Parang Rd) ──
-          [14.79690, 121.08040], // Neck transition into right lobe
-          [14.79770, 121.08030], // Western apex of upper fan (near nathan sari-sari)
-          [14.79810, 121.08080], // Topmost northern apex (L&A Laundry Home)
-          [14.79800, 121.08180], // Parang Rd upper bend
-          [14.79750, 121.08280], // Upper Parang Rd frontage
-          [14.79720, 121.08360], // Eastern approach (Bakery area)
-          [14.79660, 121.08430], // Near Susana's Kitchen / North-East Corner
-          [14.79590, 121.08450], // Far East Corner (Goumn / Casa Resort boundary)
-
-          // ── 4. Northeast Sector: Southeastern Perimeter ──
-          [14.79520, 121.08370], // South-east diagonal boundary
-          [14.79450, 121.08270], // Lower east lot lines (near Plk A Book)
-          [14.79390, 121.08180], // Approach to southern neck (near Tea Alley Station)
-          [14.79340, 121.08100], // Inner neck bottom cusp
-
-          // ── 5. West Sector: Southern Perimeter ──
-          [14.79290, 121.08120], // Bottom road corner (below JCS Pandes)
-          [14.79250, 121.08060], // Southern road curve
-          [14.79220, 121.07970], // Southern perimeter road (Farm Fresh)
-          [14.79170, 121.07860], // Southernmost bottom dip
-          [14.79150, 121.07770], // Southern road curve (Mabuti St south)
-          [14.79190, 121.07670], // Southwest perimeter road
-          [14.79230, 121.07610], // Curve back to Southwest corner
-        ];
-
-        // Outer glow line (Golden Amber)
-        window.L.polygon(borderPolygonCoords, {
-          color: '#F59E0B',
-          weight: 6,
-          opacity: 0.5,
-          fillOpacity: 0,
-        }).addTo(map);
-
-        // Main crisp boundary polygon (Matching exact golden satellite border)
-        const polygonLayer = window.L.polygon(borderPolygonCoords, {
-          color: '#EAB308',
-          fillColor: '#F59E0B',
-          fillOpacity: 0.16,
-          weight: 3.5,
-          dashArray: '8, 5',
-        }).addTo(map);
-
-        polygonLayer.bindPopup(`
-          <div style="font-family:sans-serif;padding:6px;min-width:240px;">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-              <div style="background:#F59E0B;color:#FFF;padding:4px 8px;border-radius:6px;font-size:11px;font-weight:900;">OFFICIAL BOUNDARY</div>
-              <div style="font-size:11px;color:#DC2626;font-weight:800;">312 HOUSING UNITS</div>
-            </div>
-            <div style="font-weight:900;font-size:15px;color:#111827;">Northridge Grove Phase 2</div>
-            <div style="font-size:12px;color:#B45309;font-weight:700;margin-top:2px;">NRG PH2 HOA INC Jurisdiction</div>
-            <div style="font-size:12px;color:#4B5563;margin-top:6px;line-height:1.4;">
-              📍 B7 Maagap St, Barangay Tungkong Mangga, San Jose del Monte, Bulacan 3023
-            </div>
-            <div style="margin-top:8px;padding-top:8px;border-top:1px solid #E5E7EB;font-size:11.5px;color:#374151;">
-              • <strong>Coverage:</strong> Blocks 1, 2, 3, 4, 5, 6, 7, 8, and 9<br/>
-              • <strong>Streets:</strong> Maagap St, Mabuti St, Mapayapa St, Magiting St<br/>
-              • <strong>Key Amenities:</strong> Clubhouse, Covered Basketball Court, Swimming Pools, Playground, 24/7 RFID Gate
-            </div>
-          </div>
-        `);
       }
     } catch {
       // Map error fallback
@@ -1366,7 +1287,7 @@ function GoogleSubdivisionMapSection({ isDark }: { isDark: boolean }) {
         <div style={{ padding: 0, overflow: 'hidden', border: `1px solid var(--landing-card-border)`, borderRadius: 16, height: 560, position: 'relative', boxShadow: isDark ? '0 4px 20px rgba(0,0,0,0.35)' : '0 4px 20px rgba(0,0,0,0.06)' }}>
           <div ref={mapRef} style={{ width: '100%', height: '100%', zIndex: 1 }} />
           <div style={{ position: 'absolute', bottom: 16, left: 16, zIndex: 1000, background: isDark ? 'rgba(15,23,42,0.95)' : 'rgba(255,255,255,0.97)', backdropFilter: 'blur(8px)', padding: '8px 14px', borderRadius: 8, border: `1px solid var(--landing-card-border)`, fontSize: 11, fontWeight: 700, color: 'var(--landing-text)', boxShadow: '0 2px 12px rgba(0,0,0,0.1)' }}>
-            🔴 Red Dashed Boundary: <span style={{ color: '#DC2626' }}>BRIA Northridge Grove Subdivision Border</span>
+            📍 Pinned Location: <span style={{ color: '#16A34A', fontWeight: 800 }}>Northridge Grove Phase 2 (B7 Maagap St)</span>
           </div>
         </div>
 
