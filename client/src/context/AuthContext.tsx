@@ -127,16 +127,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (typeof window !== 'undefined' && window.localStorage) {
         const stored = window.localStorage.getItem('hoa_portal_session');
         if (stored) {
-          const { token, userData } = JSON.parse(stored);
-          const customProfiles = JSON.parse(window.localStorage.getItem('hoa_user_custom_profiles') || '{}');
-          const customData = customProfiles[userData?.email] || {};
-          const merged = { ...userData, ...customData };
-          setAccessToken(token);
-          setUser(merged);
+          const parsed = JSON.parse(stored);
+          const { token, userData } = parsed;
+          // Validate that the stored session has all required fields
+          if (token && userData && userData.email && userData.roleName && userData.tenantId) {
+            const customProfiles = JSON.parse(window.localStorage.getItem('hoa_user_custom_profiles') || '{}');
+            const customData = customProfiles[userData.email] || {};
+            const merged = { ...userData, ...customData };
+            setAccessToken(token);
+            setUser(merged);
+          } else {
+            // Discard corrupt or incomplete session
+            window.localStorage.removeItem('hoa_portal_session');
+          }
         }
       }
     } catch {
       // Ignore private browsing or malformed session errors
+      try { window.localStorage?.removeItem('hoa_portal_session'); } catch { /* ignore */ }
     }
     setIsLoading(false);
   }, []);

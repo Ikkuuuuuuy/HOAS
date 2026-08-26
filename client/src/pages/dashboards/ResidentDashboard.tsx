@@ -133,7 +133,7 @@ export default function ResidentDashboard() {
                 <div key={doc.id} className="flex items-center justify-between" style={{ padding: 'var(--space-3) 0', borderBottom: '1px solid var(--border)' }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div className="font-semibold text-sm truncate" style={{ color: 'var(--text-primary)' }}>
-                      {((doc.doc_type || doc.request_type || doc.title || 'Document') as string).replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())}
+                      {String(doc.doc_type || doc.request_type || doc.title || 'Document').replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())}
                     </div>
                     <div className="text-xs text-muted">{doc.purpose || doc.remarks || 'Standard Request'}</div>
                   </div>

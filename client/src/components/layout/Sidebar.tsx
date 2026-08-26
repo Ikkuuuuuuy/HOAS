@@ -343,31 +343,32 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* ── BOTTOM HIGHLIGHT: USER PROFILE FOOTER ── */}
+      {/* ── BOTTOM HIGHLIGHT: USER PROFILE FOOTER (Matches Top Brand Header) ── */}
       <div className="sidebar-footer" ref={userMenuRef} style={{
         padding: '12px 12px',
-        borderTop: '1px solid rgba(245, 158, 11, 0.3)',
-        background: '#070B12'
+        borderTop: '2px solid #16A34A',
+        background: '#064E3B',
+        position: 'relative'
       }}>
         {showMenu && (
           <div className="user-popover-menu" style={{
             position: 'absolute',
-            bottom: 72,
+            bottom: 68,
             left: 10,
             right: 10,
-            backgroundColor: '#0B132B',
-            background: '#0B132B',
-            border: '1px solid rgba(245, 158, 11, 0.5)',
+            backgroundColor: '#0B1A24',
+            background: '#0B1A24',
+            border: '1px solid rgba(16, 185, 129, 0.4)',
             borderRadius: 10,
-            boxShadow: '0 12px 36px rgba(0,0,0,0.85)',
+            boxShadow: '0 12px 36px rgba(0, 0, 0, 0.85)',
             padding: 8,
             zIndex: 100
           }}>
-            <div style={{ padding: '8px 10px', borderBottom: '1px solid rgba(255, 255, 255, 0.12)', marginBottom: 6 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#FFFFFF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <div className="user-popover-header" style={{ padding: '8px 10px', borderBottom: '1px solid rgba(255, 255, 255, 0.12)', marginBottom: 6 }}>
+              <div className="user-popover-name" style={{ fontSize: 13, fontWeight: 700, color: '#FFFFFF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {user.fullName}
               </div>
-              <div style={{ fontSize: 11, color: '#FCD34D', marginTop: 2, wordBreak: 'break-all' }}>
+              <div className="user-popover-email" style={{ fontSize: 11, color: '#93C5FD', marginTop: 2, wordBreak: 'break-all', fontWeight: 500 }}>
                 {user.email}
               </div>
             </div>
@@ -430,7 +431,7 @@ export default function Sidebar() {
             padding: '8px 10px',
             borderRadius: 6,
             cursor: 'pointer',
-            background: showMenu ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
+            background: showMenu ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.15)',
             transition: 'all 0.15s ease'
           }}
         >
@@ -439,8 +440,8 @@ export default function Sidebar() {
           ) : (
             <div style={{
               width: 30, height: 30, borderRadius: '50%',
-              background: '#1E293B', color: '#FCD34D',
-              border: '1.5px solid #F59E0B',
+              background: '#042F2E', color: '#FCD34D',
+              border: '1.5px solid #10B981',
               fontSize: 11.5, fontWeight: 800,
               display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}>
@@ -451,11 +452,11 @@ export default function Sidebar() {
             <div style={{ fontSize: 12.5, fontWeight: 700, color: '#FFFFFF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {user?.fullName || 'User'}
             </div>
-            <div style={{ fontSize: 10.5, color: '#FBBF24', fontWeight: 600 }}>
-              {(user?.roleName || '').replace(/_/g, ' ')}
+            <div style={{ fontSize: 10.5, color: '#FCD34D', fontWeight: 600 }}>
+              {String(user?.roleName ?? '').replace(/_/g, ' ')}
             </div>
           </div>
-          <span style={{ color: '#94A3B8', fontSize: 11 }}>▾</span>
+          <span style={{ color: '#A7F3D0', fontSize: 11 }}>▾</span>
         </div>
       </div>
 
@@ -521,24 +522,33 @@ export default function Sidebar() {
           color: #FBBF24;
         }
         .user-popover-menu {
-          background: #0B132B !important;
-          background-color: #0B132B !important;
-          border: 1px solid rgba(245, 158, 11, 0.5) !important;
+          background: #0B1A24 !important;
+          background-color: #0B1A24 !important;
+          border: 1px solid rgba(16, 185, 129, 0.45) !important;
           border-radius: 10px !important;
-          box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85) !important;
+          box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85) !important;
+        }
+        .user-popover-header {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+        }
+        .user-popover-name {
+          color: #FFFFFF !important;
+        }
+        .user-popover-email {
+          color: #93C5FD !important;
         }
         .user-popover-menu .user-menu-item {
           color: #F8FAFC !important;
         }
         .user-popover-menu .user-menu-item:hover {
-          background: rgba(255, 255, 255, 0.1) !important;
-          color: #FDE68A !important;
+          background: rgba(255, 255, 255, 0.12) !important;
+          color: #FFFFFF !important;
         }
         .user-popover-menu .logout-btn {
-          color: #F87171 !important;
+          color: #FCA5A5 !important;
         }
         .user-popover-menu .logout-btn:hover {
-          background: rgba(239, 68, 68, 0.2) !important;
+          background: rgba(239, 68, 68, 0.22) !important;
           color: #EF4444 !important;
         }
       `}</style>
