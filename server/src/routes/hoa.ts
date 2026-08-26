@@ -46,18 +46,18 @@ router.post('/register-homeowner', async (req, res) => {
     }
 
     // ── AUTOMATED MASTERLIST MATCHING ────────────────────────────
-    const normName = (fullName || '').trim().toLowerCase();
-    const normBlock = (block || address || '').replace(/[^0-9]/g, '');
-    const normLot = (lot || address || '').replace(/[^0-9]/g, '');
-    const normAccount = (accountNo || '').trim().toLowerCase();
+    const normName = String(fullName || '').trim().toLowerCase();
+    const normBlock = String(block || address || '').replace(/[^0-9]/g, '');
+    const normLot = String(lot || address || '').replace(/[^0-9]/g, '');
+    const normAccount = String(accountNo || '').trim().toLowerCase();
 
     const masterlistMatch = SERVER_HOA_MASTERLIST.find(record => {
-      if (normAccount && record.accountNo.toLowerCase() === normAccount) return true;
-      const recBlock = record.block.replace(/[^0-9]/g, '');
-      const recLot = record.lot.replace(/[^0-9]/g, '');
-      const recName = record.ownerName.trim().toLowerCase();
+      if (normAccount && String(record.accountNo || '').toLowerCase() === normAccount) return true;
+      const recBlock = String(record.block || '').replace(/[^0-9]/g, '');
+      const recLot = String(record.lot || '').replace(/[^0-9]/g, '');
+      const recName = String(record.ownerName || '').trim().toLowerCase();
 
-      const blockLotMatch = (normBlock && recBlock === normBlock) || address.toLowerCase().includes(record.block.toLowerCase());
+      const blockLotMatch = (normBlock && recBlock === normBlock) || String(address || '').toLowerCase().includes(String(record.block || '').toLowerCase());
       const nameMatch = normName.length >= 3 && (recName.includes(normName) || normName.includes(recName));
 
       return blockLotMatch && nameMatch;

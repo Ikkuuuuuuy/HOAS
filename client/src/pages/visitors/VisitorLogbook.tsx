@@ -196,7 +196,7 @@ export default function VisitorLogbook() {
                   <td className="font-semibold" style={{ color: 'var(--text-primary)' }}>{v.visitor_name}</td>
                   <td>{v.host_name}</td>
                   <td className="truncate" style={{ maxWidth: 120 }}>{v.purpose}</td>
-                  <td className="text-xs">{v.visitor_id_type?.replace(/_/g, ' ')}</td>
+                  <td className="text-xs">{String(v.visitor_id_type || 'ID').replace(/_/g, ' ')}</td>
                   <td className="font-mono text-xs">{v.vehicle_plate || '—'}</td>
                   <td className="text-xs">{new Date(v.time_in).toLocaleString('en-PH')}</td>
                   <td className="text-xs">{v.time_out ? new Date(v.time_out).toLocaleString('en-PH') : '—'}</td>

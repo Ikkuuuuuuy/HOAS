@@ -142,7 +142,7 @@ export default function ProfileSettingsModal({ isOpen, onClose }: ProfileSetting
                 Profile & Security Settings
               </h2>
               <div style={{ fontSize: 11, color: '#94A3B8' }}>
-                {user?.fullName || 'User'} • {(user?.roleName || '').replace(/_/g, ' ').toUpperCase()}
+                {user?.fullName || 'User'} • {String(user?.roleName || 'User').replace(/_/g, ' ').toUpperCase()}
               </div>
             </div>
           </div>

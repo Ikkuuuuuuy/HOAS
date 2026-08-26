@@ -71,7 +71,7 @@ export default function AllUsersManagement() {
 
   const handleCreateUser = (e: React.FormEvent) => {
     e.preventDefault();
-    success('User Created! 👤', `Account for ${fullName} (${(roleName || '').replace(/_/g, ' ')}) has been provisioned.`);
+    success('User Created! 👤', `Account for ${fullName} (${String(roleName || '').replace(/_/g, ' ')}) has been provisioned.`);
     setShowModal(false);
     setFullName('');
     setEmail('');

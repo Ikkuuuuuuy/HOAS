@@ -92,7 +92,7 @@ export default function LoginPrivacyAdvisoryModal({ onAccept }: LoginPrivacyAdvi
           <div className="privacy-advisory-body">
             {/* Welcome banner */}
             <div className="privacy-advisory-welcome">
-              👋 Welcome, <strong>{user?.fullName || 'Resident / Officer'}</strong> ({((user?.roleName || 'User') as string).replace(/_/g, ' ').toUpperCase()}). Please review the mandatory Data Privacy Advisory below before accessing your portal dashboard.
+              👋 Welcome, <strong>{user?.fullName || 'Resident / Officer'}</strong> ({String(user?.roleName || 'User').replace(/_/g, ' ').toUpperCase()}). Please review the mandatory Data Privacy Advisory below before accessing your portal dashboard.
             </div>
 
             <p style={{ margin: 0, lineHeight: 1.6 }}>
