@@ -1238,14 +1238,14 @@ export default function DocumentRequests() {
                     </div>
                   </div>
 
-                  <div style={{ fontSize: 12, color: 'var(--text-secondary)', background: '#EFF6FF', padding: '8px 12px', borderRadius: 8, border: '1px solid #BFDBFE' }}>
-                    💡 <strong>Calculated Target Due Date:</strong> <span style={{ color: '#1E40AF', fontWeight: 800 }}>{calculateDueDate(priority)}</span>
+                  <div style={{ fontSize: 12, color: 'var(--text-secondary)', background: 'rgba(37, 99, 235, 0.1)', padding: '8px 12px', borderRadius: 8, border: '1px solid rgba(37, 99, 235, 0.25)' }}>
+                    💡 <strong>Calculated Target Due Date:</strong> <span style={{ color: '#3B82F6', fontWeight: 800 }}>{calculateDueDate(priority)}</span>
                   </div>
                 </div>
 
                 {/* 3. CONDITIONAL FORM FIELDS BASED ON TYPE */}
-                <div style={{ background: '#FFF', border: '2px solid #E5E7EB', padding: 18, borderRadius: 12, marginBottom: 18 }}>
-                  <div style={{ fontSize: 13, fontWeight: 800, color: '#111827', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 14 }}>
+                <div style={{ background: 'var(--bg-hover)', border: '1px solid var(--border)', padding: 18, borderRadius: 12, marginBottom: 18 }}>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 14 }}>
                     🔍 3. Request-Specific Information & Attachments
                   </div>
 
@@ -1297,7 +1297,7 @@ export default function DocumentRequests() {
                         <div>
                           <label className="form-label">Upload Lease Agreement / Proof of Occupancy</label>
                           <input type="file" className="form-input" onChange={e => handleFileUpload(e, setLeaseFile)} />
-                          {leaseFile && <div style={{ fontSize: 11, color: '#166534', marginTop: 4 }}>📎 Attached: {leaseFile}</div>}
+                          {leaseFile && <div style={{ fontSize: 11, color: "#22C55E", marginTop: 4 }}>📎 Attached: {leaseFile}</div>}
                         </div>
                       </div>
                     </div>
@@ -1313,8 +1313,9 @@ export default function DocumentRequests() {
                             key={opt}
                             style={{
                               display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderRadius: 8,
-                              background: selectedImprovements.includes(opt) ? '#DCFCE7' : '#F9FAFB',
-                              border: selectedImprovements.includes(opt) ? '1px solid #166534' : '1px solid #E5E7EB',
+                              background: selectedImprovements.includes(opt) ? 'rgba(34, 197, 94, 0.15)' : 'var(--bg-surface)',
+                              border: selectedImprovements.includes(opt) ? '1px solid #22C55E' : '1px solid var(--border)',
+                              color: selectedImprovements.includes(opt) ? '#22C55E' : 'var(--text-primary)',
                               cursor: 'pointer', fontSize: 12, fontWeight: 700,
                             }}
                           >
@@ -1368,7 +1369,7 @@ export default function DocumentRequests() {
                       <div>
                         <label className="form-label">Architectural Plans / Blueprints (Upload PDF/Image)</label>
                         <input type="file" className="form-input" onChange={e => handleFileUpload(e, setBlueprintFile)} />
-                        {blueprintFile && <div style={{ fontSize: 11, color: '#166534', marginTop: 4 }}>📎 Blueprint: {blueprintFile}</div>}
+                        {blueprintFile && <div style={{ fontSize: 11, color: "#22C55E", marginTop: 4 }}>📎 Blueprint: {blueprintFile}</div>}
                       </div>
                     </div>
                   )}
@@ -1415,12 +1416,12 @@ export default function DocumentRequests() {
                         <div>
                           <label className="form-label">OR/CR (Official Receipt / Reg.) Upload</label>
                           <input type="file" className="form-input" onChange={e => handleFileUpload(e, setOrCrFile)} />
-                          {orCrFile && <div style={{ fontSize: 11, color: '#166534', marginTop: 4 }}>📎 Attached: {orCrFile}</div>}
+                          {orCrFile && <div style={{ fontSize: 11, color: "#22C55E", marginTop: 4 }}>📎 Attached: {orCrFile}</div>}
                         </div>
                         <div>
                           <label className="form-label">Driver’s License Copy Upload</label>
                           <input type="file" className="form-input" onChange={e => handleFileUpload(e, setDriverLicenseFile)} />
-                          {driverLicenseFile && <div style={{ fontSize: 11, color: '#166534', marginTop: 4 }}>📎 Attached: {driverLicenseFile}</div>}
+                          {driverLicenseFile && <div style={{ fontSize: 11, color: "#22C55E", marginTop: 4 }}>📎 Attached: {driverLicenseFile}</div>}
                         </div>
                       </div>
                     </div>
@@ -1565,7 +1566,7 @@ export default function DocumentRequests() {
                       <div>
                         <label className="form-label">Upload Photo / Evidence</label>
                         <input type="file" accept="image/*" className="form-input" onChange={e => handleFileUpload(e, setMaintPhoto)} />
-                        {maintPhoto && <div style={{ fontSize: 11, color: '#166534', marginTop: 4 }}>📎 Attached: {maintPhoto}</div>}
+                        {maintPhoto && <div style={{ fontSize: 11, color: "#22C55E", marginTop: 4 }}>📎 Attached: {maintPhoto}</div>}
                       </div>
                     </div>
                   )}
@@ -1659,7 +1660,7 @@ export default function DocumentRequests() {
 
                 {/* PROPERTY & REQUESTER INFO */}
                 <div className="card mb-4" style={{ padding: 14 }}>
-                  <div style={{ fontSize: 12, fontWeight: 800, color: '#166534', marginBottom: 8 }}>APPLICANT & PROPERTY DOSSIER</div>
+                  <div style={{ fontSize: 12, fontWeight: 800, color: '#22C55E', marginBottom: 8 }}>APPLICANT & PROPERTY DOSSIER</div>
                   <div className="grid grid-2" style={{ gap: 10, fontSize: 13 }}>
                     <div><strong>Registered Owner:</strong> {selectedRequest.registered_owner_name}</div>
                     <div><strong>Requester Name:</strong> {selectedRequest.requester_name}</div>
@@ -1684,21 +1685,21 @@ export default function DocumentRequests() {
                     ))}
                   </div>
                   {selectedRequest.remarks && (
-                    <div style={{ marginTop: 10, padding: 8, background: '#F9FAFB', borderRadius: 6, fontSize: 12 }}>
-                      <strong>Remarks:</strong> {selectedRequest.remarks}
+                    <div style={{ marginTop: 10, padding: 10, background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12, color: 'var(--text-primary)' }}>
+                      <strong style={{ color: 'var(--text-secondary)' }}>Remarks:</strong> {selectedRequest.remarks}
                     </div>
                   )}
                   {selectedRequest.admin_notes && (
-                    <div style={{ marginTop: 10, padding: 8, background: '#FEF3C7', borderRadius: 6, fontSize: 12, color: '#92400E' }}>
-                      <strong>Admin Notes:</strong> {selectedRequest.admin_notes}
+                    <div style={{ marginTop: 10, padding: 10, background: 'rgba(245, 158, 11, 0.12)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: 8, fontSize: 12, color: 'var(--text-primary)' }}>
+                      <strong style={{ color: '#F59E0B' }}>Admin Notes:</strong> {selectedRequest.admin_notes}
                     </div>
                   )}
                 </div>
 
                 {/* ADMIN ACTION CONTROLS */}
                 {isHOAAdmin && (
-                  <form onSubmit={handleUpdateAdminStatus} style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', padding: 16, borderRadius: 12 }}>
-                    <div style={{ fontSize: 13, fontWeight: 800, color: '#166534', marginBottom: 10 }}>
+                  <form onSubmit={handleUpdateAdminStatus} style={{ background: 'rgba(22, 101, 52, 0.12)', border: '1px solid rgba(34, 197, 94, 0.3)', padding: 16, borderRadius: 12 }}>
+                    <div style={{ fontSize: 13, fontWeight: 800, color: '#22C55E', marginBottom: 10 }}>
                       🛡️ Admin Decision & Workflow Controls
                     </div>
 

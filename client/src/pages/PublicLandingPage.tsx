@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { HOA_OFFICERS_DATA, FacebookIcon } from './admin/HOAOfficersDirectory';
+import { HOA_OFFICERS_DATA } from './admin/HOAOfficersDirectory';
 
 declare global {
   interface Window {
@@ -1147,8 +1147,7 @@ export default function PublicLandingPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
               {[
                 { icon: '📍', iconBg: 'linear-gradient(135deg,#DC2626,#EF4444)', label: 'Official Address', value: 'Northridge Grove Phase 2, Barangay Tungkong Mangga\nSan Jose del Monte, Bulacan, Philippines, 3023' },
-                { icon: '📞', iconBg: 'linear-gradient(135deg,#166534,#22C55E)', label: 'HOA Office Hotline', value: '(02) 8987-6543 · Mon–Sat 8am–5pm' },
-                { icon: '✉️', iconBg: 'linear-gradient(135deg,#1D4ED8,#3B82F6)', label: 'Email Support', value: 'admin@nrg-ph2-hoa.ph' },
+                { icon: '🏛️', iconBg: 'linear-gradient(135deg,#166534,#22C55E)', label: 'HOA Administration Office', value: 'Phase 2 Clubhouse Administrative Desk\nOperating Hours: Mon–Sat 8:00 AM – 5:00 PM' },
               ].map(c => (
                 <div key={c.label} style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
                   <div style={{ width: 44, height: 44, borderRadius: 10, background: c.iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0, boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>{c.icon}</div>

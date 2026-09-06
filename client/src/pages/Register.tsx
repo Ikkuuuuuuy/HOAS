@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useTheme } from '../context/ThemeContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { HOA_MASTERLIST_DATABASE, matchMasterlistRecord, MasterlistRecord } from '../data/mockDatabase';
 import PrivacyPolicyModal from '../components/common/PrivacyPolicyModal';
@@ -16,6 +17,7 @@ const BLOCK_STREET_MAP: Record<string, string> = {
 };
 
 export default function Register() {
+  const { theme, toggleTheme } = useTheme();
   const [step, setStep] = useState(1);
   
   // Registration Inputs
@@ -224,29 +226,44 @@ export default function Register() {
       <header style={{
         width: '100%', position: 'absolute', top: 0, left: 0, right: 0,
         padding: '16px 32px', zIndex: 30, display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        background: 'rgba(5, 8, 17, 0.85)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(255,255,255,0.08)'
+        background: 'var(--bg-glass)', backdropFilter: 'blur(10px)', borderBottom: '1px solid var(--border)'
       }}>
         <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 36, height: 36, borderRadius: '50%', overflow: 'hidden', border: '1.5px solid #F59E0B' }}>
             <img src="/nrg-ph2-logo.png" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
-          <span style={{ color: '#E5E7EB', fontWeight: 700, fontSize: '15px' }}>
+          <span style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '15px' }}>
             NRG PH2 HOA Portal • Registration
           </span>
         </Link>
 
-        <Link
-          to="/"
-          style={{
-            display: 'flex', alignItems: 'center', gap: 8,
-            padding: '8px 18px', borderRadius: 8,
-            background: 'rgba(255,255,255,0.1)', color: '#FFFFFF',
-            border: '1px solid rgba(255,255,255,0.25)',
-            textDecoration: 'none', fontSize: 13, fontWeight: 600,
-          }}
-        >
-          ← Back to Public Website
-        </Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button
+            type="button"
+            onClick={toggleTheme}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '7px 14px', borderRadius: 8,
+              background: 'var(--bg-hover)', color: 'var(--text-primary)',
+              border: '1px solid var(--border)',
+              cursor: 'pointer', fontSize: 12.5, fontWeight: 700,
+            }}
+          >
+            {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
+          </button>
+          <Link
+            to="/"
+            style={{
+              display: 'flex', alignItems: 'center', gap: 8,
+              padding: '7px 16px', borderRadius: 8,
+              background: 'var(--bg-hover)', color: 'var(--text-primary)',
+              border: '1px solid var(--border)',
+              textDecoration: 'none', fontSize: 13, fontWeight: 600,
+            }}
+          >
+            ← Back to Public Website
+          </Link>
+        </div>
       </header>
 
       <div className="login-bg">
@@ -266,10 +283,10 @@ export default function Register() {
                 </span>
                 <span style={{ color: '#9CA3AF', fontSize: 12 }}>Official Masterlist Sync</span>
               </div>
-              <h1 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
+              <h1 style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--text-primary)', margin: 0 }}>
                 Homeowner Portal Registration
               </h1>
-              <p style={{ fontSize: '0.85rem', color: '#9CA3AF', marginTop: 4 }}>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: 4 }}>
                 Automated instant approval for verified Northridge Grove Phase 2 property owners.
               </p>
             </div>
@@ -282,18 +299,18 @@ export default function Register() {
             {/* 1-Click Fast Demo Pre-Fill Helper */}
           {step === 1 && (
             <div style={{
-              background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.75), rgba(15, 23, 42, 0.85))',
+              background: 'var(--bg-hover)',
               border: '1px solid rgba(245, 158, 11, 0.35)',
               borderRadius: 12,
               padding: '14px 18px',
               marginBottom: 22,
-              boxShadow: '0 4px 16px rgba(0,0,0,0.25)'
+              boxShadow: '0 4px 16px rgba(0,0,0,0.06)'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                 <span style={{ fontSize: 12.5, fontWeight: 800, color: '#FBBF24', display: 'flex', alignItems: 'center', gap: 6 }}>
                   ⚡ Quick Demo: Test Instant Auto-Accept
                 </span>
-                <span style={{ fontSize: 11, color: '#94A3B8' }}>1-Click pre-fill verified resident</span>
+                <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>1-Click pre-fill verified resident</span>
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                 {HOA_MASTERLIST_DATABASE.slice(0, 4).map(rec => (
@@ -304,9 +321,9 @@ export default function Register() {
                     style={{
                       padding: '7px 12px',
                       borderRadius: 8,
-                      background: 'rgba(15, 23, 42, 0.9)',
-                      border: '1px solid rgba(255, 255, 255, 0.16)',
-                      color: '#FFFFFF',
+                      background: 'var(--bg-surface)',
+                      border: '1px solid var(--border)',
+                      color: 'var(--text-primary)',
                       fontSize: 12,
                       fontWeight: 600,
                       cursor: 'pointer',
@@ -321,11 +338,11 @@ export default function Register() {
                       e.currentTarget.style.borderColor = '#22C55E';
                     }}
                     onMouseLeave={e => {
-                      e.currentTarget.style.background = 'rgba(15, 23, 42, 0.9)';
-                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.16)';
+                      e.currentTarget.style.background = 'var(--bg-surface)';
+                      e.currentTarget.style.borderColor = 'var(--border)';
                     }}
                   >
-                    <span style={{ color: '#F8FAFC' }}>👤 {rec.ownerName}</span>
+                    <span style={{ color: 'var(--text-primary)' }}>👤 {rec.ownerName}</span>
                     <span style={{ color: '#FBBF24', fontSize: 11, fontWeight: 700 }}>({rec.block} {rec.lot})</span>
                   </button>
                 ))}
@@ -338,10 +355,10 @@ export default function Register() {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            background: 'rgba(15, 23, 42, 0.7)',
+            background: 'var(--bg-hover)',
             padding: '12px 18px',
             borderRadius: 10,
-            border: '1px solid rgba(255,255,255,0.1)',
+            border: '1px solid var(--border)',
             marginBottom: 22
           }}>
             {[
@@ -359,7 +376,7 @@ export default function Register() {
                 }}>
                   {s.num === 4 ? 3 : s.num}
                 </div>
-                <span style={{ fontSize: 12, fontWeight: 700, color: step >= s.num ? '#F8FAFC' : '#94A3B8' }}>{s.label}</span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: step >= s.num ? 'var(--text-primary)' : 'var(--text-muted)' }}>{s.label}</span>
               </div>
             ))}
           </div>
@@ -415,7 +432,7 @@ export default function Register() {
                     value={computedAge || ''}
                     readOnly
                     placeholder="18+"
-                    style={{ background: 'rgba(255,255,255,0.05)', color: '#9CA3AF', cursor: 'not-allowed' }}
+                    style={{ background: 'var(--bg-hover)', color: 'var(--text-secondary)', cursor: 'not-allowed', border: '1px solid var(--border)' }}
                   />
                 </div>
 
@@ -474,7 +491,7 @@ export default function Register() {
                     className="form-input"
                     value={currentStreet}
                     disabled
-                    style={{ background: 'rgba(255,255,255,0.05)', color: '#9CA3AF', cursor: 'not-allowed' }}
+                    style={{ background: 'var(--bg-hover)', color: 'var(--text-secondary)', cursor: 'not-allowed', border: '1px solid var(--border)' }}
                   />
                 </div>
               </div>
@@ -544,12 +561,12 @@ export default function Register() {
 
               {/* Step 1 PII Data Privacy Notice */}
               <div style={{
-                background: 'rgba(15, 23, 42, 0.65)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
+                background: 'var(--bg-hover)',
+                border: '1px solid var(--border)',
                 padding: '10px 14px',
                 borderRadius: 8,
                 fontSize: 11.5,
-                color: '#94A3B8',
+                color: 'var(--text-secondary)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 8,
@@ -587,8 +604,8 @@ export default function Register() {
           {step === 2 && (
             <form onSubmit={handleNextStep2} className="login-form">
               <div style={{
-                background: 'rgba(30, 41, 59, 0.75)',
-                border: '1px solid rgba(245, 158, 11, 0.35)',
+                background: 'rgba(245, 158, 11, 0.08)',
+                border: '1px solid rgba(245, 158, 11, 0.3)',
                 padding: '16px 18px',
                 borderRadius: 12,
                 marginBottom: 18
@@ -597,17 +614,17 @@ export default function Register() {
                   <span>🛡️</span>
                   <span>Valid Government ID Verification (Name, Birthdate & Age)</span>
                 </div>
-                <p style={{ fontSize: 12, color: '#E2E8F0', margin: 0, lineHeight: 1.5 }}>
+                <p style={{ fontSize: 12, color: 'var(--text-primary)', margin: 0, lineHeight: 1.5 }}>
                   Please upload a clear, unblurred photo of your government-issued ID to verify your legal identity: <strong>{fullName || 'Applicant'}</strong> ({birthDate ? `Born ${birthDate}` : ''}).
                 </p>
                 <div style={{
-                  background: 'rgba(56, 189, 248, 0.12)',
-                  border: '1px solid rgba(56, 189, 248, 0.25)',
+                  background: 'rgba(59, 130, 246, 0.1)',
+                  border: '1px solid rgba(59, 130, 246, 0.25)',
                   padding: '8px 12px',
                   borderRadius: 6,
                   marginTop: 8,
                   fontSize: 11.5,
-                  color: '#BAE6FD'
+                  color: 'var(--text-primary)'
                 }}>
                   💡 <strong>Address Exemption Notice:</strong> The address printed on your valid ID does <u>not</u> need to match your new Northridge Grove Phase 2 property. We only verify your <strong>Legal Name</strong>, <strong>Birthdate</strong>, and <strong>Age</strong>.
                 </div>
@@ -669,8 +686,8 @@ export default function Register() {
                     justifyContent: 'center',
                     padding: '24px 18px',
                     borderRadius: 12,
-                    background: 'rgba(15, 23, 42, 0.9)',
-                    border: previewUrl ? '2px solid #22C55E' : '2px dashed rgba(245, 158, 11, 0.5)',
+                    background: 'var(--bg-hover)',
+                    border: previewUrl ? '2px solid #22C55E' : '2px dashed var(--border)',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
                     textAlign: 'center',
@@ -686,17 +703,17 @@ export default function Register() {
                       <div style={{ fontSize: 13, fontWeight: 800, color: '#86EFAC' }}>
                         ✓ {attachedFile ? attachedFile.name : 'Sample ID Attached'} — Click to Replace Picture
                       </div>
-                      <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 3 }}>
+                      <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 3 }}>
                         Ensure photo, full name, and birth date are crisp and clearly legible.
                       </div>
                     </div>
                   ) : (
                     <>
                       <div style={{ fontSize: 38, marginBottom: 8 }}>📷</div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: '#FFF' }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>
                         Click to Snap Photo or Upload Government ID
                       </div>
-                      <div style={{ fontSize: 12, color: '#9CA3AF', marginTop: 4 }}>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
                         Supports JPG, PNG, WEBP (Max 10MB)
                       </div>
                     </>
@@ -706,12 +723,12 @@ export default function Register() {
 
               {/* Data Vault Notice */}
               <div style={{
-                background: 'rgba(15, 23, 42, 0.6)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                background: 'var(--bg-hover)',
+                border: '1px solid var(--border)',
                 padding: '10px 14px',
                 borderRadius: 8,
                 fontSize: 11.5,
-                color: '#94A3B8',
+                color: 'var(--text-secondary)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 8
@@ -724,8 +741,8 @@ export default function Register() {
 
               {/* Mandatory Consent Checkbox */}
               <div style={{
-                background: agreePrivacyConsent ? 'rgba(22, 101, 52, 0.2)' : 'rgba(30, 41, 59, 0.75)',
-                border: agreePrivacyConsent ? '1.5px solid #22C55E' : '1px solid rgba(245, 158, 11, 0.4)',
+                background: agreePrivacyConsent ? 'rgba(22, 101, 52, 0.12)' : 'var(--bg-hover)',
+                border: agreePrivacyConsent ? '1.5px solid #22C55E' : '1px solid var(--border)',
                 padding: '14px 16px',
                 borderRadius: 10,
                 display: 'flex',
@@ -741,7 +758,7 @@ export default function Register() {
                   style={{ width: 18, height: 18, marginTop: 2, cursor: 'pointer', accentColor: '#16A34A' }}
                   required
                 />
-                <label htmlFor="privacy-consent-checkbox" style={{ fontSize: 12, color: '#F1F5F9', cursor: 'pointer', lineHeight: 1.5 }}>
+                <label htmlFor="privacy-consent-checkbox" style={{ fontSize: 12, color: 'var(--text-primary)', cursor: 'pointer', lineHeight: 1.5 }}>
                   I declare that all submitted details are true and correct. I explicitly consent to the collection, processing, and encrypted storage of my PII, Sensitive Personal Data (Birthdate, Gender, Government ID), and emergency contacts by <strong>Northridge Grove Phase 2 HOA Inc.</strong> pursuant to the{' '}
                   <button
                     type="button"
@@ -772,8 +789,8 @@ export default function Register() {
                   onClick={() => setStep(1)}
                   style={{
                     flex: 1, padding: 12, borderRadius: 8,
-                    background: 'rgba(255,255,255,0.1)', color: '#fff',
-                    border: '1px solid rgba(255,255,255,0.2)',
+                    background: 'var(--bg-hover)', color: 'var(--text-primary)',
+                    border: '1px solid var(--border)',
                     fontWeight: 600, cursor: 'pointer'
                   }}
                 >
@@ -805,17 +822,17 @@ export default function Register() {
                 {isAutoAccepted ? '⚡' : '📋'}
               </div>
 
-              <h2 style={{ fontSize: 24, fontWeight: 900, color: '#FFF', marginBottom: 8 }}>
+              <h2 style={{ fontSize: 24, fontWeight: 900, color: 'var(--text-primary)', marginBottom: 8 }}>
                 {isAutoAccepted ? 'Instant Auto-Accept Verified!' : 'Registration Submitted!'}
               </h2>
 
-              <p style={{ fontSize: 13, color: '#D1D5DB', marginBottom: 20, maxWidth: 500, margin: '0 auto 20px' }}>
+              <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 20, maxWidth: 500, margin: '0 auto 20px' }}>
                 {successMsg}
               </p>
 
               {isAutoAccepted ? (
                 <div style={{
-                  background: 'linear-gradient(135deg, rgba(22, 101, 52, 0.4), rgba(6, 78, 59, 0.3))',
+                  background: 'rgba(22, 101, 52, 0.12)',
                   border: '1.5px solid #22C55E',
                   padding: 18,
                   borderRadius: 12,
@@ -831,14 +848,14 @@ export default function Register() {
                       No Admin Waiting Time Required
                     </span>
                   </div>
-                  <div style={{ fontSize: 13, color: '#E5E7EB', lineHeight: 1.5 }}>
+                  <div style={{ fontSize: 13, color: 'var(--text-primary)', lineHeight: 1.5 }}>
                     Your homeowner profile has been authenticated against the <strong>NRG PH2 HOA Masterlist</strong>. You now have immediate full access to dues payment, court reservations, visitor passes, and document requests.
                   </div>
                 </div>
               ) : (
                 <div style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)', padding: 16, borderRadius: 10, textAlign: 'left', marginBottom: 24 }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: '#FBBF24', marginBottom: 4 }}>⏳ Status: Pending HOA Board Verification</div>
-                  <div style={{ fontSize: 12, color: '#E5E7EB' }}>
+                  <div style={{ fontSize: 12, color: 'var(--text-primary)' }}>
                     The HOA Board will review your submitted application. Once approved, your account will be activated immediately.
                   </div>
                 </div>

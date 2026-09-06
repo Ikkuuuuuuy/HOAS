@@ -125,6 +125,7 @@ export default function CalendarEvents() {
   const [deleteTarget, setDeleteTarget] = useState<HoaEvent | null>(null);
 
   const openAddModal = (initialDate?: string) => {
+    if (!hasRole('super_admin', 'hoa_admin', 'admin_staff')) return;
     setEditingEvent(null);
     setFormTitle('');
     setFormCategory('meeting');
@@ -138,6 +139,7 @@ export default function CalendarEvents() {
   };
 
   const openEditModal = (ev: HoaEvent) => {
+    if (!hasRole('super_admin', 'hoa_admin', 'admin_staff')) return;
     setEditingEvent(ev);
     setFormTitle(ev.title);
     setFormCategory(ev.category || 'meeting');
@@ -409,22 +411,24 @@ export default function CalendarEvents() {
                 </button>
               </div>
 
-              <button
-                className="btn btn-primary"
-                onClick={() => openAddModal()}
-                style={{
-                  background: 'linear-gradient(135deg, #166534, #15803D)',
-                  color: '#FFFFFF',
-                  padding: '10px 20px',
-                  borderRadius: 10,
-                  fontWeight: 800,
-                  fontSize: 13,
-                  boxShadow: '0 4px 14px rgba(22, 101, 52, 0.35)',
-                  border: 'none',
-                }}
-              >
-                + Schedule Event
-              </button>
+              {hasRole('super_admin', 'hoa_admin', 'admin_staff') && (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => openAddModal()}
+                  style={{
+                    background: 'linear-gradient(135deg, #166534, #15803D)',
+                    color: '#FFFFFF',
+                    padding: '10px 20px',
+                    borderRadius: 10,
+                    fontWeight: 800,
+                    fontSize: 13,
+                    boxShadow: '0 4px 14px rgba(22, 101, 52, 0.35)',
+                    border: 'none',
+                  }}
+                >
+                  + Schedule Event
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -622,9 +626,11 @@ export default function CalendarEvents() {
               <p className="text-muted" style={{ maxWidth: 450, margin: '8px auto 20px' }}>
                 There are no meetings or community activities found matching your active filter criteria.
               </p>
-              <button className="btn btn-primary" onClick={() => openAddModal()} style={{ background: 'linear-gradient(135deg, #166534, #15803D)', border: 'none', fontWeight: 800 }}>
-                + Add First Community Event
-              </button>
+              {hasRole('super_admin', 'hoa_admin', 'admin_staff') && (
+                <button className="btn btn-primary" onClick={() => openAddModal()} style={{ background: 'linear-gradient(135deg, #166534, #15803D)', border: 'none', fontWeight: 800 }}>
+                  + Add First Community Event
+                </button>
+              )}
             </div>
           ) : (
             <div className="flex flex-col gap-4">
@@ -726,40 +732,42 @@ export default function CalendarEvents() {
                     </div>
 
                     {/* Right Actions */}
-                    <div className="flex items-center gap-2" style={{ flexShrink: 0 }}>
-                      <button
-                        className="btn btn-sm"
-                        onClick={() => openEditModal(ev)}
-                        style={{
-                          padding: '7px 12px',
-                          borderRadius: 8,
-                          background: 'var(--bg-hover)',
-                          border: '1px solid var(--border)',
-                          color: 'var(--text-primary)',
-                          fontSize: 12,
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        ✏️ Edit
-                      </button>
-                      <button
-                        className="btn btn-sm"
-                        onClick={() => setDeleteTarget(ev)}
-                        style={{
-                          padding: '7px 12px',
-                          borderRadius: 8,
-                          background: 'rgba(220, 38, 38, 0.08)',
-                          border: '1px solid rgba(220, 38, 38, 0.25)',
-                          color: '#DC2626',
-                          fontSize: 12,
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        🗑️
-                      </button>
-                    </div>
+                    {hasRole('super_admin', 'hoa_admin', 'admin_staff') && (
+                      <div className="flex items-center gap-2" style={{ flexShrink: 0 }}>
+                        <button
+                          className="btn btn-sm"
+                          onClick={() => openEditModal(ev)}
+                          style={{
+                            padding: '7px 12px',
+                            borderRadius: 8,
+                            background: 'var(--bg-hover)',
+                            border: '1px solid var(--border)',
+                            color: 'var(--text-primary)',
+                            fontSize: 12,
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          ✏️ Edit
+                        </button>
+                        <button
+                          className="btn btn-sm"
+                          onClick={() => setDeleteTarget(ev)}
+                          style={{
+                            padding: '7px 12px',
+                            borderRadius: 8,
+                            background: 'rgba(220, 38, 38, 0.08)',
+                            border: '1px solid rgba(220, 38, 38, 0.25)',
+                            color: '#DC2626',
+                            fontSize: 12,
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -768,7 +776,7 @@ export default function CalendarEvents() {
         </div>
 
         {/* ── ADD / EDIT EVENT MODAL ── */}
-        {showModal && (
+        {showModal && hasRole('super_admin', 'hoa_admin', 'admin_staff') && (
           <div className="modal-overlay" onClick={() => setShowModal(false)}>
             <div className="modal-box" onClick={e => e.stopPropagation()} style={{ maxWidth: 540, width: '100%', animation: 'scaleIn 0.2s ease' }}>
               <div className="modal-header">
@@ -901,7 +909,7 @@ export default function CalendarEvents() {
         )}
 
         {/* ── DELETE CONFIRMATION MODAL ── */}
-        {deleteTarget && (
+        {deleteTarget && hasRole('super_admin', 'hoa_admin', 'admin_staff') && (
           <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
             <div className="modal-box" onClick={e => e.stopPropagation()} style={{ maxWidth: 420, width: '100%', animation: 'scaleIn 0.2s ease' }}>
               <div className="modal-header">

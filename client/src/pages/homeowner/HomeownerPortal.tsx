@@ -622,7 +622,7 @@ export default function HomeownerPortal() {
                 <button className="btn btn-secondary w-full" style={{ justifyContent: 'flex-start', borderRadius: 10 }} onClick={() => alert('Downloading NRG PH2 HOA INC By-Laws PDF...')}>
                   📖 HOA By-Laws & Building Rules
                 </button>
-                <button className="btn btn-secondary w-full text-danger" style={{ justifyContent: 'flex-start', borderRadius: 10 }} onClick={() => alert('Hotlines: Gate Guard: (02) 8987-6543 | Police CSJDM: 911')}>
+                <button className="btn btn-secondary w-full text-danger" style={{ justifyContent: 'flex-start', borderRadius: 10 }} onClick={() => alert('Emergency Assistance: Please notify the Subdivision Gate Guard or dial 911.')}>
                   📞 Emergency Hotlines
                 </button>
               </div>
