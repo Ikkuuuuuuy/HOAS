@@ -462,6 +462,10 @@ export default function BillingLedger() {
   };
 
   const handleOpenAdminReview = (record: PaymentRecord) => {
+    if (!isStaffOrAdmin) {
+      setPreviewProofOnly(record.screenshotUrl || uploadedScreenshotUrl || SAMPLE_GCASH_RECEIPT_URL);
+      return;
+    }
     setAdminReviewData({
       id: record.id,
       payorName: user?.fullName || 'Juan Dela Cruz',
@@ -1124,22 +1128,60 @@ export default function BillingLedger() {
                         </div>
 
                         {isPending ? (
-                          <button
-                            type="button"
-                            onClick={() => handleOpenAdminReview(pay)}
-                            style={{
-                              background: 'rgba(245, 158, 11, 0.15)',
-                              color: '#D97706',
-                              border: '1px solid rgba(245, 158, 11, 0.3)',
-                              borderRadius: 8,
-                              padding: '7px 14px',
-                              fontSize: 12.5,
-                              fontWeight: 700,
-                              cursor: 'pointer',
-                            }}
-                          >
-                            Inspect Proof
-                          </button>
+                          isStaffOrAdmin ? (
+                            <button
+                              type="button"
+                              onClick={() => handleOpenAdminReview(pay)}
+                              style={{
+                                background: 'linear-gradient(135deg, #16A34A 0%, #15803D 100%)',
+                                color: '#FFFFFF',
+                                border: 'none',
+                                borderRadius: 8,
+                                padding: '7px 14px',
+                                fontSize: 12.5,
+                                fontWeight: 700,
+                                cursor: 'pointer',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 6,
+                              }}
+                            >
+                              <span>🛡️</span> Review Proof
+                            </button>
+                          ) : (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                              <span style={{
+                                background: 'rgba(245, 158, 11, 0.15)',
+                                color: '#D97706',
+                                border: '1px solid rgba(245, 158, 11, 0.3)',
+                                borderRadius: 8,
+                                padding: '5px 12px',
+                                fontSize: 12,
+                                fontWeight: 700,
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 4
+                              }}>
+                                <span>⏳</span> Awaiting Admin Approval
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => setPreviewProofOnly(pay.screenshotUrl || uploadedScreenshotUrl || SAMPLE_GCASH_RECEIPT_URL)}
+                                style={{
+                                  background: 'transparent',
+                                  color: 'var(--text-secondary)',
+                                  border: '1px solid var(--border)',
+                                  borderRadius: 8,
+                                  padding: '5px 12px',
+                                  fontSize: 12,
+                                  fontWeight: 600,
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                View Proof
+                              </button>
+                            </div>
+                          )
                         ) : (
                           <button
                             type="button"
@@ -1755,7 +1797,7 @@ export default function BillingLedger() {
       )}
 
       {/* ── ADMIN PAYMENT VERIFICATION MODAL ── */}
-      {adminReviewData && (
+      {isStaffOrAdmin && adminReviewData && (
         <AdminPaymentVerificationModal
           data={adminReviewData}
           onApprove={handleAdminApprovePayment}

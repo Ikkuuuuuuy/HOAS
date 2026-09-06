@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 
 export interface PendingPaymentData {
   id: string;
@@ -26,10 +27,17 @@ export default function AdminPaymentVerificationModal({
   onReject,
   onClose,
 }: Props) {
+  const { user } = useAuth();
+  const isStaffOrAdmin = ['hoa_admin', 'admin_staff', 'super_admin', 'barangay_official'].includes(user?.roleName || '');
+
   const [isZoomed, setIsZoomed] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleApprove = () => {
+    if (!isStaffOrAdmin) {
+      alert('Unauthorized: Only HOA Treasury Administrators can approve payments.');
+      return;
+    }
     setIsProcessing(true);
     setTimeout(() => {
       onApprove(data);
@@ -38,6 +46,10 @@ export default function AdminPaymentVerificationModal({
   };
 
   const handleReject = () => {
+    if (!isStaffOrAdmin) {
+      alert('Unauthorized: Only HOA Treasury Administrators can reject payments.');
+      return;
+    }
     if (window.confirm('Are you sure you want to reject this payment proof? The bill will return to unpaid.')) {
       onReject(data);
     }
@@ -64,15 +76,28 @@ export default function AdminPaymentVerificationModal({
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18, paddingBottom: 14, borderBottom: '1px solid var(--border)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 38, height: 38, borderRadius: '50%', background: 'rgba(0, 92, 238, 0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#005CEE', fontSize: 18, fontWeight: 900 }}>
-              🛡️
+            <div style={{
+              width: 38,
+              height: 38,
+              borderRadius: '50%',
+              background: isStaffOrAdmin ? 'rgba(0, 92, 238, 0.12)' : 'rgba(245, 158, 11, 0.12)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: isStaffOrAdmin ? '#005CEE' : '#D97706',
+              fontSize: 18,
+              fontWeight: 900
+            }}>
+              {isStaffOrAdmin ? '🛡️' : '⏳'}
             </div>
             <div>
               <h3 style={{ fontSize: 17, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-                HOA Treasury Payment Verification
+                {isStaffOrAdmin ? 'HOA Treasury Payment Verification' : 'GCash Payment Submission Proof'}
               </h3>
               <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
-                Review proof of payment submitted by resident before marking as Paid
+                {isStaffOrAdmin
+                  ? 'Review proof of payment submitted by resident before marking as Paid'
+                  : 'Your payment proof is currently awaiting review and approval by the HOA Treasury Admin'}
               </div>
             </div>
           </div>
@@ -201,61 +226,81 @@ export default function AdminPaymentVerificationModal({
             )}
           </div>
           <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4, textAlign: 'center' }}>
-            Click on screenshot to toggle zoom. Verify reference number &amp; amount match before approving.
+            Click on screenshot to toggle zoom.
           </div>
         </div>
 
         {/* Action Controls */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, borderTop: '1px solid var(--border)', paddingTop: 16 }}>
-          <button
-            type="button"
-            className="btn"
-            onClick={handleReject}
-            style={{
-              background: 'rgba(239, 68, 68, 0.1)',
-              color: '#EF4444',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
-              borderRadius: 9999,
-              padding: '9px 18px',
-              fontSize: 13,
-              fontWeight: 700,
-              cursor: 'pointer',
-            }}
-          >
-            ✕ Reject Proof
-          </button>
+          {isStaffOrAdmin ? (
+            /* ADMIN CONTROLS: REJECT AND APPROVE BUTTONS */
+            <>
+              <button
+                type="button"
+                className="btn"
+                onClick={handleReject}
+                style={{
+                  background: 'rgba(239, 68, 68, 0.1)',
+                  color: '#EF4444',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  borderRadius: 9999,
+                  padding: '9px 18px',
+                  fontSize: 13,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+              >
+                ✕ Reject Proof
+              </button>
 
-          <div style={{ display: 'flex', gap: 10 }}>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={onClose}
-              style={{ borderRadius: 9999, padding: '9px 18px', fontSize: 13, fontWeight: 600 }}
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              disabled={isProcessing}
-              onClick={handleApprove}
-              style={{
-                background: '#15803D',
-                color: '#FFFFFF',
-                border: 'none',
-                borderRadius: 9999,
-                padding: '9px 24px',
-                fontSize: 13.5,
-                fontWeight: 800,
-                cursor: 'pointer',
-                boxShadow: '0 4px 12px rgba(21, 128, 61, 0.35)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-              }}
-            >
-              <span>✓</span> {isProcessing ? 'Issuing Official Receipt...' : 'Approve & Mark as Paid'}
-            </button>
-          </div>
+              <div style={{ display: 'flex', gap: 10 }}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={onClose}
+                  style={{ borderRadius: 9999, padding: '9px 18px', fontSize: 13, fontWeight: 600 }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={isProcessing}
+                  onClick={handleApprove}
+                  style={{
+                    background: '#15803D',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    borderRadius: 9999,
+                    padding: '9px 24px',
+                    fontSize: 13.5,
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 12px rgba(21, 128, 61, 0.35)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6,
+                  }}
+                >
+                  <span>✓</span> {isProcessing ? 'Issuing Official Receipt...' : 'Approve & Mark as Paid'}
+                </button>
+              </div>
+            </>
+          ) : (
+            /* RESIDENT CONTROLS: STRICTLY READ-ONLY INFO + CLOSE BUTTON */
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+              <div style={{ fontSize: 12, color: '#D97706', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span>⏳</span> Status: Awaiting Admin Verification. Only HOA Administrators can approve payments.
+              </div>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={onClose}
+                style={{ borderRadius: 9999, padding: '9px 24px', fontSize: 13, fontWeight: 700 }}
+              >
+                Close
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
