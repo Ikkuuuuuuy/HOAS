@@ -429,6 +429,7 @@ router.get('/users/pending', authenticate, requireRole('hoa_admin', 'admin_staff
       WHERE (u.status = 'pending_approval' OR u.status = 'pending')
       ORDER BY u.created_at DESC
     `).all();
+    return res.json(pendingUsers);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

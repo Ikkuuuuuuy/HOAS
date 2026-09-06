@@ -25,6 +25,15 @@ function getFallbackMockForEndpoint(endpoint: string): any {
   if (clean === '/api/household') return getMockData('household');
   if (clean === '/api/events') return getMockData('events');
   if (clean.startsWith('/api/hoa/financials')) return getMockData('financials');
+  if (clean === '/api/hoa/users/pending') {
+    try {
+      const saved = localStorage.getItem('hoa_mock_pending_registrations');
+      const parsed = saved ? JSON.parse(saved) : [];
+      if (parsed.length > 0) return parsed;
+    } catch {}
+    const allUsers = getMockData('users') || [];
+    return allUsers.filter((u: any) => u.status === 'pending_approval' || u.status === 'pending');
+  }
 
   return null;
 }
@@ -155,7 +164,7 @@ export async function apiCall<T>(
       full_name: body.fullName,
       email: body.email,
       role_name: 'resident',
-      tenant_name: 'Bria Northridge Grove HOA',
+      tenant_name: 'NRG PH2 HOA INC',
       tenant_id: 'tenant-palmera-1',
       is_active: 1,
       status: userStatus,
@@ -164,6 +173,47 @@ export async function apiCall<T>(
       created_at: new Date().toISOString(),
     };
     setMockData('users', [newUser, ...currentUsers]);
+
+    // Save to hoa_registered_users
+    try {
+      const regList = JSON.parse(localStorage.getItem('hoa_registered_users') || '[]');
+      const filtered = regList.filter((u: any) => u.email?.toLowerCase() !== body.email?.toLowerCase());
+      filtered.unshift({
+        id: userId,
+        email: body.email,
+        password: body.password || 'password123',
+        fullName: body.fullName,
+        roleName: 'resident',
+        roleId: 5,
+        tenantId: 'tenant-palmera-1',
+        tenantName: 'NRG PH2 HOA INC',
+        tenantType: 'subdivision',
+        status: userStatus,
+        phone: body.contactNumber,
+        address: body.address || 'Block 3 Lot 12, NRG Phase 2',
+        proofDocUrl: body.proofDocUrl || '',
+        createdAt: new Date().toISOString(),
+      });
+      localStorage.setItem('hoa_registered_users', JSON.stringify(filtered));
+    } catch {}
+
+    // Save to hoa_mock_pending_registrations
+    try {
+      const pendList = JSON.parse(localStorage.getItem('hoa_mock_pending_registrations') || '[]');
+      const filteredP = pendList.filter((u: any) => u.email?.toLowerCase() !== body.email?.toLowerCase());
+      filteredP.unshift({
+        id: userId,
+        full_name: body.fullName,
+        email: body.email,
+        phone_number: body.contactNumber || '0917-000-0000',
+        address: body.address || 'Block 3 Lot 12, NRG Phase 2',
+        proof_doc_url: body.proofDocUrl || '',
+        status: 'pending_approval',
+        created_at: new Date().toISOString(),
+      });
+      localStorage.setItem('hoa_mock_pending_registrations', JSON.stringify(filteredP));
+    } catch {}
+    window.dispatchEvent(new Event('hoa_storage_update'));
 
     // Add to mock residents
     const currentResidents = getMockData('residents') || [];
@@ -189,6 +239,67 @@ export async function apiCall<T>(
       autoAccepted: isAutoApproved,
       matchedRecord: match || null,
     } as unknown as T;
+  }
+
+  // Pending Users for Admin Approval
+  if (clean === '/api/hoa/users/pending' && method === 'GET') {
+    try {
+      const saved = localStorage.getItem('hoa_mock_pending_registrations');
+      const parsed = saved ? JSON.parse(saved) : [];
+      if (parsed.length > 0) return parsed as unknown as T;
+    } catch {}
+    const allUsers = getMockData('users') || [];
+    return allUsers.filter((u: any) => u.status === 'pending_approval' || u.status === 'pending') as unknown as T;
+  }
+
+  if (clean.includes('/api/hoa/users/') && clean.endsWith('/approve') && method === 'PATCH') {
+    const parts = clean.split('/');
+    const userId = parts[parts.length - 2];
+    try {
+      const savedP = JSON.parse(localStorage.getItem('hoa_mock_pending_registrations') || '[]');
+      const targetUser = savedP.find((u: any) => u.id === userId);
+      const updatedP = savedP.filter((u: any) => u.id !== userId);
+      localStorage.setItem('hoa_mock_pending_registrations', JSON.stringify(updatedP));
+
+      const savedR = JSON.parse(localStorage.getItem('hoa_registered_users') || '[]');
+      const updatedR = savedR.map((u: any) => {
+        if (u.id === userId || (targetUser && u.email && u.email.toLowerCase() === targetUser.email.toLowerCase())) {
+          return { ...u, status: 'active' };
+        }
+        return u;
+      });
+      localStorage.setItem('hoa_registered_users', JSON.stringify(updatedR));
+    } catch {}
+    const allUsers = getMockData('users') || [];
+    const updatedUsers = allUsers.map((u: any) => u.id === userId ? { ...u, status: 'active', is_active: 1 } : u);
+    setMockData('users', updatedUsers);
+    window.dispatchEvent(new Event('hoa_storage_update'));
+    return { message: 'Homeowner account approved and activated successfully' } as unknown as T;
+  }
+
+  if (clean.includes('/api/hoa/users/') && clean.endsWith('/reject') && method === 'PATCH') {
+    const parts = clean.split('/');
+    const userId = parts[parts.length - 2];
+    try {
+      const savedP = JSON.parse(localStorage.getItem('hoa_mock_pending_registrations') || '[]');
+      const targetUser = savedP.find((u: any) => u.id === userId);
+      const updatedP = savedP.filter((u: any) => u.id !== userId);
+      localStorage.setItem('hoa_mock_pending_registrations', JSON.stringify(updatedP));
+
+      const savedR = JSON.parse(localStorage.getItem('hoa_registered_users') || '[]');
+      const updatedR = savedR.map((u: any) => {
+        if (u.id === userId || (targetUser && u.email && u.email.toLowerCase() === targetUser.email.toLowerCase())) {
+          return { ...u, status: 'rejected', rejectionReason: body?.reason };
+        }
+        return u;
+      });
+      localStorage.setItem('hoa_registered_users', JSON.stringify(updatedR));
+    } catch {}
+    const allUsers = getMockData('users') || [];
+    const updatedUsers = allUsers.map((u: any) => u.id === userId ? { ...u, status: 'rejected', is_active: 0 } : u);
+    setMockData('users', updatedUsers);
+    window.dispatchEvent(new Event('hoa_storage_update'));
+    return { message: 'Homeowner application declined' } as unknown as T;
   }
 
   // 1. Household Members

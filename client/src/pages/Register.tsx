@@ -145,26 +145,57 @@ export default function Register() {
   };
 
   const performRegistrationSubmit = async (autoApproveExpected: boolean, match?: MasterlistRecord | null) => {
-    // Ensure the new registration is recorded in local pending storage so it reflects in Admin Approval immediately
+    const regUserId = 'usr-reg-' + Date.now();
+    const normalizedEmail = email.trim().toLowerCase();
+
+    // 1. Record in local pending storage so it reflects in Admin Approval Table immediately
     const pendingRecord = {
-      id: 'usr-reg-' + Date.now(),
+      id: regUserId,
       full_name: fullName,
-      email,
+      email: normalizedEmail,
       phone_number: contactNumber,
       address: fullAddress,
-      proof_doc_url: previewUrl || proofDocUrl,
+      proof_doc_url: previewUrl || proofDocUrl || '',
       status: 'pending_approval',
       created_at: new Date().toISOString()
     };
     try {
       const existingPending = JSON.parse(localStorage.getItem('hoa_mock_pending_registrations') || '[]');
-      // Filter out duplicate if already exists
-      const filtered = existingPending.filter((item: any) => item.email !== email);
-      filtered.unshift(pendingRecord);
-      localStorage.setItem('hoa_mock_pending_registrations', JSON.stringify(filtered));
+      const filteredPending = existingPending.filter((item: any) => item.email?.toLowerCase() !== normalizedEmail);
+      filteredPending.unshift(pendingRecord);
+      localStorage.setItem('hoa_mock_pending_registrations', JSON.stringify(filteredPending));
     } catch (e) {
       console.warn('Storage error:', e);
     }
+
+    // 2. Record in hoa_registered_users with password so resident can log in immediately
+    try {
+      const existingReg = JSON.parse(localStorage.getItem('hoa_registered_users') || '[]');
+      const filteredReg = existingReg.filter((u: any) => u.email?.toLowerCase() !== normalizedEmail);
+      filteredReg.unshift({
+        id: regUserId,
+        email: normalizedEmail,
+        password: password,
+        fullName,
+        roleName: 'resident',
+        roleId: 5,
+        tenantId: 'tenant-palmera-1',
+        tenantName: 'NRG PH2 HOA INC',
+        tenantType: 'subdivision',
+        status: 'pending_approval',
+        phone: contactNumber,
+        address: fullAddress,
+        proofDocUrl: previewUrl || proofDocUrl || '',
+        createdAt: new Date().toISOString()
+      });
+      localStorage.setItem('hoa_registered_users', JSON.stringify(filteredReg));
+    } catch (e) {
+      console.warn('Storage error:', e);
+    }
+
+    // Trigger cross-component real-time sync
+    window.dispatchEvent(new Event('hoa_storage_update'));
+    window.dispatchEvent(new Event('storage'));
     setIsLoading(true);
     setError('');
 

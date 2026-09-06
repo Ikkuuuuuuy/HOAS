@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import PageContainer from '../../components/layout/PageContainer';
 import { useAuth } from '../../context/AuthContext';
 import { useApi, apiCall } from '../../hooks/useApi';
@@ -24,6 +24,25 @@ export default function HOAAdminManagement() {
     }
   });
 
+  useEffect(() => {
+    const handleStorageUpdate = () => {
+      try {
+        const saved = localStorage.getItem('hoa_mock_pending_registrations');
+        setLocalPending(saved ? JSON.parse(saved) : []);
+      } catch (e) {
+        setLocalPending([]);
+      }
+      refetchPending();
+    };
+
+    window.addEventListener('storage', handleStorageUpdate);
+    window.addEventListener('hoa_storage_update', handleStorageUpdate);
+    return () => {
+      window.removeEventListener('storage', handleStorageUpdate);
+      window.removeEventListener('hoa_storage_update', handleStorageUpdate);
+    };
+  }, [refetchPending]);
+
   const displayPending = useMemo(() => {
     const combined: any[] = [...(pendingUsers || [])];
     localPending.forEach(lp => {
@@ -32,7 +51,25 @@ export default function HOAAdminManagement() {
       }
     });
 
-    if (combined.length === 0) {
+    try {
+      const regRaw = localStorage.getItem('hoa_registered_users');
+      if (regRaw) {
+        const regUsers = JSON.parse(regRaw);
+        regUsers.forEach((ru: any) => {
+          if (ru.status === 'pending_approval' || ru.is_active === 0) {
+            if (!combined.some(p => p.id === ru.id || (p.email && ru.email && p.email.toLowerCase() === ru.email.toLowerCase()))) {
+              combined.push({
+                ...ru,
+                proof_doc_url: ru.proof_doc_url || 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600'
+              });
+            }
+          }
+        });
+      }
+    } catch {}
+
+    const demoHandled = localStorage.getItem('hoa_has_handled_demo_applicant') === 'true';
+    if (combined.length === 0 && !demoHandled) {
       return [
         {
           id: 'usr-pending-demo-1',
@@ -93,10 +130,36 @@ export default function HOAAdminManagement() {
   ];
 
   const handleApproveUser = async (userId: string, userEmail?: string, userName?: string) => {
+    if (userId === 'usr-pending-demo-1') {
+      localStorage.setItem('hoa_has_handled_demo_applicant', 'true');
+    }
     // Remove from local pending storage
-    const updated = localPending.filter(u => u.id !== userId && (!userEmail || u.email !== userEmail));
+    const updated = localPending.filter(u => u.id !== userId && (!userEmail || u.email?.toLowerCase() !== userEmail?.toLowerCase()));
     setLocalPending(updated);
     localStorage.setItem('hoa_mock_pending_registrations', JSON.stringify(updated));
+
+    // Update registered user state in localStorage
+    try {
+      const regRaw = localStorage.getItem('hoa_registered_users');
+      if (regRaw) {
+        const regUsers = JSON.parse(regRaw);
+        let changed = false;
+        regUsers.forEach((u: any) => {
+          if (u.id === userId || (userEmail && u.email?.toLowerCase() === userEmail.toLowerCase())) {
+            u.status = 'active';
+            u.is_active = 1;
+            changed = true;
+          }
+        });
+        if (changed) {
+          localStorage.setItem('hoa_registered_users', JSON.stringify(regUsers));
+        }
+      }
+      window.dispatchEvent(new Event('hoa_storage_update'));
+    } catch (e) {
+      console.error(e);
+    }
+
     try {
       await apiCall(`/api/hoa/users/${userId}/approve`, 'PATCH', {}, accessToken || undefined);
       success('User Approved! ✓', `Account activated for ${userName || 'Homeowner'}. ✉️ Automated approval confirmation email dispatched to ${userEmail || 'registered email'}.`);
@@ -114,9 +177,35 @@ export default function HOAAdminManagement() {
 
   const handleConfirmRejection = async () => {
     if (!rejectModalUser) return;
-    const updated = localPending.filter(u => u.id !== rejectModalUser.id && u.email !== rejectModalUser.email);
+    if (rejectModalUser.id === 'usr-pending-demo-1') {
+      localStorage.setItem('hoa_has_handled_demo_applicant', 'true');
+    }
+    const updated = localPending.filter(u => u.id !== rejectModalUser.id && u.email?.toLowerCase() !== rejectModalUser.email?.toLowerCase());
     setLocalPending(updated);
     localStorage.setItem('hoa_mock_pending_registrations', JSON.stringify(updated));
+
+    // Update registered user state in localStorage
+    try {
+      const regRaw = localStorage.getItem('hoa_registered_users');
+      if (regRaw) {
+        const regUsers = JSON.parse(regRaw);
+        let changed = false;
+        regUsers.forEach((u: any) => {
+          if (u.id === rejectModalUser.id || (rejectModalUser.email && u.email?.toLowerCase() === rejectModalUser.email.toLowerCase())) {
+            u.status = 'rejected';
+            u.is_active = 0;
+            changed = true;
+          }
+        });
+        if (changed) {
+          localStorage.setItem('hoa_registered_users', JSON.stringify(regUsers));
+        }
+      }
+      window.dispatchEvent(new Event('hoa_storage_update'));
+    } catch (e) {
+      console.error(e);
+    }
+
     const finalReason = customRejectNote.trim() ? `${selectedRejectReason} (Notes: ${customRejectNote.trim()})` : selectedRejectReason;
 
     try {
@@ -237,7 +326,7 @@ export default function HOAAdminManagement() {
         {/* Navigation Tabs */}
         <div className="flex gap-2 mb-6" style={{ background: 'var(--bg-glass)', padding: 'var(--space-2)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border)' }}>
           {[
-            { id: 'pending_users', label: `⏳ Pending Registrations (${pendingUsers?.length || 0})` },
+            { id: 'pending_users', label: `⏳ Pending Registrations (${displayPending.length})` },
             { id: 'requests', label: `📋 Request Approvals (${requests?.filter(r => r.status === 'pending').length || 0})` },
             { id: 'publishing', label: '📢 Publishing & Minutes Hub' },
             { id: 'staff_manage', label: '👥 Users & Staff Access' },

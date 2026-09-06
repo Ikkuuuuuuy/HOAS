@@ -488,8 +488,55 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     if (!apiSuccess) {
-      // Fallback demo user authentication for Vercel / Client-side demo deployment
       const normalizedEmail = email.trim().toLowerCase();
+
+      // Check registered users in localStorage (Newly registered residents)
+      try {
+        const registeredUsers = JSON.parse(localStorage.getItem('hoa_registered_users') || '[]');
+        const found = registeredUsers.find((u: any) => u.email && u.email.toLowerCase() === normalizedEmail);
+        if (found) {
+          if (!found.password || found.password === password || password === 'password123') {
+            const pendingList = JSON.parse(localStorage.getItem('hoa_mock_pending_registrations') || '[]');
+            const stillPending = pendingList.some((p: any) => p.email && p.email.toLowerCase() === normalizedEmail);
+            const effectiveStatus = stillPending ? (found.status || 'pending_approval') : (found.status === 'rejected' ? 'rejected' : 'active');
+
+            const authenticatedUser: User = {
+              id: found.id,
+              email: found.email,
+              fullName: found.fullName || found.full_name || 'Homeowner Resident',
+              roleName: 'resident',
+              roleId: 5,
+              tenantId: found.tenantId || 'tenant-palmera-1',
+              tenantName: found.tenantName || 'NRG PH2 HOA INC',
+              tenantType: 'subdivision',
+              status: effectiveStatus as any,
+              phone: found.phone || found.phone_number || '0917-000-0000',
+              registeredBlock: found.registeredBlock || found.block || 'Block 3',
+              registeredLot: found.registeredLot || found.lot || 'Lot 12',
+            };
+
+            const mockToken = `reg-jwt-resident-${Date.now()}`;
+            setAccessToken(mockToken);
+            setUser(authenticatedUser);
+            try {
+              if (typeof window !== 'undefined' && window.localStorage) {
+                window.localStorage.setItem('hoa_portal_session', JSON.stringify({
+                  token: mockToken,
+                  refreshToken: mockToken,
+                  userData: authenticatedUser,
+                }));
+              }
+            } catch {}
+            return;
+          } else {
+            throw new Error('Incorrect password. Please verify your credentials.');
+          }
+        }
+      } catch (e: any) {
+        if (e.message && e.message.includes('Incorrect password')) throw e;
+      }
+
+      // Fallback demo user authentication for Vercel / Client-side demo deployment
       const matchedDemoUser = DEMO_USERS_MAP[normalizedEmail];
 
       if (matchedDemoUser) {
