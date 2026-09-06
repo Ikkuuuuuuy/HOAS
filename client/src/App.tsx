@@ -13,6 +13,7 @@ import AllUsersManagement from './pages/admin/AllUsersManagement';
 import SearchableFinancialReports from './pages/financials/SearchableFinancialReports';
 import DocumentRequests from './pages/documents/DocumentRequests';
 import BillingLedger from './pages/billing/BillingLedger';
+import PaymentApprovals from './pages/admin/PaymentApprovals';
 import FacilityCalendar from './pages/facilities/FacilityCalendar';
 import VisitorLogbook from './pages/visitors/VisitorLogbook';
 import EmergencyAlerts from './pages/alerts/EmergencyAlerts';
@@ -76,6 +77,7 @@ export default function App() {
       <Route path="/all-user" element={<ProtectedRoute allowedRoles={['super_admin', 'hoa_admin']}><AllUsersManagement /></ProtectedRoute>} />
       <Route path="/financial-reports" element={<ProtectedRoute allowedRoles={['super_admin', 'hoa_admin', 'admin_staff']}><SearchableFinancialReports /></ProtectedRoute>} />
       <Route path="/documents" element={<ProtectedRoute><DocumentRequests /></ProtectedRoute>} />
+      <Route path="/payment-approvals" element={<ProtectedRoute allowedRoles={['super_admin', 'hoa_admin', 'admin_staff']}><PaymentApprovals /></ProtectedRoute>} />
       <Route path="/billing" element={<ProtectedRoute><BillingLedger /></ProtectedRoute>} />
       <Route path="/facilities" element={<ProtectedRoute><FacilityCalendar /></ProtectedRoute>} />
       <Route path="/visitors" element={<ProtectedRoute allowedRoles={['super_admin', 'hoa_admin', 'admin_staff', 'security_guard']}><VisitorLogbook /></ProtectedRoute>} />

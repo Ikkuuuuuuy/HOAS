@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import PageContainer from '../../components/layout/PageContainer';
 import { useApi } from '../../hooks/useApi';
 import { useAuth } from '../../context/AuthContext';
@@ -204,6 +204,7 @@ export default function BillingLedger() {
   const [selectedReceipt, setSelectedReceipt] = useState<ReceiptData | null>(null);
   const [adminReviewData, setAdminReviewData] = useState<PendingPaymentData | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [previewProofOnly, setPreviewProofOnly] = useState<string | null>(null);
 
   // Automatic navigation trigger: open Pay modal if URL query ?action=pay or location.state.openPayModal
   useEffect(() => {
@@ -552,38 +553,50 @@ export default function BillingLedger() {
                 </div>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={() => {
-                const targetRecord = paymentList.find(p => p.status === 'Pending Approval') || {
-                  id: 'p-pending',
-                  title: 'GCash QR — Monthly HOA Dues & Security',
-                  date: 'Today',
-                  rawDate: new Date().toISOString(),
-                  amount: 'Php 3,000.00',
-                  channel: 'GCash',
-                  refNo: septStatement.refNo || gcashRefNo,
-                  status: 'Pending Approval' as const,
-                  screenshotUrl: septStatement.screenshotUrl || uploadedScreenshotUrl || SAMPLE_GCASH_RECEIPT_URL,
-                  senderPhone: senderPhone,
-                };
-                handleOpenAdminReview(targetRecord);
-              }}
-              style={{
-                background: '#F59E0B',
-                color: '#FFFFFF',
-                border: 'none',
-                borderRadius: 8,
-                padding: '9px 18px',
-                fontSize: 13,
-                fontWeight: 700,
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                boxShadow: '0 2px 8px rgba(245, 158, 11, 0.3)',
-              }}
-            >
-              🛡️ Admin: Review &amp; Approve
-            </button>
+            {isStaffOrAdmin ? (
+              <Link
+                to="/payment-approvals"
+                style={{
+                  background: 'linear-gradient(135deg, #16A34A 0%, #15803D 100%)',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  borderRadius: 8,
+                  padding: '9px 18px',
+                  fontSize: 13,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  boxShadow: '0 2px 8px rgba(22, 163, 74, 0.3)',
+                }}
+              >
+                <span>🛡️</span> Open Payment Approvals Table
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setPreviewProofOnly(septStatement.screenshotUrl || uploadedScreenshotUrl || SAMPLE_GCASH_RECEIPT_URL)}
+                style={{
+                  background: 'transparent',
+                  color: '#D97706',
+                  border: '1.5px solid #D97706',
+                  borderRadius: 8,
+                  padding: '8px 16px',
+                  fontSize: 12.5,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                }}
+              >
+                <span>📸</span> View Submitted Proof
+              </button>
+            )}
           </div>
         )}
 
@@ -953,36 +966,61 @@ export default function BillingLedger() {
                             <span>🧾</span> View Printable Receipt
                           </button>
                         ) : isPending ? (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const targetRecord = paymentList.find(p => p.status === 'Pending Approval') || {
-                                id: 'p-pending',
-                                title: 'GCash QR — Monthly HOA Dues & Security',
-                                date: 'Today',
-                                rawDate: new Date().toISOString(),
-                                amount: 'Php 3,000.00',
-                                channel: 'GCash',
-                                refNo: stmt.refNo || gcashRefNo,
-                                status: 'Pending Approval' as const,
-                                screenshotUrl: stmt.screenshotUrl || uploadedScreenshotUrl || SAMPLE_GCASH_RECEIPT_URL,
-                                senderPhone: senderPhone,
-                              };
-                              handleOpenAdminReview(targetRecord);
-                            }}
-                            style={{
-                              background: 'rgba(245, 158, 11, 0.15)',
-                              color: '#D97706',
-                              border: '1px solid rgba(245, 158, 11, 0.3)',
-                              borderRadius: 8,
-                              padding: '7px 12px',
-                              fontSize: 12.5,
-                              fontWeight: 700,
-                              cursor: 'pointer',
-                            }}
-                          >
-                            ⏳ Review Status
-                          </button>
+                          isStaffOrAdmin ? (
+                            <Link
+                              to="/payment-approvals"
+                              style={{
+                                background: 'linear-gradient(135deg, #16A34A 0%, #15803D 100%)',
+                                color: '#FFFFFF',
+                                border: 'none',
+                                borderRadius: 8,
+                                padding: '7px 14px',
+                                fontSize: 12.5,
+                                fontWeight: 700,
+                                cursor: 'pointer',
+                                textDecoration: 'none',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 6,
+                                boxShadow: '0 2px 6px rgba(22, 163, 74, 0.3)',
+                              }}
+                            >
+                              <span>🛡️</span> Review in Approvals
+                            </Link>
+                          ) : (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                              <span style={{
+                                background: 'rgba(245, 158, 11, 0.15)',
+                                color: '#D97706',
+                                border: '1px solid rgba(245, 158, 11, 0.3)',
+                                borderRadius: 8,
+                                padding: '5px 10px',
+                                fontSize: 12,
+                                fontWeight: 700,
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 4
+                              }}>
+                                <span>⏳</span> Awaiting Admin
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => setPreviewProofOnly(stmt.screenshotUrl || uploadedScreenshotUrl || SAMPLE_GCASH_RECEIPT_URL)}
+                                style={{
+                                  background: 'transparent',
+                                  color: 'var(--text-secondary)',
+                                  border: '1px solid var(--border)',
+                                  borderRadius: 8,
+                                  padding: '5px 10px',
+                                  fontSize: 12,
+                                  fontWeight: 600,
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                View Proof
+                              </button>
+                            </div>
+                          )
                         ) : (
                           <button
                             type="button"
@@ -1734,6 +1772,53 @@ export default function BillingLedger() {
         />
       )}
 
+      {/* ── RESIDENT READ-ONLY PROOF PREVIEW MODAL ── */}
+      {previewProofOnly && (
+        <div className="modal-overlay" onClick={() => setPreviewProofOnly(null)} style={{ zIndex: 9999 }}>
+          <div
+            className="modal-box"
+            style={{
+              maxWidth: 440,
+              background: 'var(--bg-surface)',
+              borderRadius: 16,
+              padding: 22,
+              textAlign: 'center'
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+              <div style={{ fontWeight: 800, fontSize: 15, color: 'var(--text-primary)' }}>
+                📸 Submitted GCash Payment Proof
+              </div>
+              <button
+                type="button"
+                onClick={() => setPreviewProofOnly(null)}
+                style={{ background: 'none', border: 'none', fontSize: 18, cursor: 'pointer', color: 'var(--text-muted)' }}
+              >
+                ✕
+              </button>
+            </div>
+            <div style={{ fontSize: 12.5, color: 'var(--text-muted)', marginBottom: 12 }}>
+              Status: <strong style={{ color: '#D97706' }}>Pending HOA Admin Verification</strong>
+            </div>
+            <img
+              src={previewProofOnly}
+              alt="Submitted GCash proof"
+              style={{ maxWidth: '100%', maxHeight: '65vh', borderRadius: 8, border: '1px solid var(--border)' }}
+            />
+            <div style={{ marginTop: 16 }}>
+              <button
+                type="button"
+                className="btn btn-secondary w-full"
+                onClick={() => setPreviewProofOnly(null)}
+                style={{ borderRadius: 8 }}
+              >
+                Close Preview
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </PageContainer>
   );
 }

@@ -126,6 +126,7 @@ const SUPER_ADMIN_SECTIONS: NavSection[] = [
   {
     title: 'Finance & Administration',
     items: [
+      { path: '/payment-approvals', label: 'Payment Approvals', icon: Icons.Billing },
       { path: '/billing', label: 'Billing & Ledger', icon: Icons.Billing },
       { path: '/financial-reports', label: 'Financial Reports', icon: Icons.Reports },
       { path: '/tenants', label: 'Tenants Directory', icon: Icons.Tenants },
@@ -164,6 +165,7 @@ const HOA_ADMIN_SECTIONS: NavSection[] = [
   {
     title: 'Finance & Security',
     items: [
+      { path: '/payment-approvals', label: 'Payment Approvals', icon: Icons.Billing },
       { path: '/billing', label: 'Billing Ledger', icon: Icons.Billing },
       { path: '/financial-reports', label: 'Financial Reports', icon: Icons.Reports },
       { path: '/alerts', label: 'Security & Alerts', icon: Icons.Alerts, badgeKey: 'alerts' },
