@@ -257,10 +257,34 @@ export default function Sidebar() {
   return (
     <aside className="sidebar minimalist-sidebar">
       {/* ── TOP HIGHLIGHT: BRAND HEADER (Rich Northridge Burgundy/Pine Accent) ── */}
-      <div className="sidebar-brand">
+      <div
+        className="sidebar-brand"
+        style={{
+          height: 68,
+          minHeight: 68,
+          boxSizing: 'border-box',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          padding: '0 18px',
+          borderBottom: '2px solid #16A34A',
+          background: 'linear-gradient(180deg, #064E3B 0%, #04382A 100%)',
+          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)',
+          position: 'relative',
+        }}
+      >
         <div style={{
-          width: 44, height: 44, borderRadius: '50%', overflow: 'hidden', flexShrink: 0,
-          background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center'
+          width: 44,
+          height: 44,
+          borderRadius: '50%',
+          overflow: 'hidden',
+          flexShrink: 0,
+          background: 'rgba(255, 255, 255, 0.08)',
+          border: '2px solid #16A34A',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.35)',
         }}>
           <img
             src="/nrg-ph2-logo.png"
@@ -269,10 +293,37 @@ export default function Sidebar() {
           />
         </div>
         <div style={{ overflow: 'hidden' }}>
-          <div style={{ fontSize: 14.5, fontWeight: 800, color: '#FFFFFF', whiteSpace: 'nowrap', lineHeight: 1.2, letterSpacing: '0.02em' }}>
+          <div style={{
+            fontSize: 15,
+            fontWeight: 900,
+            color: '#FFFFFF',
+            whiteSpace: 'nowrap',
+            lineHeight: 1.2,
+            letterSpacing: '0.03em',
+            textShadow: '0 1px 3px rgba(0, 0, 0, 0.6)'
+          }}>
             NRG PH2 HOA
           </div>
-          <div style={{ fontSize: 11, color: '#FCD34D', fontWeight: 700, whiteSpace: 'nowrap', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+          <div style={{
+            fontSize: 10.5,
+            color: '#FCD34D',
+            fontWeight: 800,
+            whiteSpace: 'nowrap',
+            letterSpacing: '0.05em',
+            textTransform: 'uppercase',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            marginTop: 2
+          }}>
+            <span style={{
+              display: 'inline-block',
+              width: 6,
+              height: 6,
+              borderRadius: '50%',
+              background: '#22C55E',
+              boxShadow: '0 0 8px #22C55E'
+            }} />
             Phase 2 Cloud Portal
           </div>
         </div>
@@ -482,11 +533,13 @@ export default function Sidebar() {
           align-items: center;
           gap: 12px;
           padding: 0 18px;
-          border-bottom: 2px solid #16A34A;
-          background: #064E3B; /* Rich Northridge Pine Header */
+          border-bottom: 2px solid #16A34A !important;
+          background: linear-gradient(180deg, #064E3B 0%, #04382A 100%) !important;
         }
-        [data-theme="dark"] .sidebar-brand {
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+        [data-theme="dark"] .sidebar-brand,
+        [data-theme="light"] .sidebar-brand {
+          border-bottom: 2px solid #16A34A !important;
+          background: linear-gradient(180deg, #064E3B 0%, #04382A 100%) !important;
         }
         .sidebar-brand-title {
           color: #FFFFFF !important;

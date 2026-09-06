@@ -591,11 +591,11 @@ export default function BillingLedger() {
         <div style={{
           position: 'relative',
           background: 'var(--bg-surface)',
-          borderRadius: 16,
-          border: '1px solid var(--border)',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+          borderRadius: 20,
+          border: '1px solid rgba(22, 163, 74, 0.35)',
+          boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
           overflow: 'hidden',
-          padding: '28px 32px',
+          padding: '30px 34px',
           marginBottom: 12,
           minHeight: 140,
           display: 'flex',
@@ -615,9 +615,9 @@ export default function BillingLedger() {
             overflow: 'hidden'
           }}>
             <svg viewBox="0 0 400 160" width="100%" height="100%" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M50,160 C120,90 180,140 240,40 C300,-50 360,60 400,20" stroke="#005CEE" strokeWidth="1.2" opacity="0.25" fill="none" />
-              <path d="M70,160 C140,70 200,120 260,30 C320,-50 370,50 420,10" stroke="#007DFE" strokeWidth="1" opacity="0.3" fill="none" />
-              <path d="M10,160 C90,110 150,150 220,60 C280,-30 340,70 380,30" stroke="#38BDF8" strokeWidth="1.4" opacity="0.3" fill="none" />
+              <path d="M50,160 C120,90 180,140 240,40 C300,-50 360,60 400,20" stroke="#16A34A" strokeWidth="1.2" opacity="0.3" fill="none" />
+              <path d="M70,160 C140,70 200,120 260,30 C320,-50 370,50 420,10" stroke="#22C55E" strokeWidth="1" opacity="0.35" fill="none" />
+              <path d="M10,160 C90,110 150,150 220,60 C280,-30 340,70 380,30" stroke="#34D399" strokeWidth="1.4" opacity="0.3" fill="none" />
             </svg>
           </div>
 
@@ -710,22 +710,22 @@ export default function BillingLedger() {
                 type="button"
                 onClick={() => setShowPayModal(true)}
                 style={{
-                  background: '#005CEE',
+                  background: 'linear-gradient(135deg, #16A34A 0%, #15803D 100%)',
                   color: '#FFFFFF',
                   border: 'none',
                   borderRadius: 9999,
-                  padding: '12px 32px',
+                  padding: '12px 34px',
                   fontSize: 15,
                   fontWeight: 800,
                   cursor: 'pointer',
-                  boxShadow: '0 4px 14px rgba(0, 92, 238, 0.35)',
+                  boxShadow: '0 4px 16px rgba(22, 163, 74, 0.4)',
                   transition: 'all 0.2s ease',
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: 8,
                 }}
-                onMouseOver={e => e.currentTarget.style.background = '#0047BA'}
-                onMouseOut={e => e.currentTarget.style.background = '#005CEE'}
+                onMouseOver={e => e.currentTarget.style.background = 'linear-gradient(135deg, #15803D 0%, #166534 100%)'}
+                onMouseOut={e => e.currentTarget.style.background = 'linear-gradient(135deg, #16A34A 0%, #15803D 100%)'}
               >
                 <span>💳</span> Pay Dues (GCash)
               </button>
@@ -792,10 +792,10 @@ export default function BillingLedger() {
                 padding: '16px 20px',
                 border: 'none',
                 background: 'none',
-                borderBottom: activeTab === 'statement' ? '3px solid #005CEE' : '3px solid transparent',
+                borderBottom: activeTab === 'statement' ? '3px solid #16A34A' : '3px solid transparent',
                 fontSize: 15,
                 fontWeight: activeTab === 'statement' ? 700 : 500,
-                color: activeTab === 'statement' ? '#005CEE' : 'var(--text-muted)',
+                color: activeTab === 'statement' ? '#16A34A' : 'var(--text-muted)',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease'
               }}
@@ -810,10 +810,10 @@ export default function BillingLedger() {
                 padding: '16px 20px',
                 border: 'none',
                 background: 'none',
-                borderBottom: activeTab === 'payments' ? '3px solid #005CEE' : '3px solid transparent',
+                borderBottom: activeTab === 'payments' ? '3px solid #16A34A' : '3px solid transparent',
                 fontSize: 15,
                 fontWeight: activeTab === 'payments' ? 700 : 500,
-                color: activeTab === 'payments' ? '#005CEE' : 'var(--text-muted)',
+                color: activeTab === 'payments' ? '#16A34A' : 'var(--text-muted)',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
                 display: 'inline-flex',
@@ -878,9 +878,15 @@ export default function BillingLedger() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        padding: '16px 0',
-                        borderBottom: idx < statementList.length - 1 ? '1px solid var(--border)' : 'none'
+                        padding: '16px 18px',
+                        marginBottom: 10,
+                        borderRadius: 14,
+                        background: 'var(--bg-elevated, var(--bg-hover))',
+                        border: isPaid ? '1px solid rgba(16, 185, 129, 0.25)' : isPending ? '1px solid rgba(245, 158, 11, 0.3)' : '1px solid var(--border)',
+                        transition: 'all 0.15s ease',
                       }}
+                      onMouseOver={e => e.currentTarget.style.borderColor = '#16A34A'}
+                      onMouseOut={e => e.currentTarget.style.borderColor = isPaid ? 'rgba(16, 185, 129, 0.25)' : isPending ? 'rgba(245, 158, 11, 0.3)' : 'var(--border)'}
                     >
                       {/* Left: Icon + Details */}
                       <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -1520,7 +1526,7 @@ export default function BillingLedger() {
                   type="submit"
                   disabled={isProcessing}
                   style={{
-                    background: '#005CEE',
+                    background: 'linear-gradient(135deg, #16A34A 0%, #15803D 100%)',
                     color: '#FFFFFF',
                     border: 'none',
                     borderRadius: 9999,
@@ -1528,7 +1534,7 @@ export default function BillingLedger() {
                     fontSize: 14,
                     fontWeight: 800,
                     cursor: 'pointer',
-                    boxShadow: '0 4px 14px rgba(0, 92, 238, 0.35)',
+                    boxShadow: '0 4px 16px rgba(22, 163, 74, 0.4)',
                   }}
                 >
                   {isProcessing ? 'Submitting Proof...' : 'Submit Payment for Admin Verification'}
@@ -1686,7 +1692,7 @@ export default function BillingLedger() {
                   <button
                     type="button"
                     style={{
-                      background: '#005CEE',
+                      background: 'linear-gradient(135deg, #16A34A 0%, #15803D 100%)',
                       color: '#FFFFFF',
                       border: 'none',
                       borderRadius: 9999,
@@ -1694,7 +1700,7 @@ export default function BillingLedger() {
                       fontSize: 14,
                       fontWeight: 700,
                       cursor: 'pointer',
-                      boxShadow: '0 4px 14px rgba(0, 92, 238, 0.35)',
+                      boxShadow: '0 4px 16px rgba(22, 163, 74, 0.4)',
                     }}
                     onClick={() => {
                       setShowStatementModal(null);
