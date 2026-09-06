@@ -1,8 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import PageContainer from '../../components/layout/PageContainer';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import Pagination from '../../components/common/Pagination';
+import SortableHeader, { SortDirection } from '../../components/common/SortableHeader';
+
+const STORAGE_KEY = 'nrg_service_requests_db';
 
 export type RequestType = 
   | 'move_in_out'
@@ -235,10 +238,30 @@ const INITIAL_REQUESTS: ServiceRequestItem[] = [
 ];
 
 export default function DocumentRequests() {
-  const { user } = useAuth();
+  const { user, accessToken } = useAuth();
   const { success, error: showError } = useToast();
 
-  const [requests, setRequests] = useState<ServiceRequestItem[]>(INITIAL_REQUESTS);
+  const [requests, setRequests] = useState<ServiceRequestItem[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {
+      console.error('Failed to load saved requests from storage', e);
+    }
+    return INITIAL_REQUESTS;
+  });
+
+  // Auto-save requests to localStorage whenever requests array changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(requests));
+    } catch (e) {
+      console.error('Failed to save requests to storage', e);
+    }
+  }, [requests]);
   const [showModal, setShowModal] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<ServiceRequestItem | null>(null);
 
@@ -247,9 +270,27 @@ export default function DocumentRequests() {
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
-  const [sortBy, setSortBy] = useState<string>('date-desc');
+  const [sortField, setSortField] = useState<string>('date');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+
+  const handleSort = (field: string, direction?: SortDirection) => {
+    if (direction) {
+      setSortField(field);
+      setSortDirection(direction);
+    } else if (sortField === field) {
+      setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortField(field);
+      if (field === 'date' || field === 'priority') {
+        setSortDirection('desc');
+      } else {
+        setSortDirection('asc');
+      }
+    }
+    setCurrentPage(1);
+  };
 
   // Form State - Common Requester & Property Details
   const [block, setBlock] = useState('Block 3');
@@ -405,6 +446,36 @@ export default function DocumentRequests() {
   };
 
   // Handle Submit Form
+  
+  // Auto-populate Property Address, Owner Name, and Description
+  const handleOpenFileRequest = () => {
+    const owner = user?.fullName || 'Juan Dela Cruz';
+    const rawAddr = (user as any)?.address || 'Block 3 Lot 12, Maagap Street, Northridge Grove Phase 2';
+    
+    let b = 'Block 3';
+    let l = 'Lot 12';
+    let st = 'Maagap Street';
+
+    const blockMatch = rawAddr.match(/Block\s*([0-9]+)/i);
+    if (blockMatch) b = `Block ${blockMatch[1]}`;
+    const lotMatch = rawAddr.match(/Lot\s*([0-9]+)/i);
+    if (lotMatch) l = `Lot ${lotMatch[1]}`;
+    const streetMatch = rawAddr.match(/,\s*([A-Za-z0-9\s]+Street|[A-Za-z0-9\s]+Avenue|[A-Za-z0-9\s]+Way)/i);
+    if (streetMatch) st = streetMatch[1].trim();
+
+    setRegisteredOwnerName(owner);
+    setRequesterName(owner);
+    setBlock(b);
+    setLot(l);
+    setStreetName(st);
+    setContactNumber((user as any)?.phoneNumber || (user as any)?.phone || '0917-123-4567');
+    setEmailAddress(user?.email || 'homeowner@nrgph2.org');
+    
+    const fullPropAddress = `${b} ${l}, ${st}, Northridge Grove Phase 2`;
+    setRemarks(`Document and service clearance request for registered homeowner ${owner} at property address: ${fullPropAddress}. Submitted for official HOA verification.`);
+    setShowModal(true);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -491,6 +562,33 @@ export default function DocumentRequests() {
     };
 
     setRequests([newTicket, ...requests]);
+
+    // Persist to Server Database (SQLite portal.db via /api/documents)
+    try {
+      fetch('/api/documents', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken || ''}`
+        },
+        body: JSON.stringify({
+          documentType: requestType,
+          purpose: remarks || `Document clearance for ${registeredOwnerName}`,
+          registeredOwnerName,
+          requesterName,
+          block,
+          lot,
+          streetName,
+          contactNumber,
+          email: emailAddress,
+          priority,
+          specificData
+        })
+      }).catch(err => console.warn('SQLite database sync notice:', err));
+    } catch (e) {
+      console.warn('API fetch warning:', e);
+    }
+
     success('Service Request Submitted! 🚀', `Assigned Reference #: ${generatedRef}. Priority SLA: ${String(priority || 'MEDIUM').toUpperCase()}`);
     setShowModal(false);
 
@@ -558,16 +656,52 @@ export default function DocumentRequests() {
     const priorityWeight: Record<string, number> = { emergency: 4, high: 3, medium: 2, low: 1 };
 
     result.sort((a, b) => {
-      if (sortBy === 'date-desc') return new Date(b.submitted_date || '2026-08-01').getTime() - new Date(a.submitted_date || '2026-08-01').getTime();
-      if (sortBy === 'date-asc') return new Date(a.submitted_date || '2026-08-01').getTime() - new Date(b.submitted_date || '2026-08-01').getTime();
-      if (sortBy === 'priority-desc') return (priorityWeight[b.priority] || 0) - (priorityWeight[a.priority] || 0);
-      if (sortBy === 'name-asc') return a.requester_name.localeCompare(b.requester_name);
-      if (sortBy === 'ref-asc') return a.ref_no.localeCompare(b.ref_no);
-      return 0;
+      let cmp = 0;
+      switch (sortField) {
+        case 'ref_no':
+          cmp = (a.ref_no || '').localeCompare(b.ref_no || '', undefined, { numeric: true, sensitivity: 'base' });
+          break;
+        case 'request_type': {
+          const labelA = getRequestTypeMeta(a.request_type).label;
+          const labelB = getRequestTypeMeta(b.request_type).label;
+          cmp = labelA.localeCompare(labelB);
+          break;
+        }
+        case 'requester_name':
+          cmp = (a.requester_name || '').localeCompare(b.requester_name || '');
+          break;
+        case 'relationship':
+          cmp = (a.relationship_to_owner || '').localeCompare(b.relationship_to_owner || '');
+          break;
+        case 'priority': {
+          const wA = priorityWeight[a.priority] || 0;
+          const wB = priorityWeight[b.priority] || 0;
+          cmp = wA - wB;
+          break;
+        }
+        case 'due_date': {
+          const tA = new Date(a.due_date || '2099-01-01').getTime();
+          const tB = new Date(b.due_date || '2099-01-01').getTime();
+          cmp = tA - tB;
+          break;
+        }
+        case 'status':
+          cmp = (a.status || '').localeCompare(b.status || '');
+          break;
+        case 'date':
+        default: {
+          const tA = new Date(a.submitted_date || '2026-08-01').getTime();
+          const tB = new Date(b.submitted_date || '2026-08-01').getTime();
+          cmp = tA - tB;
+          break;
+        }
+      }
+
+      return sortDirection === 'asc' ? cmp : -cmp;
     });
 
     return result;
-  }, [scopedRequests, searchQuery, typeFilter, statusFilter, priorityFilter, sortBy]);
+  }, [scopedRequests, searchQuery, typeFilter, statusFilter, priorityFilter, sortField, sortDirection]);
 
   const paginatedRequests = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
@@ -669,7 +803,7 @@ export default function DocumentRequests() {
           <button
             className="btn btn-primary"
             style={{ background: '#166534', borderColor: '#166534', fontWeight: 800, padding: '12px 24px', fontSize: 14 }}
-            onClick={() => setShowModal(true)}
+            onClick={handleOpenFileRequest}
           >
             ➕ File New Service Request
           </button>
@@ -726,12 +860,32 @@ export default function DocumentRequests() {
             </div>
             <div>
               <label className="form-label" style={{ fontSize: 11 }}>Sort By</label>
-              <select className="form-select" value={sortBy} onChange={e => setSortBy(e.target.value)}>
-                <option value="date-desc">Filed Date (Newest)</option>
-                <option value="date-asc">Filed Date (Oldest)</option>
-                <option value="priority-desc">Priority (High/Emergency)</option>
-                <option value="name-asc">Requester (A-Z)</option>
-                <option value="ref-asc">Reference # (Asc)</option>
+              <select
+                className="form-select"
+                value={`${sortField}-${sortDirection}`}
+                onChange={e => {
+                  const parts = e.target.value.split('-');
+                  const dir = parts.pop() as SortDirection;
+                  const fld = parts.join('-');
+                  handleSort(fld, dir);
+                }}
+              >
+                <option value="date-desc">Filed Date (Newest First)</option>
+                <option value="date-asc">Filed Date (Oldest First)</option>
+                <option value="due_date-asc">Due Date (Earliest / Urgent First)</option>
+                <option value="due_date-desc">Due Date (Latest / Furthest First)</option>
+                <option value="priority-desc">Priority (Emergency / High First)</option>
+                <option value="priority-asc">Priority (Low First)</option>
+                <option value="ref_no-asc">Reference # (Ascending)</option>
+                <option value="ref_no-desc">Reference # (Descending)</option>
+                <option value="request_type-asc">Request Type (A-Z)</option>
+                <option value="request_type-desc">Request Type (Z-A)</option>
+                <option value="requester_name-asc">Requester (A-Z)</option>
+                <option value="requester_name-desc">Requester (Z-A)</option>
+                <option value="relationship-asc">Relationship (A-Z)</option>
+                <option value="relationship-desc">Relationship (Z-A)</option>
+                <option value="status-asc">Status (A-Z)</option>
+                <option value="status-desc">Status (Z-A)</option>
               </select>
             </div>
           </div>
@@ -742,13 +896,55 @@ export default function DocumentRequests() {
           <table className="data-table">
             <thead>
               <tr>
-                <th>Reference #</th>
-                <th>Request Type</th>
-                <th>Requester & Address</th>
-                <th>Relationship</th>
-                <th>Priority / SLA</th>
-                <th>Due Date</th>
-                <th>Status</th>
+                <SortableHeader
+                  label="Reference #"
+                  field="ref_no"
+                  currentSortField={sortField}
+                  currentSortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  label="Request Type"
+                  field="request_type"
+                  currentSortField={sortField}
+                  currentSortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  label="Requester & Address"
+                  field="requester_name"
+                  currentSortField={sortField}
+                  currentSortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  label="Relationship"
+                  field="relationship"
+                  currentSortField={sortField}
+                  currentSortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  label="Priority / SLA"
+                  field="priority"
+                  currentSortField={sortField}
+                  currentSortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  label="Due Date"
+                  field="due_date"
+                  currentSortField={sortField}
+                  currentSortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  label="Status"
+                  field="status"
+                  currentSortField={sortField}
+                  currentSortDirection={sortDirection}
+                  onSort={handleSort}
+                />
                 <th>Action</th>
               </tr>
             </thead>
@@ -857,46 +1053,95 @@ export default function DocumentRequests() {
 
                   <div className="grid grid-3 mb-3" style={{ gap: 12 }}>
                     <div>
-                      <label className="form-label">Block Number</label>
-                      <select className="form-select" value={block} onChange={e => setBlock(e.target.value)} required>
-                        {[...Array(9)].map((_, i) => (
-                          <option key={i + 1} value={`Block ${i + 1}`}>Block {i + 1}</option>
-                        ))}
-                      </select>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                        <label className="form-label" style={{ margin: 0 }}>Block Number</label>
+                        <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 700 }}>🔒 Locked</span>
+                      </div>
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={block}
+                        readOnly
+                        disabled
+                        tabIndex={-1}
+                        style={{
+                          background: 'var(--bg-hover)',
+                          cursor: 'not-allowed',
+                          color: 'var(--text-secondary)',
+                          fontWeight: 600,
+                          opacity: 0.85,
+                        }}
+                      />
                     </div>
                     <div>
-                      <label className="form-label">Lot Number</label>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                        <label className="form-label" style={{ margin: 0 }}>Lot Number</label>
+                        <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 700 }}>🔒 Locked</span>
+                      </div>
                       <input
                         type="text"
                         className="form-input"
                         placeholder="e.g., Lot 12"
                         value={lot}
-                        onChange={e => setLot(e.target.value)}
-                        required
+                        readOnly
+                        disabled
+                        tabIndex={-1}
+                        style={{
+                          background: 'var(--bg-hover)',
+                          cursor: 'not-allowed',
+                          color: 'var(--text-secondary)',
+                          fontWeight: 600,
+                          opacity: 0.85,
+                        }}
                       />
                     </div>
                     <div>
-                      <label className="form-label">Street Name</label>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                        <label className="form-label" style={{ margin: 0 }}>Street Name</label>
+                        <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 700 }}>🔒 Locked</span>
+                      </div>
                       <input
                         type="text"
                         className="form-input"
                         placeholder="e.g., Mahogany St."
                         value={streetName}
-                        onChange={e => setStreetName(e.target.value)}
-                        required
+                        readOnly
+                        disabled
+                        tabIndex={-1}
+                        style={{
+                          background: 'var(--bg-hover)',
+                          cursor: 'not-allowed',
+                          color: 'var(--text-secondary)',
+                          fontWeight: 600,
+                          opacity: 0.85,
+                        }}
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-2 mb-3" style={{ gap: 12 }}>
                     <div>
-                      <label className="form-label">Registered Owner Name (Pre-filled)</label>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                        <label className="form-label" style={{ margin: 0 }}>Registered Owner Name (Pre-filled)</label>
+                        <span style={{ fontSize: 10, color: '#166534', background: '#DCFCE7', padding: '1px 6px', borderRadius: 4, fontWeight: 700 }}>
+                          🔒 Official Masterlist (Locked)
+                        </span>
+                      </div>
                       <input
                         type="text"
                         className="form-input"
                         value={registeredOwnerName}
-                        onChange={e => setRegisteredOwnerName(e.target.value)}
-                        required
+                        readOnly
+                        disabled
+                        tabIndex={-1}
+                        style={{
+                          background: 'var(--bg-hover)',
+                          cursor: 'not-allowed',
+                          color: 'var(--text-secondary)',
+                          fontWeight: 600,
+                          border: '1.5px solid #16A34A',
+                          opacity: 0.9,
+                        }}
                       />
                     </div>
                     <div>

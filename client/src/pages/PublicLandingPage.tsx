@@ -1046,39 +1046,9 @@ export default function PublicLandingPage() {
                     <div style={{ fontSize: 11.5, color: 'var(--landing-text-muted)', marginTop: 2 }}>{off.blockOrDept}</div>
                   </div>
 
-                  <div style={{ fontSize: 11.5, color: 'var(--landing-text-sub)', marginTop: 12, paddingTop: 10, borderTop: `1px solid var(--landing-card-border)`, display: 'flex', flexDirection: 'column', gap: 4 }}>
-                    <div className="flex items-center gap-2">
-                      <span>📞</span>
-                      <a href={`tel:${off.phone}`} style={{ color: 'var(--landing-text)', fontWeight: 700, textDecoration: 'none' }}>{off.phone}</a>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span>✉️</span>
-                      <a href={`mailto:${off.email}`} style={{ color: '#2563EB', fontWeight: 600, textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{off.email}</a>
-                    </div>
-                    <div className="mt-2 pt-2 flex items-center justify-between" style={{ borderTop: `1px dashed var(--landing-card-border)` }}>
-                      <a
-                        href={off.facebookUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="btn btn-sm"
-                        style={{
-                          background: '#1877F2',
-                          color: '#FFFFFF',
-                          fontWeight: 700,
-                          fontSize: 11,
-                          padding: '3px 8px',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 5,
-                          borderRadius: 6,
-                          textDecoration: 'none',
-                        }}
-                      >
-                        <FacebookIcon size={12} color="#FFF" />
-                        <span>Facebook</span>
-                      </a>
-                      <span style={{ fontSize: 10, color: 'var(--landing-text-muted)' }}>Officer Profile</span>
-                    </div>
+                  <div style={{ fontSize: 11.5, color: 'var(--landing-text-sub)', marginTop: 12, paddingTop: 10, borderTop: `1px solid var(--landing-card-border)`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: 11, color: 'var(--landing-text-muted)', fontWeight: 600 }}>🏛️ Executive Board</span>
+                    <span style={{ fontSize: 10, background: `${off.color}15`, color: off.color, padding: '2px 8px', borderRadius: 6, fontWeight: 700 }}>Elected Officer</span>
                   </div>
                 </div>
               ))}
@@ -1114,29 +1084,9 @@ export default function PublicLandingPage() {
                     <div style={{ fontSize: 11.5, color: '#0891B2', fontWeight: 700, marginTop: 2 }}>{off.role}</div>
                   </div>
 
-                  <div style={{ fontSize: 11, color: 'var(--landing-text-sub)', marginTop: 10, paddingTop: 8, borderTop: `1px solid var(--landing-card-border)`, display: 'flex', flexDirection: 'column', gap: 3 }}>
-                    <div>📞 <strong>{off.phone}</strong></div>
-                    <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>✉️ {off.email}</div>
-                    <div className="mt-1 pt-1 flex items-center justify-between" style={{ borderTop: `1px dashed var(--landing-card-border)` }}>
-                      <a
-                        href={off.facebookUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{
-                          color: '#1877F2',
-                          fontWeight: 700,
-                          fontSize: 11,
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 4,
-                          textDecoration: 'none',
-                        }}
-                      >
-                        <FacebookIcon size={12} color="#1877F2" />
-                        <span>Facebook</span>
-                      </a>
-                      <span style={{ fontSize: 9.5, color: 'var(--landing-text-muted)' }}>Block Lead</span>
-                    </div>
+                  <div style={{ fontSize: 11, color: 'var(--landing-text-muted)', marginTop: 10, paddingTop: 8, borderTop: `1px solid var(--landing-card-border)`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span>📍 Block Coordinator</span>
+                    <span style={{ fontSize: 10, color: '#0891B2', background: '#ECFEFF', padding: '2px 6px', borderRadius: 4, fontWeight: 700 }}>Active Lead</span>
                   </div>
                 </div>
               ))}
@@ -1173,31 +1123,9 @@ export default function PublicLandingPage() {
                     <div style={{ fontSize: 11, color: 'var(--landing-text-muted)', marginTop: 3 }}>Scope: {off.blockOrDept}</div>
                   </div>
 
-                  <div style={{ fontSize: 11, color: 'var(--landing-text-sub)', marginTop: 10, paddingTop: 8, borderTop: `1px solid var(--landing-card-border)`, display: 'flex', flexDirection: 'column', gap: 3 }}>
-                    <div className="flex justify-between items-center">
-                      <span>📞 <strong>{off.phone}</strong></span>
-                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>✉️ {off.email}</span>
-                    </div>
-                    <div className="mt-1 pt-1 flex items-center justify-between" style={{ borderTop: `1px dashed var(--landing-card-border)` }}>
-                      <a
-                        href={off.facebookUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{
-                          color: '#1877F2',
-                          fontWeight: 700,
-                          fontSize: 11,
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 4,
-                          textDecoration: 'none',
-                        }}
-                      >
-                        <FacebookIcon size={12} color="#1877F2" />
-                        <span>Committee Facebook</span>
-                      </a>
-                      <span style={{ fontSize: 9.5, color: 'var(--landing-text-muted)' }}>Taskforce</span>
-                    </div>
+                  <div style={{ fontSize: 11, color: 'var(--landing-text-muted)', marginTop: 10, paddingTop: 8, borderTop: `1px solid var(--landing-card-border)`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span>🛡️ Working Committee</span>
+                    <span style={{ fontSize: 10, color: off.color, background: `${off.color}15`, padding: '2px 6px', borderRadius: 4, fontWeight: 700 }}>Official Taskforce</span>
                   </div>
                 </div>
               ))}

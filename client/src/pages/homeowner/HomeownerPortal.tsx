@@ -370,7 +370,14 @@ export default function HomeownerPortal() {
                           gap: 8,
                           transition: 'all 0.2s ease',
                         }}
-                        onClick={() => setShowPaymentModal(true)}
+                        onClick={() => {
+                          navigate('/billing?action=pay', {
+                            state: {
+                              openPayModal: true,
+                              amountDue: myDues?.grandTotalDue || 3000
+                            }
+                          });
+                        }}
                       >
                         💳 Make Payment
                       </button>

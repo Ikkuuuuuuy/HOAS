@@ -1,4 +1,4 @@
-import { DatabaseSync } from 'node:sqlite';
+﻿import { DatabaseSync } from 'node:sqlite';
 import path from 'path';
 import fs from 'fs';
 import dotenv from 'dotenv';
@@ -24,3 +24,11 @@ db.exec(schema);
 console.log(`📦 Database initialized at ${path.resolve(DB_PATH)}`);
 
 export default db;
+// Safe migrations for custom fields
+try { db.exec("ALTER TABLE document_requests ADD COLUMN registered_owner_name TEXT;"); } catch (e) {}
+try { db.exec("ALTER TABLE document_requests ADD COLUMN property_address TEXT;"); } catch (e) {}
+try { db.exec("ALTER TABLE document_requests ADD COLUMN details TEXT;"); } catch (e) {}
+try { db.exec("ALTER TABLE users ADD COLUMN address TEXT;"); } catch (e) {}
+try { db.exec("ALTER TABLE users ADD COLUMN block TEXT;"); } catch (e) {}
+try { db.exec("ALTER TABLE users ADD COLUMN lot TEXT;"); } catch (e) {}
+

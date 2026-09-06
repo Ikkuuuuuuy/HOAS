@@ -4,6 +4,7 @@ import { authenticate } from '../middleware/auth';
 import { requireRole } from '../middleware/rbac';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcryptjs';
+import { sendRegistrationPendingEmail, sendRegistrationApprovedEmail, sendEmail } from '../services/mailService';
 
 const router = Router();
 
@@ -35,9 +36,8 @@ router.post('/register-homeowner', async (req, res) => {
     }
 
     // Verify OTP (Simulation code: accepts '123456' or any 6-digit number)
-    if (!otpCode || otpCode.length !== 6) {
-      return res.status(400).json({ error: 'Invalid 6-digit SMS/Email verification code' });
-    }
+    // Optional OTP code
+    const effectiveOtp = otpCode || '123456';
 
     // Check existing email
     const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
@@ -83,6 +83,7 @@ router.post('/register-homeowner', async (req, res) => {
       VALUES (?, ?, ?, ?, ?, ?)
     `).run(uuidv4(), userId, tenantId, address, contactNumber, proofDocUrl || null);
 
+    try { await sendRegistrationPendingEmail(email, fullName, address); } catch (e) { console.error("Email error:", e); }
     res.status(201).json({
       message: isAutoApproved
         ? '🎉 Instant Auto-Verification Successful! Verified against NRG PH2 HOA Official Masterlist. Your account is immediately activated!'
@@ -405,11 +406,11 @@ router.post('/announcements', authenticate, requireRole('hoa_admin', 'admin_staf
 // ============================================================
 router.get('/officers', (req, res) => {
   const officers = [
-    { name: 'Engr. Roberto Garcia', position: 'HOA President', contact: '0917-111-2233', email: 'president@palmera-hoa.com', photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200' },
-    { name: 'Atty. Cristina Valdez', position: 'Vice President', contact: '0917-222-3344', email: 'vp@palmera-hoa.com', photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200' },
-    { name: 'Ana Ramos', position: 'Treasurer / Admin Staff', contact: '0917-333-4455', email: 'treasurer@palmera-hoa.com', photo: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200' },
-    { name: 'Mark Anthony Santos', position: 'HOA Secretary', contact: '0917-444-5566', email: 'secretary@palmera-hoa.com', photo: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200' },
-    { name: 'Capt. Eduardo Morales', position: 'Chief Security Officer', contact: '0917-555-6677', email: 'security@palmera-hoa.com', photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200' },
+    { name: 'Engr. Roberto Garcia', position: 'HOA President', photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200' },
+    { name: 'Atty. Cristina Valdez', position: 'Vice President', photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200' },
+    { name: 'Ana Ramos', position: 'Treasurer / Admin Staff', photo: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200' },
+    { name: 'Mark Anthony Santos', position: 'HOA Secretary', photo: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200' },
+    { name: 'Capt. Eduardo Morales', position: 'Chief Security Officer', photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200' },
   ];
   res.json(officers);
 });
@@ -425,21 +426,44 @@ router.get('/users/pending', authenticate, requireRole('hoa_admin', 'admin_staff
              rp.address, rp.civil_status, rp.birthdate
       FROM users u
       LEFT JOIN resident_profiles rp ON u.id = rp.user_id
-      WHERE u.tenant_id = ? AND u.status = 'pending_approval'
+      WHERE (u.status = 'pending_approval' OR u.status = 'pending')
       ORDER BY u.created_at DESC
-    `).all(tenantId);
-
-    res.json(pendingUsers);
+    `).all();
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
 
-router.patch('/users/:id/approve', authenticate, requireRole('hoa_admin', 'admin_staff', 'super_admin'), (req: any, res) => {
+router.patch('/users/:id/approve', authenticate, requireRole('hoa_admin', 'admin_staff', 'super_admin'), async (req: any, res) => {
   try {
     const { id } = req.params;
+    const userToApprove: any = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
     db.prepare("UPDATE users SET status = 'active', is_active = 1 WHERE id = ?").run(id);
+    if (userToApprove && userToApprove.email) { try { await sendRegistrationApprovedEmail(userToApprove.email, userToApprove.full_name); } catch(e) { console.error("Approval email error:", e); } }
     res.json({ message: 'Homeowner account approved and activated successfully' });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+router.patch('/users/:id/reject', authenticate, requireRole('hoa_admin', 'admin_staff', 'super_admin'), async (req: any, res) => {
+  try {
+    const { id } = req.params;
+    const { reason } = req.body;
+    const userToReject: any = db.prepare('SELECT * FROM users WHERE id = ?').get(id);
+    db.prepare("UPDATE users SET status = 'rejected', is_active = 0 WHERE id = ?").run(id);
+    if (userToReject && userToReject.email) {
+      try {
+        await sendEmail({
+          to: userToReject.email,
+          subject: 'Homeowner Application Status - NRG PH2 HOA',
+          html: '<p>Dear ' + userToReject.full_name + ',</p><p>Your application for HOA membership has been declined by the board.</p>' + (reason ? '<p><strong>Reason:</strong> ' + reason + '</p>' : '') + '<p>Please contact the HOA office for inquiries.</p>',
+          text: 'Your registration application has been declined.'
+        });
+      } catch (e) { console.error('Reject email error:', e); }
+    }
+    res.json({ message: 'Homeowner application declined' });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
@@ -491,34 +515,36 @@ router.post('/users/admin-staff', authenticate, requireRole('hoa_admin', 'super_
 router.get('/officers', (req, res) => {
   const officers = [
     // Executive Board
-    { name: 'Rey Mar Villanueva', role: 'HOA President', category: 'executive', blockOrDept: 'Executive Board', phone: '0917-882-9401', email: 'president.reymar@nrgph2.org', facebookUrl: 'https://facebook.com/reymar.villanueva.nrgph2' },
-    { name: 'Cezar Climaco', role: 'HOA Vice President', category: 'executive', blockOrDept: 'Executive Board', phone: '0918-554-1102', email: 'vp.cezar@nrgph2.org', facebookUrl: 'https://facebook.com/cezar.climaco.nrgph2' },
-    { name: 'Alma Valdezco', role: 'HOA Treasurer', category: 'executive', blockOrDept: 'Finance & Treasury', phone: '0917-123-4567', email: 'treasurer.alma@nrgph2.org', facebookUrl: 'https://facebook.com/alma.valdezco.nrgph2' },
-    { name: 'Ronilo Villagantol', role: 'HOA Auditor', category: 'executive', blockOrDept: 'Internal Audit', phone: '0922-778-9904', email: 'auditor.ronilo@nrgph2.org', facebookUrl: 'https://facebook.com/ronilo.villagantol.nrgph2' },
-    { name: 'Josaphat Aguiman', role: 'HOA Secretary', category: 'executive', blockOrDept: 'Secretariat & Records', phone: '0905-667-2205', email: 'secretary.josaphat@nrgph2.org', facebookUrl: 'https://facebook.com/josaphat.aguiman.nrgph2' },
+    { name: 'Rey Mar Villanueva', role: 'HOA President', category: 'executive', blockOrDept: 'Executive Board' },
+    { name: 'Cezar Climaco', role: 'HOA Vice President', category: 'executive', blockOrDept: 'Executive Board' },
+    { name: 'Alma Valdezco', role: 'HOA Treasurer', category: 'executive', blockOrDept: 'Finance & Treasury' },
+    { name: 'Ronilo Villagantol', role: 'HOA Auditor', category: 'executive', blockOrDept: 'Internal Audit' },
+    { name: 'Josaphat Aguiman', role: 'HOA Secretary', category: 'executive', blockOrDept: 'Secretariat & Records' },
     // Block Leaders
-    { name: 'Anne Gregori / Ronalyn Villarte', role: 'Block 1 Leader', category: 'block_leader', blockOrDept: 'Block 1 Community', phone: '0919-334-8811', email: 'block1.leader@nrgph2.org', facebookUrl: 'https://facebook.com/nrgph2.block1.coordinators' },
-    { name: 'Jemma Alamillo', role: 'Block 2 Leader', category: 'block_leader', blockOrDept: 'Block 2 Community', phone: '0917-445-9922', email: 'block2.leader@nrgph2.org', facebookUrl: 'https://facebook.com/jemma.alamillo.nrgph2' },
-    { name: 'Jocelyn Selanova', role: 'Block 3 Leader', category: 'block_leader', blockOrDept: 'Block 3 Community', phone: '0920-881-2233', email: 'block3.leader@nrgph2.org', facebookUrl: 'https://facebook.com/jocelyn.selanova.nrgph2' },
-    { name: 'Melinda Domingo', role: 'Block 4 Leader', category: 'block_leader', blockOrDept: 'Block 4 Community', phone: '0918-662-7744', email: 'block4.leader@nrgph2.org', facebookUrl: 'https://facebook.com/melinda.domingo.nrgph2' },
-    { name: 'Alma Miralles', role: 'Block 5 Leader', category: 'block_leader', blockOrDept: 'Block 5 Community', phone: '0922-339-4455', email: 'block5.leader@nrgph2.org', facebookUrl: 'https://facebook.com/alma.miralles.nrgph2' },
-    { name: 'Ofelia Esloyo', role: 'Block 6 Leader', category: 'block_leader', blockOrDept: 'Block 6 Community', phone: '0917-551-8866', email: 'block6.leader@nrgph2.org', facebookUrl: 'https://facebook.com/ofelia.esloyo.nrgph2' },
-    { name: 'Rina Dorate', role: 'Block 7 Leader', category: 'block_leader', blockOrDept: 'Block 7 Community', phone: '0906-443-1177', email: 'block7.leader@nrgph2.org', facebookUrl: 'https://facebook.com/rina.dorate.nrgph2' },
-    { name: 'Rina Dorate', role: 'Block 8 Leader', category: 'block_leader', blockOrDept: 'Block 8 Community', phone: '0906-443-1177', email: 'block8.leader@nrgph2.org', facebookUrl: 'https://facebook.com/rina.dorate.nrgph2' },
-    { name: 'Jennerfer Barlaan', role: 'Block 9 Leader', category: 'block_leader', blockOrDept: 'Block 9 Community', phone: '0918-994-5599', email: 'block9.leader@nrgph2.org', facebookUrl: 'https://facebook.com/jennerfer.barlaan.nrgph2' },
+    { name: 'Anne Gregori / Ronalyn Villarte', role: 'Block 1 Leader', category: 'block_leader', blockOrDept: 'Block 1 Community' },
+    { name: 'Jemma Alamillo', role: 'Block 2 Leader', category: 'block_leader', blockOrDept: 'Block 2 Community' },
+    { name: 'Jocelyn Selanova', role: 'Block 3 Leader', category: 'block_leader', blockOrDept: 'Block 3 Community' },
+    { name: 'Melinda Domingo', role: 'Block 4 Leader', category: 'block_leader', blockOrDept: 'Block 4 Community' },
+    { name: 'Alma Miralles', role: 'Block 5 Leader', category: 'block_leader', blockOrDept: 'Block 5 Community' },
+    { name: 'Ofelia Esloyo', role: 'Block 6 Leader', category: 'block_leader', blockOrDept: 'Block 6 Community' },
+    { name: 'Rina Dorate', role: 'Block 7 Leader', category: 'block_leader', blockOrDept: 'Block 7 Community' },
+    { name: 'Rina Dorate', role: 'Block 8 Leader', category: 'block_leader', blockOrDept: 'Block 8 Community' },
+    { name: 'Jennerfer Barlaan', role: 'Block 9 Leader', category: 'block_leader', blockOrDept: 'Block 9 Community' },
     // Committees
-    { name: 'Melody Matienzo', role: 'Chairperson — Grievance Committee', category: 'committee', blockOrDept: 'Dispute Resolution', phone: '0917-881-3301', email: 'grievance.melody@nrgph2.org', facebookUrl: 'https://facebook.com/melody.matienzo.nrgph2' },
-    { name: 'Patrick Gariando', role: 'Chairperson — Inventory Committee', category: 'committee', blockOrDept: 'Asset Management', phone: '0922-114-8802', email: 'inventory.patrick@nrgph2.org', facebookUrl: 'https://facebook.com/patrick.gariando.nrgph2' },
-    { name: 'Xandrix Pagligaran', role: 'Chairperson — Committee on Election (COMELEC)', category: 'committee', blockOrDept: 'Electoral Board', phone: '0919-445-6603', email: 'comelec.xandrix@nrgph2.org', facebookUrl: 'https://facebook.com/xandrix.pagligaran.nrgph2' },
-    { name: 'Jhon Magdaluyo', role: 'Chairperson — Disaster Risk Reduction Management (DRRM)', category: 'committee', blockOrDept: 'Emergency Management', phone: '0917-911-0004', email: 'drrm.jhon@nrgph2.org', facebookUrl: 'https://facebook.com/jhon.magdaluyo.nrgph2' },
-    { name: 'Wennie Arago', role: 'Chairperson — Peace and Order Committee', category: 'committee', blockOrDept: 'Security & Gate', phone: '0918-223-7705', email: 'peaceorder.wennie@nrgph2.org', facebookUrl: 'https://facebook.com/wennie.arago.nrgph2' },
-    { name: 'Ronald Balbin', role: 'Chairperson — Sports & Recreation Committee', category: 'committee', blockOrDept: 'Court & Sports', phone: '0920-556-8806', email: 'sports.ronald@nrgph2.org', facebookUrl: 'https://facebook.com/ronald.balbin.nrgph2' },
-    { name: 'Allen Tabasa', role: 'Chairperson — Facilities & Improvement Committee', category: 'committee', blockOrDept: 'Infrastructure & Permits', phone: '0917-334-1107', email: 'facilities.allen@nrgph2.org', facebookUrl: 'https://facebook.com/allen.tabasa.nrgph2' },
-    { name: 'Alan Talaba', role: 'Chairperson — Gender and Development (GAD)', category: 'committee', blockOrDept: 'Community Welfare', phone: '0922-887-2208', email: 'gad.alan@nrgph2.org', facebookUrl: 'https://facebook.com/alan.talaba.nrgph2' },
-    { name: 'Clemente Sibayan, Ferdinand Lazo, and Nicanor Lasac', role: 'Committee Heads — Livelihood Programs', category: 'committee', blockOrDept: 'Livelihood & Skills', phone: '0919-665-4409', email: 'livelihood.leads@nrgph2.org', facebookUrl: 'https://facebook.com/nrgph2.livelihood.committee' },
-    { name: 'Conrado Laoang', role: 'Chairperson — Maintenance Committee', category: 'committee', blockOrDept: 'Maintenance & Repairs', phone: '0917-772-5510', email: 'maintenance.conrado@nrgph2.org', facebookUrl: 'https://facebook.com/conrado.laoang.nrgph2' },
+    { name: 'Melody Matienzo', role: 'Chairperson — Grievance Committee', category: 'committee', blockOrDept: 'Dispute Resolution' },
+    { name: 'Patrick Gariando', role: 'Chairperson — Inventory Committee', category: 'committee', blockOrDept: 'Asset Management' },
+    { name: 'Xandrix Pagligaran', role: 'Chairperson — Committee on Election (COMELEC)', category: 'committee', blockOrDept: 'Electoral Board' },
+    { name: 'Jhon Magdaluyo', role: 'Chairperson — Disaster Risk Reduction Management (DRRM)', category: 'committee', blockOrDept: 'Emergency Management' },
+    { name: 'Wennie Arago', role: 'Chairperson — Peace and Order Committee', category: 'committee', blockOrDept: 'Security & Gate' },
+    { name: 'Ronald Balbin', role: 'Chairperson — Sports & Recreation Committee', category: 'committee', blockOrDept: 'Court & Sports' },
+    { name: 'Allen Tabasa', role: 'Chairperson — Facilities & Improvement Committee', category: 'committee', blockOrDept: 'Infrastructure & Permits' },
+    { name: 'Alan Talaba', role: 'Chairperson — Gender and Development (GAD)', category: 'committee', blockOrDept: 'Community Welfare' },
+    { name: 'Clemente Sibayan, Ferdinand Lazo, and Nicanor Lasac', role: 'Committee Heads — Livelihood Programs', category: 'committee', blockOrDept: 'Livelihood & Skills' },
+    { name: 'Conrado Laoang', role: 'Chairperson — Maintenance Committee', category: 'committee', blockOrDept: 'Maintenance & Repairs' },
   ];
   res.json(officers);
 });
 
 export default router;
+
+

@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useAlerts } from '../../context/AlertContext';
 import { useTheme } from '../../context/ThemeContext';
+import { getMockData } from '../../data/mockDatabase';
 
 interface NavbarProps {
   title: string;
@@ -32,26 +33,160 @@ export default function Navbar({ title }: NavbarProps) {
 
   useEffect(() => {
     if (!user) return;
+    const currentUser = user;
+    let isMounted = true;
 
-    let roleNotifications: NotificationItem[] = [];
-    if (user.roleName === 'super_admin') {
-      roleNotifications = [
-        { id: 'sa-1', title: 'New Tenant: Palmera Residences HOA', time: '10m ago', read: false, type: 'tenant', targetPath: '/tenants' },
-        { id: 'sa-2', title: 'User Created: Sgt. Pedro Penduko', time: '1h ago', read: false, type: 'users', targetPath: '/users' },
-      ];
-    } else if (user.roleName === 'hoa_admin' || user.roleName === 'admin_staff') {
-      roleNotifications = [
-        { id: 'hoa-1', title: '3 Pending Homeowner Approvals', time: '5m ago', read: false, type: 'hoa', targetPath: '/hoa-manage' },
-        { id: 'hoa-2', title: '₱45,200 Dues Payments Recorded', time: '1h ago', read: false, type: 'billing', targetPath: '/billing' },
-      ];
-    } else {
-      roleNotifications = [
-        { id: 'res-1', title: 'Monthly HOA Dues Statement Issued', time: '20m ago', read: false, type: 'billing', targetPath: '/billing' },
-        { id: 'res-2', title: 'Service Request Approved', time: '2h ago', read: false, type: 'document', targetPath: '/homeowner-portal' },
-      ];
+    async function loadDynamicNotifications() {
+      const items: NotificationItem[] = [];
+
+      // 1. Active Emergency Alerts (Top Priority for all roles)
+      if (activeAlerts && activeAlerts.length > 0) {
+        activeAlerts.forEach(alert => {
+          const typeLabel = (alert.alertType || (alert as any).alert_type || 'emergency').toUpperCase();
+          items.push({
+            id: `alert-${alert.id}`,
+            title: `🚨 ${typeLabel}: ${alert.location || 'Emergency Alert'}`,
+            time: 'Active Now',
+            read: false,
+            type: 'alert',
+            targetPath: '/alerts',
+          });
+        });
+      }
+
+      try {
+        // 2. Role-specific database-driven notifications
+        if (currentUser.roleName === 'resident' || currentUser.roleName === 'homeowner') {
+          // Check resident billing
+          const bills = getMockData('billing') || [];
+          const userBills = bills.filter((b: any) => 
+            b.resident_id === currentUser.id || 
+            (b.resident_name && b.resident_name.toLowerCase().includes(currentUser.fullName.toLowerCase()))
+          );
+          const unpaid = userBills.find((b: any) => b.status === 'unpaid' || b.status === 'overdue');
+          if (unpaid) {
+            items.push({
+              id: `bill-${unpaid.id}`,
+              title: `💳 ${unpaid.billing_period} Dues Unpaid: ₱${(unpaid.amount + (unpaid.previous_balance || 0)).toLocaleString()}`,
+              time: `Due ${unpaid.due_date}`,
+              read: false,
+              type: 'billing',
+              targetPath: '/homeowner-portal',
+            });
+          } else {
+            items.push({
+              id: 'bill-clear',
+              title: `✅ All Association Dues are Fully Paid`,
+              time: 'Current',
+              read: true,
+              type: 'billing',
+              targetPath: '/homeowner-portal',
+            });
+          }
+
+          // Check resident reservations
+          const resList = getMockData('reservations') || [];
+          const myReservations = resList.filter((r: any) => r.user_id === currentUser.id || r.reserved_by === currentUser.id);
+          if (myReservations.length > 0) {
+            const latest = myReservations[0];
+            items.push({
+              id: `res-${latest.id}`,
+              title: `📅 Facility Booking: ${latest.title || 'Reservation'} (${latest.status})`,
+              time: latest.start_time?.split('T')[0] || 'Upcoming',
+              read: latest.status === 'approved',
+              type: 'facility',
+              targetPath: '/facilities',
+            });
+          }
+        } else if (currentUser.roleName === 'hoa_admin' || currentUser.roleName === 'admin_staff') {
+          // HOA Admin & Staff
+          const users = getMockData('users') || [];
+          const pendingApps = users.filter((u: any) => u.status === 'pending_approval');
+          if (pendingApps.length > 0) {
+            items.push({
+              id: 'hoa-pending-apps',
+              title: `👥 ${pendingApps.length} Homeowner Application${pendingApps.length > 1 ? 's' : ''} Pending Approval`,
+              time: 'Action Needed',
+              read: false,
+              type: 'hoa',
+              targetPath: '/hoa-manage',
+            });
+          }
+
+          const bills = getMockData('billing') || [];
+          const unpaidLedgers = bills.filter((b: any) => b.status === 'unpaid' || b.status === 'overdue');
+          if (unpaidLedgers.length > 0) {
+            items.push({
+              id: 'hoa-unpaid-dues',
+              title: `📊 ${unpaidLedgers.length} Delinquent / Unpaid Dues in Ledger`,
+              time: 'Billing Q3',
+              read: false,
+              type: 'billing',
+              targetPath: '/billing',
+            });
+          }
+
+          const resList = getMockData('reservations') || [];
+          const pendingRes = resList.filter((r: any) => r.status === 'pending');
+          if (pendingRes.length > 0) {
+            items.push({
+              id: 'hoa-pending-res',
+              title: `📅 ${pendingRes.length} Facility Reservation Request${pendingRes.length > 1 ? 's' : ''}`,
+              time: 'Pending Review',
+              read: false,
+              type: 'facility',
+              targetPath: '/facilities',
+            });
+          }
+        } else if (currentUser.roleName === 'barangay_official' || currentUser.roleName === 'super_admin') {
+          // Barangay Official & Super Admin
+          const docs = getMockData('documents') || [];
+          const pendingDocs = docs.filter((d: any) => d.status === 'pending');
+          if (pendingDocs.length > 0) {
+            items.push({
+              id: 'brgy-pending-docs',
+              title: `📄 ${pendingDocs.length} Barangay Clearance / Certificate Request${pendingDocs.length > 1 ? 's' : ''}`,
+              time: 'Processing',
+              read: false,
+              type: 'document',
+              targetPath: '/documents',
+            });
+          }
+
+          const tenants = getMockData('tenants') || [];
+          items.push({
+            id: 'brgy-tenants',
+            title: `🏛️ ${tenants.length} Active Jurisdictions & HOAs Registered`,
+            time: 'System Online',
+            read: true,
+            type: 'tenant',
+            targetPath: '/tenants',
+          });
+        } else if (currentUser.roleName === 'security_guard') {
+          // Security Guard
+          const visitors = getMockData('visitors') || [];
+          const inside = visitors.filter((v: any) => v.status === 'inside' || !v.time_out);
+          items.push({
+            id: 'guard-visitors',
+            title: `🛂 ${inside.length} Active Visitors Inside Phase 2 Premises`,
+            time: 'Gate 1 RFID',
+            read: false,
+            type: 'visitors',
+            targetPath: '/visitors',
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load dynamic notifications:', err);
+      }
+
+      if (isMounted) {
+        setNotifications(items);
+      }
     }
-    setNotifications(roleNotifications);
-  }, [user]);
+
+    loadDynamicNotifications();
+    return () => { isMounted = false; };
+  }, [user, activeAlerts]);
 
   useEffect(() => {
     const updateTime = () => {

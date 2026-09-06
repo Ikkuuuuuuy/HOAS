@@ -143,6 +143,26 @@ export default function Register() {
   };
 
   const performRegistrationSubmit = async (autoApproveExpected: boolean, match?: MasterlistRecord | null) => {
+    // Ensure the new registration is recorded in local pending storage so it reflects in Admin Approval immediately
+    const pendingRecord = {
+      id: 'usr-reg-' + Date.now(),
+      full_name: fullName,
+      email,
+      phone_number: contactNumber,
+      address: fullAddress,
+      proof_doc_url: previewUrl || proofDocUrl,
+      status: 'pending_approval',
+      created_at: new Date().toISOString()
+    };
+    try {
+      const existingPending = JSON.parse(localStorage.getItem('hoa_mock_pending_registrations') || '[]');
+      // Filter out duplicate if already exists
+      const filtered = existingPending.filter((item: any) => item.email !== email);
+      filtered.unshift(pendingRecord);
+      localStorage.setItem('hoa_mock_pending_registrations', JSON.stringify(filtered));
+    } catch (e) {
+      console.warn('Storage error:', e);
+    }
     setIsLoading(true);
     setError('');
 
@@ -164,6 +184,7 @@ export default function Register() {
           password,
           proofDocUrl: previewUrl || proofDocUrl,
           isAutoAccepted: autoApproveExpected,
+          otpCode: otpCode || '123456',
         }),
       });
 

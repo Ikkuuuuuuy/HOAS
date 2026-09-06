@@ -333,27 +333,11 @@ export default function FacilityCalendar() {
               const isPending = booking?.status === 'pending';
               const isMine = booking?.reserved_by === user?.id;
 
-              let slotBg = 'rgba(34, 197, 94, 0.08)';
-              let slotBorder = '1.5px solid rgba(34, 197, 94, 0.4)';
-              let statusText = '🟢 Available Slot';
-              let badgeColor = '#22C55E';
-
-              if (isMine) {
-                slotBg = 'rgba(124, 58, 237, 0.12)';
-                slotBorder = '2px solid #7C3AED';
-                statusText = '🔵 Reserved by You';
-                badgeColor = '#A78BFA';
-              } else if (isApproved) {
-                slotBg = 'rgba(220, 38, 38, 0.1)';
-                slotBorder = '1.5px solid rgba(220, 38, 38, 0.5)';
-                statusText = '🔴 Reserved / Taken';
-                badgeColor = '#FCA5A5';
-              } else if (isPending) {
-                slotBg = 'rgba(245, 158, 11, 0.1)';
-                slotBorder = '1.5px solid rgba(245, 158, 11, 0.5)';
-                statusText = '🟡 Pending Approval';
-                badgeColor = '#FCD34D';
-              }
+              const isNotAvailable = !!booking;
+              const slotBg = isNotAvailable ? 'rgba(239, 68, 68, 0.06)' : 'rgba(34, 197, 94, 0.08)';
+              const slotBorder = isNotAvailable ? '1.5px solid rgba(239, 68, 68, 0.35)' : '1.5px solid rgba(34, 197, 94, 0.4)';
+              const statusText = isNotAvailable ? '🔴 Not Available' : '🟢 Available';
+              const badgeColor = isNotAvailable ? '#DC2626' : '#166534';
 
               return (
                 <div

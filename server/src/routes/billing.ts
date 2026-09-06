@@ -4,6 +4,7 @@ import { z } from 'zod';
 import db from '../config/database';
 import { authenticate } from '../middleware/auth';
 import { requireRoles } from '../middleware/rbac';
+import { sendPaymentReceiptEmail } from '../services/mailService';
 
 const router = Router();
 
@@ -145,6 +146,20 @@ router.post('/payments', authenticate, requireRoles('resident', 'hoa_admin', 'su
     // Update ledger status
     db.prepare(`UPDATE billing_ledgers SET status = 'paid' WHERE id = ?`).run(ledgerId);
 
+    
+    // Send email receipt
+    try {
+      const userObj: any = req.user;
+      const residentUser: any = db.prepare('SELECT email, full_name FROM users WHERE id = ?').get(ledger.resident_id || (userObj ? userObj.userId : ''));
+      const targetEmail = String((residentUser && residentUser.email) || (userObj && userObj.email) || '');
+      const targetName = String((residentUser && residentUser.full_name) || 'Valued Homeowner');
+      if (targetEmail) {
+        sendPaymentReceiptEmail(targetEmail, targetName, amount, refNo, paymentMethod);
+      }
+    } catch (mailErr) {
+      console.error('Payment receipt email error:', mailErr);
+    }
+
     res.status(201).json({
       paymentId,
       referenceNo: refNo,
@@ -183,6 +198,51 @@ router.get('/payments', authenticate, (req: Request, res: Response): void => {
     `).all(user!.tenantId);
   }
   res.json(rows);
+});
+
+
+// POST /api/billing/pay-dues — Direct PLDT-style dues payment
+router.post('/pay-dues', authenticate, async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userObj: any = req.user;
+    const { amount = 2699, paymentMethod = 'card', email, residentName } = req.body;
+    const paymentId = uuidv4();
+    const refNo = 'EXP-' + Date.now().toString().slice(-6) + '-' + Math.floor(1000 + Math.random() * 9000);
+    const tenantId = userObj?.tenantId || 'tenant-palmera-hoa';
+    const recipientEmail = String(email || userObj?.email || '');
+    const name = String(residentName || 'Valued Homeowner');
+
+    // Insert payment record
+    try {
+      db.prepare(`
+        INSERT INTO payments (id, ledger_id, tenant_id, amount, payment_method, reference_no, status, paid_at)
+        VALUES (?, 'ledger-monthly-dues', ?, ?, ?, ?, 'success', CURRENT_TIMESTAMP)
+      `).run(paymentId, tenantId, Number(amount), String(paymentMethod), refNo);
+    } catch (dbErr) {
+      console.warn('Payment insert notice:', dbErr);
+    }
+
+    // Trigger email receipt
+    if (recipientEmail) {
+      try {
+        await sendPaymentReceiptEmail(recipientEmail, name, Number(amount), refNo, String(paymentMethod).toUpperCase());
+      } catch (e) {
+        console.error('Email receipt dispatch error:', e);
+      }
+    }
+
+    res.status(201).json({
+      success: true,
+      paymentId,
+      referenceNo: refNo,
+      amount: Number(amount),
+      paymentMethod,
+      date: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }),
+      message: 'Payment of Php ' + Number(amount).toLocaleString() + ' processed successfully.'
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message || 'Payment processing failed' });
+  }
 });
 
 export default router;

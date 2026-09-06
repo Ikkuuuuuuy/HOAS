@@ -29,6 +29,13 @@ function getFallbackMockForEndpoint(endpoint: string): any {
   return null;
 }
 
+const API_BASE = (((import.meta as any).env?.VITE_API_URL as string) || '').replace(/\/$/, '');
+
+function resolveEndpoint(endpoint: string): string {
+  if (endpoint.startsWith('http')) return endpoint;
+  return API_BASE ? `${API_BASE}${endpoint}` : endpoint;
+}
+
 export function useApi<T>(endpoint: string, options?: UseApiOptions) {
   const [data, setData] = useState<T | null>(() => getFallbackMockForEndpoint(endpoint) as T | null);
   const [isLoading, setIsLoading] = useState(!options?.manual);
@@ -39,7 +46,8 @@ export function useApi<T>(endpoint: string, options?: UseApiOptions) {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch(endpoint, {
+      const targetUrl = resolveEndpoint(endpoint);
+      const res = await fetch(targetUrl, {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
@@ -98,7 +106,8 @@ export async function apiCall<T>(
   token?: string
 ): Promise<T> {
   try {
-    const res = await fetch(endpoint, {
+    const targetUrl = resolveEndpoint(endpoint);
+    const res = await fetch(targetUrl, {
       method,
       headers: {
         'Content-Type': 'application/json',

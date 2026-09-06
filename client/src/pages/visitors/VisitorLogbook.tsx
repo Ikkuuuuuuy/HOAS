@@ -4,6 +4,7 @@ import { useApi, apiCall } from '../../hooks/useApi';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import Pagination from '../../components/common/Pagination';
+import SortableHeader, { SortDirection } from '../../components/common/SortableHeader';
 
 export default function VisitorLogbook() {
   const { user, accessToken } = useAuth();
@@ -18,9 +19,23 @@ export default function VisitorLogbook() {
   // Search & Sorting state
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('time-desc');
+  const [sortField, setSortField] = useState<string>('time_in');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+
+  const handleSort = (field: string, direction?: SortDirection) => {
+    if (direction) {
+      setSortField(field);
+      setSortDirection(direction);
+    } else if (sortField === field) {
+      setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortField(field);
+      setSortDirection(field.startsWith('time') ? 'desc' : 'asc');
+    }
+    setCurrentPage(1);
+  };
 
   const [form, setForm] = useState({
     hostId: '',
@@ -82,15 +97,41 @@ export default function VisitorLogbook() {
     });
 
     result.sort((a: any, b: any) => {
-      if (sortBy === 'time-desc') return new Date(b.time_in).getTime() - new Date(a.time_in).getTime();
-      if (sortBy === 'time-asc') return new Date(a.time_in).getTime() - new Date(b.time_in).getTime();
-      if (sortBy === 'name-asc') return (a.visitor_name || '').localeCompare(b.visitor_name || '');
-      if (sortBy === 'host-asc') return (a.host_name || '').localeCompare(b.host_name || '');
-      return 0;
+      let cmp = 0;
+      switch (sortField) {
+        case 'time_in':
+          cmp = new Date(a.time_in || 0).getTime() - new Date(b.time_in || 0).getTime();
+          break;
+        case 'time_out':
+          cmp = new Date(a.time_out || 0).getTime() - new Date(b.time_out || 0).getTime();
+          break;
+        case 'visitor_name':
+          cmp = (a.visitor_name || '').localeCompare(b.visitor_name || '');
+          break;
+        case 'host_name':
+          cmp = (a.host_name || '').localeCompare(b.host_name || '');
+          break;
+        case 'purpose':
+          cmp = (a.purpose || '').localeCompare(b.purpose || '');
+          break;
+        case 'id_type':
+          cmp = String(a.visitor_id_type || '').localeCompare(String(b.visitor_id_type || ''));
+          break;
+        case 'plate':
+          cmp = (a.vehicle_plate || '').localeCompare(b.vehicle_plate || '');
+          break;
+        case 'status':
+          cmp = (a.status || '').localeCompare(b.status || '');
+          break;
+        default:
+          cmp = new Date(a.time_in || 0).getTime() - new Date(b.time_in || 0).getTime();
+          break;
+      }
+      return sortDirection === 'asc' ? cmp : -cmp;
     });
 
     return result;
-  }, [visitors, searchQuery, statusFilter, sortBy]);
+  }, [visitors, searchQuery, statusFilter, sortField, sortDirection]);
 
   const paginatedVisitors = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
@@ -161,13 +202,21 @@ export default function VisitorLogbook() {
               <select
                 className="form-select"
                 style={{ width: 190 }}
-                value={sortBy}
-                onChange={e => setSortBy(e.target.value)}
+                value={`${sortField}-${sortDirection}`}
+                onChange={e => {
+                  const parts = e.target.value.split('-');
+                  const dir = parts.pop() as SortDirection;
+                  const fld = parts.join('-');
+                  handleSort(fld, dir);
+                }}
               >
-                <option value="time-desc">Time In: Newest First</option>
-                <option value="time-asc">Time In: Oldest First</option>
-                <option value="name-asc">Visitor Name (A-Z)</option>
-                <option value="host-asc">Host Name (A-Z)</option>
+                <option value="time_in-desc">Time In: Newest First</option>
+                <option value="time_in-asc">Time In: Oldest First</option>
+                <option value="visitor_name-asc">Visitor Name (A-Z)</option>
+                <option value="visitor_name-desc">Visitor Name (Z-A)</option>
+                <option value="host_name-asc">Host Name (A-Z)</option>
+                <option value="host_name-desc">Host Name (Z-A)</option>
+                <option value="status-asc">Status (A-Z)</option>
               </select>
             </div>
           </div>
@@ -178,15 +227,63 @@ export default function VisitorLogbook() {
           <table className="data-table">
             <thead>
               <tr>
-                <th>Visitor Name</th>
-                <th>Host Resident</th>
-                <th>Purpose</th>
-                <th>ID Type</th>
-                <th>Vehicle Plate</th>
-                <th>Time In</th>
-                <th>Time Out</th>
+                <SortableHeader
+                  label="Visitor Name"
+                  field="visitor_name"
+                  currentSortField={sortField}
+                  currentSortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  label="Host Resident"
+                  field="host_name"
+                  currentSortField={sortField}
+                  currentSortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  label="Purpose"
+                  field="purpose"
+                  currentSortField={sortField}
+                  currentSortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  label="ID Type"
+                  field="id_type"
+                  currentSortField={sortField}
+                  currentSortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  label="Vehicle Plate"
+                  field="plate"
+                  currentSortField={sortField}
+                  currentSortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  label="Time In"
+                  field="time_in"
+                  currentSortField={sortField}
+                  currentSortDirection={sortDirection}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  label="Time Out"
+                  field="time_out"
+                  currentSortField={sortField}
+                  currentSortDirection={sortDirection}
+                  onSort={handleSort}
+                />
                 <th>Gate Pass</th>
-                <th>Status</th>
+                <SortableHeader
+                  label="Status"
+                  field="status"
+                  currentSortField={sortField}
+                  currentSortDirection={sortDirection}
+                  onSort={handleSort}
+                />
                 {canLog && <th>Action</th>}
               </tr>
             </thead>

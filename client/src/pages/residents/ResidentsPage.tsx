@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import PageContainer from '../../components/layout/PageContainer';
 import { useApi } from '../../hooks/useApi';
 import { useAuth } from '../../context/AuthContext';
+import SortableHeader, { SortDirection } from '../../components/common/SortableHeader';
 
 export default function ResidentsPage() {
   const { user } = useAuth();
@@ -10,7 +11,20 @@ export default function ResidentsPage() {
   // Search & Sorting state
   const [searchQuery, setSearchQuery] = useState('');
   const [civilStatusFilter, setCivilStatusFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('name-asc');
+  const [sortField, setSortField] = useState<string>('name');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+
+  const handleSort = (field: string, direction?: SortDirection) => {
+    if (direction) {
+      setSortField(field);
+      setSortDirection(direction);
+    } else if (sortField === field) {
+      setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
 
   // Filter & Sort Residents
   const filteredResidents = useMemo(() => {
@@ -30,14 +44,35 @@ export default function ResidentsPage() {
     });
 
     result.sort((a: any, b: any) => {
-      if (sortBy === 'name-asc') return (a.full_name || '').localeCompare(b.full_name || '');
-      if (sortBy === 'name-desc') return (b.full_name || '').localeCompare(a.full_name || '');
-      if (sortBy === 'address-asc') return (a.address || '').localeCompare(b.address || '');
-      return 0;
+      let cmp = 0;
+      switch (sortField) {
+        case 'name':
+          cmp = (a.full_name || '').localeCompare(b.full_name || '');
+          break;
+        case 'address':
+          cmp = (a.address || '').localeCompare(b.address || '');
+          break;
+        case 'contact':
+          cmp = (a.contact_number || '').localeCompare(b.contact_number || '');
+          break;
+        case 'civil_status':
+          cmp = (a.civil_status || '').localeCompare(b.civil_status || '');
+          break;
+        case 'birthdate':
+          cmp = new Date(a.birthdate || '1900-01-01').getTime() - new Date(b.birthdate || '1900-01-01').getTime();
+          break;
+        case 'indigent':
+          cmp = (a.indigency_status ? 1 : 0) - (b.indigency_status ? 1 : 0);
+          break;
+        default:
+          cmp = (a.full_name || '').localeCompare(b.full_name || '');
+          break;
+      }
+      return sortDirection === 'asc' ? cmp : -cmp;
     });
 
     return result;
-  }, [residents, searchQuery, civilStatusFilter, sortBy]);
+  }, [residents, searchQuery, civilStatusFilter, sortField, sortDirection]);
 
   return (
     <PageContainer title="Resident Registry" subtitle="Homeowner & Resident Profiles">
@@ -93,13 +128,22 @@ export default function ResidentsPage() {
               <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-muted)' }}>Sort By:</span>
               <select
                 className="form-select"
-                style={{ width: 180 }}
-                value={sortBy}
-                onChange={e => setSortBy(e.target.value)}
+                style={{ width: 190 }}
+                value={`${sortField}-${sortDirection}`}
+                onChange={e => {
+                  const parts = e.target.value.split('-');
+                  const dir = parts.pop() as SortDirection;
+                  const fld = parts.join('-');
+                  handleSort(fld, dir);
+                }}
               >
                 <option value="name-asc">Full Name (A-Z)</option>
                 <option value="name-desc">Full Name (Z-A)</option>
-                <option value="address-asc">Address / Block (A-Z)</option>
+                <option value="address-asc">Address (A-Z)</option>
+                <option value="address-desc">Address (Z-A)</option>
+                <option value="birthdate-asc">Birthdate (Oldest First)</option>
+                <option value="birthdate-desc">Birthdate (Youngest First)</option>
+                <option value="civil_status-asc">Civil Status (A-Z)</option>
               </select>
             </div>
           </div>
@@ -116,12 +160,48 @@ export default function ResidentsPage() {
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Resident</th>
-                  <th>Address</th>
-                  <th>Contact</th>
-                  <th>Civil Status</th>
-                  <th>Birthdate</th>
-                  <th>Indigent</th>
+                  <SortableHeader
+                    label="Resident"
+                    field="name"
+                    currentSortField={sortField}
+                    currentSortDirection={sortDirection}
+                    onSort={handleSort}
+                  />
+                  <SortableHeader
+                    label="Address"
+                    field="address"
+                    currentSortField={sortField}
+                    currentSortDirection={sortDirection}
+                    onSort={handleSort}
+                  />
+                  <SortableHeader
+                    label="Contact"
+                    field="contact"
+                    currentSortField={sortField}
+                    currentSortDirection={sortDirection}
+                    onSort={handleSort}
+                  />
+                  <SortableHeader
+                    label="Civil Status"
+                    field="civil_status"
+                    currentSortField={sortField}
+                    currentSortDirection={sortDirection}
+                    onSort={handleSort}
+                  />
+                  <SortableHeader
+                    label="Birthdate"
+                    field="birthdate"
+                    currentSortField={sortField}
+                    currentSortDirection={sortDirection}
+                    onSort={handleSort}
+                  />
+                  <SortableHeader
+                    label="Indigent"
+                    field="indigent"
+                    currentSortField={sortField}
+                    currentSortDirection={sortDirection}
+                    onSort={handleSort}
+                  />
                 </tr>
               </thead>
               <tbody>

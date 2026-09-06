@@ -1,0 +1,67 @@
+========================================================================
+             HOA & BARANGAY PORTAL - CLIENT SETUP GUIDE
+========================================================================
+
+Welcome to the HOA & Barangay Portal System!
+Follow these simple steps to run the application on your computer.
+
+------------------------------------------------------------------------
+[1] FIRST TIME ONLY (PREREQUISITE)
+------------------------------------------------------------------------
+Make sure Node.js is installed on your computer:
+1. Go to: https://nodejs.org/
+2. Download and install the "LTS version" (Recommended).
+3. Follow the installer prompts and click "Next" on all defaults.
+
+
+------------------------------------------------------------------------
+[2] EASIEST WAY (1-CLICK DOUBLE-CLICK METHOD)
+------------------------------------------------------------------------
+Inside the unzipped HOAS folder:
+1. First time only: Double-click "install.bat" and wait for it to finish.
+2. To start the website: Double-click "start-app.bat".
+3. Open your browser and go to: http://localhost:5173
+
+
+------------------------------------------------------------------------
+[3] ALTERNATIVE: RUNNING VIA VS CODE TERMINAL
+------------------------------------------------------------------------
+
+STEP 1: Open the Project in VS Code
+  - Open VS Code -> File -> Open Folder... -> Select "HOAS" folder.
+
+STEP 2: Install Packages (First Time Only)
+  - Go to top menu: Terminal -> New Terminal
+  - If you are on Windows PowerShell, type:
+  
+      npm.cmd run install:all
+      
+    (or: npm run install:all)
+
+STEP 3: Start the Website
+  - In the same terminal window, type:
+  
+      npm.cmd run dev
+      
+    (or: npm run dev)
+
+  - Open your browser (Chrome/Edge) and visit: http://localhost:5173
+
+
+------------------------------------------------------------------------
+[4] DEMO LOGINS (1-CLICK ON SCREEN)
+------------------------------------------------------------------------
+On the Login screen, simply click any 1-Click Demo button:
+  - Super Admin:       superadmin@portal.gov.ph      / Password: Admin@1234
+  - Main Admin:        treasurer@palmera-hoa.com     / Password: HOAAdmin@1234
+  - Admin Staff:       staff@palmera-hoa.com         / Password: Staff@1234
+  - Security Guard:    guard@palmera-hoa.com         / Password: Guard@1234
+  - Homeowner:         resident@palmera-hoa.com      / Password: Resident@1234
+
+
+------------------------------------------------------------------------
+[5] HOW TO STOP
+------------------------------------------------------------------------
+- Press Ctrl + C in the terminal window, type Y and press Enter.
+
+========================================================================

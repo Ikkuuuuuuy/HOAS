@@ -8,12 +8,12 @@ export interface OfficerMember {
   role: string;
   category: 'executive' | 'block_leader' | 'committee';
   blockOrDept: string;
-  phone: string;
-  email: string;
-  facebookUrl: string;
   avatarIcon: string;
   color: string;
   badge: string;
+  phone?: string;
+  email?: string;
+  facebookUrl?: string;
 }
 
 export const HOA_OFFICERS_DATA: OfficerMember[] = [
@@ -23,9 +23,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'HOA President',
     category: 'executive',
     blockOrDept: 'Executive Board & Community Leadership',
-    phone: '0917-882-9401',
-    email: 'president.reymar@nrgph2.org',
-    facebookUrl: 'https://facebook.com/reymar.villanueva.nrgph2',
     avatarIcon: '👑',
     color: '#DC2626',
     badge: 'President',
@@ -35,9 +32,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'HOA Vice President',
     category: 'executive',
     blockOrDept: 'Executive Board & Operations',
-    phone: '0918-554-1102',
-    email: 'vp.cezar@nrgph2.org',
-    facebookUrl: 'https://facebook.com/cezar.climaco.nrgph2',
     avatarIcon: '🏛️',
     color: '#2563EB',
     badge: 'Vice President',
@@ -47,9 +41,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'HOA Treasurer',
     category: 'executive',
     blockOrDept: 'Finance, Treasury & Dues Accounting',
-    phone: '0917-123-4567',
-    email: 'treasurer.alma@nrgph2.org',
-    facebookUrl: 'https://facebook.com/alma.valdezco.nrgph2',
     avatarIcon: '💰',
     color: '#166534',
     badge: 'Treasurer',
@@ -59,9 +50,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'HOA Auditor',
     category: 'executive',
     blockOrDept: 'Internal Audit & Transparency Committee',
-    phone: '0922-778-9904',
-    email: 'auditor.ronilo@nrgph2.org',
-    facebookUrl: 'https://facebook.com/ronilo.villagantol.nrgph2',
     avatarIcon: '📋',
     color: '#7C3AED',
     badge: 'Auditor',
@@ -71,9 +59,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'HOA Secretary',
     category: 'executive',
     blockOrDept: 'Secretariat, Records & Documentation',
-    phone: '0905-667-2205',
-    email: 'secretary.josaphat@nrgph2.org',
-    facebookUrl: 'https://facebook.com/josaphat.aguiman.nrgph2',
     avatarIcon: '✍️',
     color: '#D97706',
     badge: 'Secretary',
@@ -85,9 +70,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Block 1 Coordinators',
     category: 'block_leader',
     blockOrDept: 'Block 1 Community (Lots 1–34)',
-    phone: '0919-334-8811',
-    email: 'block1.leader@nrgph2.org',
-    facebookUrl: 'https://facebook.com/nrgph2.block1.coordinators',
     avatarIcon: '🏘️',
     color: '#0891B2',
     badge: 'Block 1',
@@ -97,9 +79,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Block 2 Leader',
     category: 'block_leader',
     blockOrDept: 'Block 2 Community (Lots 1–28)',
-    phone: '0917-445-9922',
-    email: 'block2.leader@nrgph2.org',
-    facebookUrl: 'https://facebook.com/jemma.alamillo.nrgph2',
     avatarIcon: '🏘️',
     color: '#0891B2',
     badge: 'Block 2',
@@ -109,9 +88,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Block 3 Leader',
     category: 'block_leader',
     blockOrDept: 'Block 3 Community (Lots 1–36)',
-    phone: '0920-881-2233',
-    email: 'block3.leader@nrgph2.org',
-    facebookUrl: 'https://facebook.com/jocelyn.selanova.nrgph2',
     avatarIcon: '🏘️',
     color: '#0891B2',
     badge: 'Block 3',
@@ -121,9 +97,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Block 4 Leader',
     category: 'block_leader',
     blockOrDept: 'Block 4 Community (Lots 1–30)',
-    phone: '0918-662-7744',
-    email: 'block4.leader@nrgph2.org',
-    facebookUrl: 'https://facebook.com/melinda.domingo.nrgph2',
     avatarIcon: '🏘️',
     color: '#0891B2',
     badge: 'Block 4',
@@ -133,9 +106,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Block 5 Leader',
     category: 'block_leader',
     blockOrDept: 'Block 5 Community (Lots 1–32)',
-    phone: '0922-339-4455',
-    email: 'block5.leader@nrgph2.org',
-    facebookUrl: 'https://facebook.com/alma.miralles.nrgph2',
     avatarIcon: '🏘️',
     color: '#0891B2',
     badge: 'Block 5',
@@ -145,9 +115,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Block 6 Leader',
     category: 'block_leader',
     blockOrDept: 'Block 6 Community (Lots 1–26)',
-    phone: '0917-551-8866',
-    email: 'block6.leader@nrgph2.org',
-    facebookUrl: 'https://facebook.com/ofelia.esloyo.nrgph2',
     avatarIcon: '🏘️',
     color: '#0891B2',
     badge: 'Block 6',
@@ -157,9 +124,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Block 7 Leader',
     category: 'block_leader',
     blockOrDept: 'Block 7 Community (Lots 1–38)',
-    phone: '0906-443-1177',
-    email: 'block7.leader@nrgph2.org',
-    facebookUrl: 'https://facebook.com/rina.dorate.nrgph2',
     avatarIcon: '🏘️',
     color: '#0891B2',
     badge: 'Block 7',
@@ -169,9 +133,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Block 8 Leader',
     category: 'block_leader',
     blockOrDept: 'Block 8 Community (Lots 1–34)',
-    phone: '0906-443-1177',
-    email: 'block8.leader@nrgph2.org',
-    facebookUrl: 'https://facebook.com/rina.dorate.nrgph2',
     avatarIcon: '🏘️',
     color: '#0891B2',
     badge: 'Block 8',
@@ -181,9 +142,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Block 9 Leader',
     category: 'block_leader',
     blockOrDept: 'Block 9 Community (Lots 1–24)',
-    phone: '0918-994-5599',
-    email: 'block9.leader@nrgph2.org',
-    facebookUrl: 'https://facebook.com/jennerfer.barlaan.nrgph2',
     avatarIcon: '🏘️',
     color: '#0891B2',
     badge: 'Block 9',
@@ -195,9 +153,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Chairperson — Grievance Committee',
     category: 'committee',
     blockOrDept: 'Dispute Mediation & Resident Conflict Resolution',
-    phone: '0917-881-3301',
-    email: 'grievance.melody@nrgph2.org',
-    facebookUrl: 'https://facebook.com/melody.matienzo.nrgph2',
     avatarIcon: '⚖️',
     color: '#E11D48',
     badge: 'Grievance',
@@ -207,9 +162,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Chairperson — Inventory Committee',
     category: 'committee',
     blockOrDept: 'Subdivision Asset Management & Equipment Auditing',
-    phone: '0922-114-8802',
-    email: 'inventory.patrick@nrgph2.org',
-    facebookUrl: 'https://facebook.com/patrick.gariando.nrgph2',
     avatarIcon: '📦',
     color: '#4F46E5',
     badge: 'Inventory',
@@ -219,9 +171,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Chairperson — Committee on Election (COMELEC)',
     category: 'committee',
     blockOrDept: 'Electoral Board, Voter Registry & Ballot Overseer',
-    phone: '0919-445-6603',
-    email: 'comelec.xandrix@nrgph2.org',
-    facebookUrl: 'https://facebook.com/xandrix.pagligaran.nrgph2',
     avatarIcon: '🗳️',
     color: '#D97706',
     badge: 'COMELEC',
@@ -231,9 +180,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Chairperson — Disaster Risk Reduction Management (DRRM)',
     category: 'committee',
     blockOrDept: 'Emergency Evacuation, Calamity Response & Fire Safety',
-    phone: '0917-911-0004',
-    email: 'drrm.jhon@nrgph2.org',
-    facebookUrl: 'https://facebook.com/jhon.magdaluyo.nrgph2',
     avatarIcon: '🚨',
     color: '#DC2626',
     badge: 'DRRM',
@@ -243,9 +189,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Chairperson — Peace and Order Committee',
     category: 'committee',
     blockOrDept: 'Security Guard Coordination & 24/7 Gate Patrols',
-    phone: '0918-223-7705',
-    email: 'peaceorder.wennie@nrgph2.org',
-    facebookUrl: 'https://facebook.com/wennie.arago.nrgph2',
     avatarIcon: '🛡️',
     color: '#059669',
     badge: 'Peace & Order',
@@ -255,9 +198,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Chairperson — Sports & Recreation Committee',
     category: 'committee',
     blockOrDept: 'Covered Court Bookings & Community Sports Leagues',
-    phone: '0920-556-8806',
-    email: 'sports.ronald@nrgph2.org',
-    facebookUrl: 'https://facebook.com/ronald.balbin.nrgph2',
     avatarIcon: '🏀',
     color: '#EA580C',
     badge: 'Sports',
@@ -267,9 +207,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Chairperson — Facilities & Improvement Committee',
     category: 'committee',
     blockOrDept: 'Infrastructure Projects, Renovation Permits & Blueprints',
-    phone: '0917-334-1107',
-    email: 'facilities.allen@nrgph2.org',
-    facebookUrl: 'https://facebook.com/allen.tabasa.nrgph2',
     avatarIcon: '🏗️',
     color: '#2563EB',
     badge: 'Facilities',
@@ -279,9 +216,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Chairperson — Gender and Development (GAD)',
     category: 'committee',
     blockOrDept: 'Women & Children Welfare, Senior Citizens & Social Dev.',
-    phone: '0922-887-2208',
-    email: 'gad.alan@nrgph2.org',
-    facebookUrl: 'https://facebook.com/alan.talaba.nrgph2',
     avatarIcon: '🤝',
     color: '#9333EA',
     badge: 'GAD',
@@ -291,9 +225,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Committee Heads — Livelihood Programs',
     category: 'committee',
     blockOrDept: 'Community Enterprise, Skills Training & Cooperative Hub',
-    phone: '0919-665-4409',
-    email: 'livelihood.leads@nrgph2.org',
-    facebookUrl: 'https://facebook.com/nrgph2.livelihood.committee',
     avatarIcon: '🌱',
     color: '#166534',
     badge: 'Livelihood',
@@ -303,9 +234,6 @@ export const HOA_OFFICERS_DATA: OfficerMember[] = [
     role: 'Chairperson — Maintenance Committee',
     category: 'committee',
     blockOrDept: 'Drainage Cleansing, Solar Streetlights & Road Repair',
-    phone: '0917-772-5510',
-    email: 'maintenance.conrado@nrgph2.org',
-    facebookUrl: 'https://facebook.com/conrado.laoang.nrgph2',
     avatarIcon: '🛠️',
     color: '#475569',
     badge: 'Maintenance',
@@ -332,8 +260,6 @@ export default function HOAOfficersDirectory() {
     const matchesSearch =
       officer.name.toLowerCase().includes(q) ||
       officer.role.toLowerCase().includes(q) ||
-      officer.phone.toLowerCase().includes(q) ||
-      officer.email.toLowerCase().includes(q) ||
       officer.blockOrDept.toLowerCase().includes(q);
     const matchesCat = activeCategory === 'all' || officer.category === activeCategory;
     return matchesSearch && matchesCat;
@@ -369,7 +295,7 @@ export default function HOAOfficersDirectory() {
               NRG PH2 HOA Inc. Officers & Leadership Directory
             </h2>
             <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
-              Direct contact coordinates (Phone, Official Email & Facebook profiles) for your elected Executive Board, Block Leaders 1–9, and 10 Working Committees.
+              Official leadership roster for your elected Executive Board, Block Leaders 1–9, and 10 Working Committees. Official inquiries can be submitted through the HOA Admin Office or Portal Helpdesk.
             </p>
           </div>
           <div className="hidden md:block" style={{ textAlign: 'right' }}>
@@ -402,7 +328,7 @@ export default function HOAOfficersDirectory() {
             <input
               type="text"
               className="form-input"
-              placeholder="Search by name, role, email, phone, or block..."
+              placeholder="Search by name, role, department, or block..."
               style={{ maxWidth: 320 }}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
@@ -473,44 +399,13 @@ export default function HOAOfficersDirectory() {
                     </div>
                   </div>
 
-                  {/* CONTACT COORDINATES BOX */}
-                  <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 6, fontSize: 12 }}>
-                    <div className="flex items-center gap-2">
-                      <span style={{ color: 'var(--text-muted)' }}>📞</span>
-                      <a href={`tel:${officer.phone}`} style={{ color: 'var(--text-primary)', fontWeight: 700, textDecoration: 'none' }}>
-                        {officer.phone}
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span style={{ color: 'var(--text-muted)' }}>✉️</span>
-                      <a href={`mailto:${officer.email}`} style={{ color: '#2563EB', fontWeight: 600, textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {officer.email}
-                      </a>
-                    </div>
-                    <div className="flex items-center justify-between mt-2 pt-2" style={{ borderTop: '1px dashed var(--border)' }}>
-                      <a
-                        href={officer.facebookUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="btn btn-sm"
-                        style={{
-                          background: '#1877F2',
-                          color: '#FFFFFF',
-                          fontWeight: 700,
-                          fontSize: 11.5,
-                          padding: '4px 10px',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 6,
-                          borderRadius: 6,
-                          textDecoration: 'none',
-                        }}
-                      >
-                        <FacebookIcon size={14} color="#FFF" />
-                        <span>Facebook Profile</span>
-                      </a>
-                      <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600 }}>Mock Profile</span>
-                    </div>
+                  <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 11.5, color: 'var(--text-muted)' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                      🏛️ Official Executive Board
+                    </span>
+                    <span style={{ fontSize: 10, background: `${officer.color}15`, color: officer.color, padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
+                      Elected Officer
+                    </span>
                   </div>
 
                 </div>
@@ -555,43 +450,14 @@ export default function HOAOfficersDirectory() {
                     </div>
                   </div>
 
-                  <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 5, fontSize: 11.5 }}>
+                  <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 11.5, color: 'var(--text-muted)' }}>
                     <div className="flex items-center gap-2">
-                      <span>📞</span>
-                      <a href={`tel:${officer.phone}`} style={{ color: 'var(--text-primary)', fontWeight: 700, textDecoration: 'none' }}>
-                        {officer.phone}
-                      </a>
+                      <span>📍</span>
+                      <span>Designated Leader: {officer.blockOrDept}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span>✉️</span>
-                      <a href={`mailto:${officer.email}`} style={{ color: '#2563EB', fontWeight: 600, textDecoration: 'none' }}>
-                        {officer.email}
-                      </a>
-                    </div>
-                    <div className="mt-2 pt-2 flex items-center justify-between" style={{ borderTop: '1px dashed var(--border)' }}>
-                      <a
-                        href={officer.facebookUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="btn btn-sm"
-                        style={{
-                          background: '#1877F2',
-                          color: '#FFFFFF',
-                          fontWeight: 700,
-                          fontSize: 11,
-                          padding: '3px 8px',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 5,
-                          borderRadius: 6,
-                          textDecoration: 'none',
-                        }}
-                      >
-                        <FacebookIcon size={12} color="#FFF" />
-                        <span>Facebook</span>
-                      </a>
-                      <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>Verified Leader</span>
-                    </div>
+                    <span style={{ fontSize: 10, color: '#0891B2', background: '#ECFEFF', padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
+                      Verified Leader
+                    </span>
                   </div>
 
                 </div>
@@ -640,45 +506,14 @@ export default function HOAOfficersDirectory() {
                     </div>
                   </div>
 
-                  <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 5, fontSize: 12 }}>
-                    <div className="flex items-center justify-between flex-wrap gap-2">
-                      <div className="flex items-center gap-2">
-                        <span>📞</span>
-                        <a href={`tel:${officer.phone}`} style={{ color: 'var(--text-primary)', fontWeight: 700, textDecoration: 'none' }}>
-                          {officer.phone}
-                        </a>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span>✉️</span>
-                        <a href={`mailto:${officer.email}`} style={{ color: '#2563EB', fontWeight: 600, textDecoration: 'none' }}>
-                          {officer.email}
-                        </a>
-                      </div>
+                  <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 11.5, color: 'var(--text-muted)' }}>
+                    <div className="flex items-center gap-2">
+                      <span>📋</span>
+                      <span>Mandate: {officer.blockOrDept}</span>
                     </div>
-                    <div className="mt-2 pt-2 flex items-center justify-between" style={{ borderTop: '1px dashed var(--border)' }}>
-                      <a
-                        href={officer.facebookUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="btn btn-sm"
-                        style={{
-                          background: '#1877F2',
-                          color: '#FFFFFF',
-                          fontWeight: 700,
-                          fontSize: 11,
-                          padding: '4px 10px',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 6,
-                          borderRadius: 6,
-                          textDecoration: 'none',
-                        }}
-                      >
-                        <FacebookIcon size={13} color="#FFF" />
-                        <span>Committee Facebook Channel</span>
-                      </a>
-                      <span style={{ fontSize: 10.5, color: 'var(--text-muted)' }}>Official Taskforce</span>
-                    </div>
+                    <span style={{ fontSize: 10, color: officer.color, background: `${officer.color}15`, padding: '2px 8px', borderRadius: 4, fontWeight: 700 }}>
+                      Official Taskforce
+                    </span>
                   </div>
 
                 </div>

@@ -3,6 +3,7 @@ import PageContainer from '../../components/layout/PageContainer';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import Pagination from '../../components/common/Pagination';
+import SortableHeader, { SortDirection } from '../../components/common/SortableHeader';
 import { HOA_MASTERLIST_DATABASE, MasterlistRecord, getMockData, setMockData } from '../../data/mockDatabase';
 
 const BLOCK_STREET_MAP: Record<string, string> = {
@@ -87,9 +88,23 @@ export default function HOAMasterlistManagement() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBlock, setSelectedBlock] = useState('ALL');
   const [selectedOwnership, setSelectedOwnership] = useState('ALL');
-  const [sortBy, setSortBy] = useState('account-asc');
+  const [sortField, setSortField] = useState<string>('accountNo');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+
+  const handleSort = (field: string, direction?: SortDirection) => {
+    if (direction) {
+      setSortField(field);
+      setSortDirection(direction);
+    } else if (sortField === field) {
+      setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortField(field);
+      setSortDirection(field === 'turnover' ? 'desc' : 'asc');
+    }
+    setCurrentPage(1);
+  };
 
   // Modal States
   const [showAddModal, setShowAddModal] = useState(false);
@@ -346,16 +361,32 @@ export default function HOAMasterlistManagement() {
     });
 
     result.sort((a, b) => {
-      if (sortBy === 'name-asc') return a.ownerName.localeCompare(b.ownerName);
-      if (sortBy === 'name-desc') return b.ownerName.localeCompare(a.ownerName);
-      if (sortBy === 'account-asc') return a.accountNo.localeCompare(b.accountNo);
-      if (sortBy === 'block-asc') return a.block.localeCompare(b.block) || a.lot.localeCompare(b.lot);
-      if (sortBy === 'turnover-desc') return (b.turnoverDate || '').localeCompare(a.turnoverDate || '');
-      return 0;
+      let cmp = 0;
+      switch (sortField) {
+        case 'accountNo':
+          cmp = (a.accountNo || '').localeCompare(b.accountNo || '', undefined, { numeric: true, sensitivity: 'base' });
+          break;
+        case 'ownerName':
+          cmp = (a.ownerName || '').localeCompare(b.ownerName || '');
+          break;
+        case 'address':
+          cmp = (a.block || '').localeCompare(b.block || '') || (a.lot || '').localeCompare(b.lot || '');
+          break;
+        case 'ownership':
+          cmp = (a.ownershipType || '').localeCompare(b.ownershipType || '');
+          break;
+        case 'turnover':
+          cmp = (a.turnoverDate || '').localeCompare(b.turnoverDate || '');
+          break;
+        default:
+          cmp = (a.accountNo || '').localeCompare(b.accountNo || '');
+          break;
+      }
+      return sortDirection === 'asc' ? cmp : -cmp;
     });
 
     return result;
-  }, [masterlist, searchQuery, selectedBlock, selectedOwnership, sortBy]);
+  }, [masterlist, searchQuery, selectedBlock, selectedOwnership, sortField, sortDirection]);
 
   // Paginated Masterlist Records
   const paginatedList = useMemo(() => {
@@ -546,15 +577,24 @@ export default function HOAMasterlistManagement() {
               {/* Sorting Dropdown */}
               <select
                 className="form-select"
-                value={sortBy}
-                onChange={e => setSortBy(e.target.value)}
-                style={{ width: 185, fontSize: 13 }}
+                value={`${sortField}-${sortDirection}`}
+                onChange={e => {
+                  const parts = e.target.value.split('-');
+                  const dir = parts.pop() as SortDirection;
+                  const fld = parts.join('-');
+                  handleSort(fld, dir);
+                }}
+                style={{ width: 195, fontSize: 13 }}
               >
-                <option value="account-asc">Sort: Account # (Asc)</option>
-                <option value="name-asc">Sort: Owner Name (A-Z)</option>
-                <option value="name-desc">Sort: Owner Name (Z-A)</option>
-                <option value="block-asc">Sort: Block & Lot (Asc)</option>
-                <option value="turnover-desc">Sort: Turnover (Newest)</option>
+                <option value="accountNo-asc">Account # (Ascending)</option>
+                <option value="accountNo-desc">Account # (Descending)</option>
+                <option value="ownerName-asc">Owner Name (A-Z)</option>
+                <option value="ownerName-desc">Owner Name (Z-A)</option>
+                <option value="address-asc">Block & Lot (Asc)</option>
+                <option value="address-desc">Block & Lot (Desc)</option>
+                <option value="turnover-desc">Turnover (Newest First)</option>
+                <option value="turnover-asc">Turnover (Oldest First)</option>
+                <option value="ownership-asc">Ownership Type (A-Z)</option>
               </select>
             </div>
 
@@ -647,13 +687,41 @@ export default function HOAMasterlistManagement() {
             <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr>
-                  <th style={{ padding: '10px 16px' }}>Account No.</th>
-                  <th style={{ padding: '10px 16px' }}>Registered Owner</th>
-                  <th style={{ padding: '10px 16px' }}>Property Address</th>
+                  <SortableHeader
+                    label="Account No."
+                    field="accountNo"
+                    currentSortField={sortField}
+                    currentSortDirection={sortDirection}
+                    onSort={handleSort}
+                    style={{ padding: '10px 16px' }}
+                  />
+                  <SortableHeader
+                    label="Registered Owner"
+                    field="ownerName"
+                    currentSortField={sortField}
+                    currentSortDirection={sortDirection}
+                    onSort={handleSort}
+                    style={{ padding: '10px 16px' }}
+                  />
+                  <SortableHeader
+                    label="Property Address"
+                    field="address"
+                    currentSortField={sortField}
+                    currentSortDirection={sortDirection}
+                    onSort={handleSort}
+                    style={{ padding: '10px 16px' }}
+                  />
                   <th style={{ padding: '10px 16px' }}>Demographics</th>
                   <th style={{ padding: '10px 16px' }}>Contact & Email</th>
                   <th style={{ padding: '10px 16px' }}>Government ID</th>
-                  <th style={{ padding: '10px 16px' }}>Ownership</th>
+                  <SortableHeader
+                    label="Ownership"
+                    field="ownership"
+                    currentSortField={sortField}
+                    currentSortDirection={sortDirection}
+                    onSort={handleSort}
+                    style={{ padding: '10px 16px' }}
+                  />
                   <th style={{ padding: '10px 16px', textAlign: 'right' }}>Actions</th>
                 </tr>
               </thead>

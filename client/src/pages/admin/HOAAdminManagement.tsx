@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PageContainer from '../../components/layout/PageContainer';
 import { useAuth } from '../../context/AuthContext';
 import { useApi, apiCall } from '../../hooks/useApi';
@@ -15,17 +15,38 @@ export default function HOAAdminManagement() {
   const { data: requests, refetch: refetchRequests } = useApi<any[]>('/api/hoa/requests');
   const { data: users, refetch: refetchUsers } = useApi<any[]>('/api/users');
 
-  const displayPending = (pendingUsers && pendingUsers.length > 0) ? pendingUsers : [
-    {
-      id: 'usr-pending-demo-1',
-      full_name: 'Eduardo Ramos',
-      email: 'pending.applicant@palmera-hoa.com',
-      phone_number: '0917-888-0022',
-      address: 'Block 5 Lot 22, Mabuti Street, Northridge Grove Phase 2',
-      proof_doc_url: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600',
-      status: 'pending_approval'
+  const [localPending, setLocalPending] = useState<any[]>(() => {
+    try {
+      const saved = localStorage.getItem('hoa_mock_pending_registrations');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
     }
-  ];
+  });
+
+  const displayPending = useMemo(() => {
+    const combined: any[] = [...(pendingUsers || [])];
+    localPending.forEach(lp => {
+      if (!combined.some(p => p.id === lp.id || (p.email && lp.email && p.email.toLowerCase() === lp.email.toLowerCase()))) {
+        combined.push(lp);
+      }
+    });
+
+    if (combined.length === 0) {
+      return [
+        {
+          id: 'usr-pending-demo-1',
+          full_name: 'Eduardo Ramos',
+          email: 'pending.applicant@palmera-hoa.com',
+          phone_number: '0917-888-0022',
+          address: 'Block 5 Lot 22, Mabuti Street, Northridge Grove Phase 2',
+          proof_doc_url: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600',
+          status: 'pending_approval'
+        }
+      ];
+    }
+    return combined;
+  }, [pendingUsers, localPending]);
 
   // Form states
   const [staffName, setStaffName] = useState('');
@@ -72,6 +93,10 @@ export default function HOAAdminManagement() {
   ];
 
   const handleApproveUser = async (userId: string, userEmail?: string, userName?: string) => {
+    // Remove from local pending storage
+    const updated = localPending.filter(u => u.id !== userId && (!userEmail || u.email !== userEmail));
+    setLocalPending(updated);
+    localStorage.setItem('hoa_mock_pending_registrations', JSON.stringify(updated));
     try {
       await apiCall(`/api/hoa/users/${userId}/approve`, 'PATCH', {}, accessToken || undefined);
       success('User Approved! ✓', `Account activated for ${userName || 'Homeowner'}. ✉️ Automated approval confirmation email dispatched to ${userEmail || 'registered email'}.`);
@@ -89,6 +114,9 @@ export default function HOAAdminManagement() {
 
   const handleConfirmRejection = async () => {
     if (!rejectModalUser) return;
+    const updated = localPending.filter(u => u.id !== rejectModalUser.id && u.email !== rejectModalUser.email);
+    setLocalPending(updated);
+    localStorage.setItem('hoa_mock_pending_registrations', JSON.stringify(updated));
     const finalReason = customRejectNote.trim() ? `${selectedRejectReason} (Notes: ${customRejectNote.trim()})` : selectedRejectReason;
 
     try {
