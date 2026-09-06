@@ -2350,3 +2350,72 @@ input[type="time"] {
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
 }
+
+/* ==========================================================================
+   OFFICIAL RECEIPT PRINT STYLES
+   ========================================================================== */
+@media print {
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+  body * {
+    visibility: hidden;
+  }
+  .print-modal-overlay,
+  .printable-receipt-modal,
+  #printable-receipt-area,
+  #printable-receipt-area *,
+  #official-printable-receipt,
+  #official-printable-receipt * {
+    visibility: visible !important;
+  }
+  .no-print,
+  .no-print * {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  .print-modal-overlay {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    background: #FFFFFF !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    z-index: 99999 !important;
+  }
+  .printable-receipt-modal {
+    position: static !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    max-height: none !important;
+    overflow: visible !important;
+    background: #FFFFFF !important;
+  }
+  #printable-receipt-area {
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    background: #FFFFFF !important;
+  }
+  #official-printable-receipt {
+    border: 2px solid #1E3A8A !important;
+    border-radius: 4px !important;
+    padding: 24px !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    background: #FFFFFF !important;
+    color: #111827 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+}
