@@ -22,3 +22,4 @@ yarn-error.log*
 *.db-shm
 *.db-wal
 node_modules
+*.zip
