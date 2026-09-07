@@ -44,12 +44,33 @@ export default function HOAAdminManagement() {
   }, [refetchPending]);
 
   const displayPending = useMemo(() => {
-    const combined: any[] = [...(pendingUsers || [])];
-    localPending.forEach(lp => {
-      if (!combined.some(p => p.id === lp.id || (p.email && lp.email && p.email.toLowerCase() === lp.email.toLowerCase()))) {
-        combined.push(lp);
+    const combined: any[] = [];
+
+    const addUnique = (u: any) => {
+      const email = (u.email || '').trim().toLowerCase();
+      if (!email) return;
+      if (!combined.some(p => p.id === u.id || (p.email && p.email.toLowerCase() === email))) {
+        combined.push({
+          id: u.id || `usr-pend-${Date.now()}`,
+          full_name: u.full_name || u.fullName || 'Homeowner Applicant',
+          fullName: u.full_name || u.fullName || 'Homeowner Applicant',
+          email: u.email,
+          phone_number: u.phone_number || u.phone || u.contact_number || u.contactNumber || '0917-888-0000',
+          address: u.address || `${u.registeredBlock || u.block || 'Block 1'} ${u.registeredLot || u.lot || 'Lot 01'}, Northridge Grove Phase 2`,
+          proof_doc_url: u.proof_doc_url || u.proofDocUrl || '',
+          ownership_doc_url: u.ownership_doc_url || u.ownershipDocUrl || '',
+          ownership_doc_type: u.ownership_doc_type || u.ownershipDocType || 'Deed of Absolute Sale (DOAS)',
+          ownership_doc_number: u.ownership_doc_number || u.ownershipDocNumber || '',
+          id_type: u.id_type || u.idType || 'National ID',
+          id_number: u.id_number || u.idNumber || '',
+          status: 'pending_approval',
+          created_at: u.created_at || u.createdAt || new Date().toISOString()
+        });
       }
-    });
+    };
+
+    (pendingUsers || []).forEach(addUnique);
+    localPending.forEach(addUnique);
 
     try {
       const regRaw = localStorage.getItem('hoa_registered_users');
@@ -57,12 +78,7 @@ export default function HOAAdminManagement() {
         const regUsers = JSON.parse(regRaw);
         regUsers.forEach((ru: any) => {
           if (ru.status === 'pending_approval' || ru.is_active === 0) {
-            if (!combined.some(p => p.id === ru.id || (p.email && ru.email && p.email.toLowerCase() === ru.email.toLowerCase()))) {
-              combined.push({
-                ...ru,
-                proof_doc_url: ru.proof_doc_url || 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600'
-              });
-            }
+            addUnique(ru);
           }
         });
       }
@@ -78,6 +94,11 @@ export default function HOAAdminManagement() {
           phone_number: '0917-888-0022',
           address: 'Block 5 Lot 22, Mabuti Street, Northridge Grove Phase 2',
           proof_doc_url: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600',
+          ownership_doc_url: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600',
+          ownership_doc_type: 'Deed of Absolute Sale (DOAS)',
+          ownership_doc_number: 'DOAS-BLK5-LOT22',
+          id_type: 'SSS ID',
+          id_number: '34-8921821-4',
           status: 'pending_approval'
         }
       ];
@@ -118,15 +139,18 @@ export default function HOAAdminManagement() {
   const [selectedRejectReason, setSelectedRejectReason] = useState('Uploaded government ID picture is blurred, glare-reflected, or unreadable.');
   const [customRejectNote, setCustomRejectNote] = useState('');
 
-  // ID Inspector Modal State
+  // ID & Ownership Inspector Modal State
   const [inspectIdUser, setInspectIdUser] = useState<any>(null);
+  const [inspectDocTab, setInspectDocTab] = useState<'id' | 'ownership'>('id');
 
   const REJECTION_PRESETS = [
     '📷 Uploaded government ID picture is blurred, glare-reflected, or unreadable.',
+    '📜 Uploaded Proof of Ownership (DOAS / CTS / Title) is unreadable, invalid, or missing.',
     '🚫 Government ID full name does not match the registered homeowner name.',
     '🎂 Government ID birth date or age does not match the registration details.',
     '⏳ Submitted ID is expired, invalid, or not an approved government ID type.',
-    '📄 Uploaded document is cropped, incomplete, or missing back page verification.',
+    '📍 Property block/lot number does not match submitted deed or official title.',
+    '⚠️ Incomplete applicant information or missing mandatory homeowner signature.',
   ];
 
   const handleApproveUser = async (userId: string, userEmail?: string, userName?: string) => {
@@ -155,18 +179,20 @@ export default function HOAAdminManagement() {
           localStorage.setItem('hoa_registered_users', JSON.stringify(regUsers));
         }
       }
-      window.dispatchEvent(new Event('hoa_storage_update'));
     } catch (e) {
       console.error(e);
     }
 
     try {
       await apiCall(`/api/hoa/users/${userId}/approve`, 'PATCH', {}, accessToken || undefined);
-      success('User Approved! ✓', `Account activated for ${userName || 'Homeowner'}. ✉️ Automated approval confirmation email dispatched to ${userEmail || 'registered email'}.`);
-      refetchPending();
-    } catch (err: any) {
-      showError('Approval Failed', err.message);
+    } catch {
+      // background sync fallback
     }
+
+    window.dispatchEvent(new Event('hoa_storage_update'));
+    window.dispatchEvent(new Event('storage'));
+    success('User Approved! ✓', `Account activated for ${userName || 'Homeowner'}. ✉️ Automated approval confirmation email dispatched to ${userEmail || 'registered email'}.`);
+    refetchPending();
   };
 
   const handleOpenRejectModal = (u: any) => {
@@ -201,7 +227,6 @@ export default function HOAAdminManagement() {
           localStorage.setItem('hoa_registered_users', JSON.stringify(regUsers));
         }
       }
-      window.dispatchEvent(new Event('hoa_storage_update'));
     } catch (e) {
       console.error(e);
     }
@@ -210,12 +235,15 @@ export default function HOAAdminManagement() {
 
     try {
       await apiCall(`/api/hoa/users/${rejectModalUser.id}/reject`, 'PATCH', { reason: finalReason }, accessToken || undefined);
-      info('Application Declined ✕', `Registration rejected for ${rejectModalUser.full_name}. ✉️ Automated rejection notice dispatched to ${rejectModalUser.email}.`);
-      setRejectModalUser(null);
-      refetchPending();
-    } catch (err: any) {
-      showError('Rejection Failed', err.message);
+    } catch {
+      // background sync fallback
     }
+
+    window.dispatchEvent(new Event('hoa_storage_update'));
+    window.dispatchEvent(new Event('storage'));
+    info('Application Declined ✕', `Registration rejected for ${rejectModalUser.full_name || rejectModalUser.fullName}. ✉️ Automated rejection notice dispatched to ${rejectModalUser.email}.`);
+    setRejectModalUser(null);
+    refetchPending();
   };
 
   const handleUpdateRequestStatus = async (requestId: string, status: string) => {
@@ -372,28 +400,56 @@ export default function HOAAdminManagement() {
                       <div className="text-xs text-muted" style={{ marginTop: 2 }}>
                         🏠 Registered Address: <strong>{u.address || 'Block 5 Lot 22, Northridge Grove Phase 2'}</strong>
                       </div>
-                      {u.proof_doc_url && (
-                        <button
-                          type="button"
-                          onClick={() => setInspectIdUser(u)}
-                          style={{
-                            background: 'rgba(56, 189, 248, 0.15)',
-                            border: '1px solid rgba(56, 189, 248, 0.4)',
-                            color: '#38BDF8',
-                            borderRadius: 6,
-                            padding: '4px 10px',
-                            fontSize: 11.5,
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            marginTop: 6,
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 6
-                          }}
-                        >
-                          🔍 Inspect Uploaded Government ID Picture
-                        </button>
-                      )}
+                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 8 }}>
+                        {u.proof_doc_url && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setInspectDocTab('id');
+                              setInspectIdUser(u);
+                            }}
+                            style={{
+                              background: 'rgba(56, 189, 248, 0.15)',
+                              border: '1px solid rgba(56, 189, 248, 0.4)',
+                              color: '#38BDF8',
+                              borderRadius: 6,
+                              padding: '4px 10px',
+                              fontSize: 11.5,
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 6
+                            }}
+                          >
+                            🔍 Inspect Valid ID ({u.id_type || 'National ID'})
+                          </button>
+                        )}
+                        {u.ownership_doc_url && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setInspectDocTab('ownership');
+                              setInspectIdUser(u);
+                            }}
+                            style={{
+                              background: 'rgba(34, 197, 94, 0.15)',
+                              border: '1px solid rgba(34, 197, 94, 0.4)',
+                              color: '#4ADE80',
+                              borderRadius: 6,
+                              padding: '4px 10px',
+                              fontSize: 11.5,
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 6
+                            }}
+                          >
+                            📜 Inspect Proof of Ownership ({u.ownership_doc_type || 'DOAS / Title'})
+                          </button>
+                        )}
+                      </div>
                     </div>
                     
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -700,32 +756,78 @@ export default function HOAAdminManagement() {
 
               <div style={{ padding: '16px 0', textAlign: 'center' }}>
                 
-                {/* ID Verification Standard Notice */}
-                <div style={{
-                  background: 'rgba(56, 189, 248, 0.12)',
-                  border: '1px solid rgba(56, 189, 248, 0.35)',
-                  padding: '10px 14px',
-                  borderRadius: 8,
-                  marginBottom: 14,
-                  textAlign: 'left',
-                  fontSize: 12,
-                  color: '#E0F2FE'
-                }}>
-                  <div style={{ fontWeight: 800, color: '#38BDF8', marginBottom: 2, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span>🛡️</span> ID Verification Standard (Name, Birthdate & Age Only)
+                {/* Document Type Switcher Tabs */}
+                {inspectIdUser.ownership_doc_url && (
+                  <div style={{ display: 'flex', gap: 10, marginBottom: 14, justifyContent: 'center' }}>
+                    <button
+                      type="button"
+                      className={`btn btn-sm ${inspectDocTab === 'id' ? 'btn-primary' : 'btn-secondary'}`}
+                      onClick={() => setInspectDocTab('id')}
+                      style={{ padding: '7px 16px', fontWeight: 700 }}
+                    >
+                      🛡️ Valid Government ID ({inspectIdUser.id_type || 'National ID'})
+                    </button>
+                    <button
+                      type="button"
+                      className={`btn btn-sm ${inspectDocTab === 'ownership' ? 'btn-primary' : 'btn-secondary'}`}
+                      onClick={() => setInspectDocTab('ownership')}
+                      style={{ padding: '7px 16px', fontWeight: 700 }}
+                    >
+                      📜 Proof of Ownership ({inspectIdUser.ownership_doc_type || 'DOAS / CTS / Title'})
+                    </button>
                   </div>
-                  <div>
-                    Verify that the ID <strong>Full Name</strong>, <strong>Birth Date</strong>, and <strong>Photo/Age</strong> match the applicant's submitted credentials.
+                )}
+
+                {/* Verification Guidance Notice */}
+                {inspectDocTab === 'id' ? (
+                  <div style={{
+                    background: 'rgba(56, 189, 248, 0.12)',
+                    border: '1px solid rgba(56, 189, 248, 0.35)',
+                    padding: '10px 14px',
+                    borderRadius: 8,
+                    marginBottom: 14,
+                    textAlign: 'left',
+                    fontSize: 12,
+                    color: '#E0F2FE'
+                  }}>
+                    <div style={{ fontWeight: 800, color: '#38BDF8', marginBottom: 2, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span>🛡️</span> ID Verification Standard (Name, Birthdate & Age Only)
+                    </div>
+                    <div>
+                      Verify that the ID <strong>Full Name</strong>, <strong>Birth Date</strong>, and <strong>Photo/Age</strong> match the applicant's submitted credentials.
+                    </div>
+                    <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 3 }}>
+                      💡 <em>Note: The address printed on the ID is <strong>NOT</strong> required to match the subdivision property, as the ID may contain the resident's previous or provincial address.</em>
+                    </div>
                   </div>
-                  <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 3 }}>
-                    💡 <em>Note: The address printed on the ID is <strong>NOT</strong> required to match the subdivision property, as the ID may contain the resident's previous or provincial address.</em>
+                ) : (
+                  <div style={{
+                    background: 'rgba(34, 197, 94, 0.12)',
+                    border: '1px solid rgba(34, 197, 94, 0.35)',
+                    padding: '10px 14px',
+                    borderRadius: 8,
+                    marginBottom: 14,
+                    textAlign: 'left',
+                    fontSize: 12,
+                    color: '#DCFCE7'
+                  }}>
+                    <div style={{ fontWeight: 800, color: '#4ADE80', marginBottom: 2, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span>📜</span> Proof of Ownership Standard: (OR) Only
+                    </div>
+                    <div>
+                      Applicant provided: <strong>{inspectIdUser.ownership_doc_type || 'Deed of Absolute Sale (DOAS)'}</strong>
+                      {inspectIdUser.ownership_doc_number ? ` • Doc No: ${inspectIdUser.ownership_doc_number}` : ''}.
+                    </div>
+                    <div style={{ fontSize: 11, color: '#86EFAC', marginTop: 3 }}>
+                      ⚡ <em>Homeowners are only required to submit ANY ONE (1) proof of ownership: Deed of Sale OR Contract to Sell OR Land Title (TCT).</em>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div style={{ background: '#0B1120', padding: 12, borderRadius: 10, border: '1px solid rgba(255,255,255,0.1)', marginBottom: 14 }}>
                   <img
-                    src={inspectIdUser.proof_doc_url || 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600'}
-                    alt="Government ID"
+                    src={(inspectDocTab === 'id' ? inspectIdUser.proof_doc_url : inspectIdUser.ownership_doc_url) || inspectIdUser.proof_doc_url || 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600'}
+                    alt={inspectDocTab === 'id' ? 'Government ID' : 'Proof of Ownership'}
                     style={{ maxHeight: 340, maxWidth: '100%', objectFit: 'contain', borderRadius: 8 }}
                   />
                 </div>

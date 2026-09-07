@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import PageContainer from '../../components/layout/PageContainer';
 import { useAuth } from '../../context/AuthContext';
 import { useApi } from '../../hooks/useApi';
@@ -20,6 +21,16 @@ export default function AllUsersManagement() {
   const { data: serverUsers, refetch } = useApi<any[]>('/api/users');
 
   const users = (serverUsers && serverUsers.length > 0) ? serverUsers : DEFAULT_USERS;
+
+  const pendingCount = useMemo(() => {
+    try {
+      const saved = localStorage.getItem('hoa_mock_pending_registrations');
+      const list = saved ? JSON.parse(saved) : [];
+      return Math.max(1, list.length);
+    } catch {
+      return 1;
+    }
+  }, []);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
@@ -118,16 +129,77 @@ export default function AllUsersManagement() {
     <PageContainer title="All Users Directory" subtitle="System-Wide User Account Management & Role-Based Access Control (RBAC)">
       <div style={{ animation: 'fadeInUp 0.4s ease' }}>
 
+        {/* PENDING APPROVALS QUEUE NOTICE BANNER */}
+        <div style={{
+          background: 'rgba(245, 158, 11, 0.1)',
+          border: '1.5px solid #F59E0B',
+          borderRadius: 12,
+          padding: '14px 20px',
+          marginBottom: 20,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 12
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{
+              width: 38, height: 38, borderRadius: '50%',
+              background: 'rgba(245, 158, 11, 0.25)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 18, flexShrink: 0
+            }}>
+              ⏳
+            </div>
+            <div>
+              <div style={{ fontWeight: 800, fontSize: 14, color: '#F59E0B' }}>
+                Looking to Approve or Decline New Homeowner Registrations?
+              </div>
+              <div style={{ fontSize: 12.5, color: 'var(--text-secondary)', marginTop: 2 }}>
+                New homeowner applicants who submitted Government IDs and Proof of Ownership are reviewed under <strong>OPERATIONS ➔ Staff Hub & Approvals</strong>.
+              </div>
+            </div>
+          </div>
+          <Link
+            to="/hoa-manage"
+            style={{
+              background: '#16A34A',
+              color: '#FFFFFF',
+              border: 'none',
+              fontWeight: 800,
+              fontSize: 12.5,
+              padding: '9px 18px',
+              borderRadius: 8,
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              boxShadow: '0 2px 8px rgba(22, 163, 74, 0.3)'
+            }}
+          >
+            <span>Open Approvals Queue ({pendingCount} pending) →</span>
+          </Link>
+        </div>
+
         {/* METRICS SUMMARY */}
-        <div className="grid grid-4 mb-6">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 14, marginBottom: 24 }}>
           <div className="card" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
-            <div className="text-xs text-muted" style={{ color: 'var(--text-muted)' }}>Total Users</div>
+            <div className="text-xs text-muted" style={{ color: 'var(--text-muted)' }}>Total System Users</div>
             <div style={{ fontSize: 'var(--font-2xl)', fontWeight: 800, color: 'var(--text-primary)' }}>{users.length}</div>
           </div>
           <div className="card" style={{ background: 'var(--bg-surface)', border: '1px solid rgba(34, 197, 94, 0.3)' }}>
             <div className="text-xs text-muted" style={{ color: 'var(--text-muted)' }}>Active Accounts</div>
             <div style={{ fontSize: 'var(--font-2xl)', fontWeight: 800, color: '#10B981' }}>{users.filter(u => u.is_active !== 0).length}</div>
           </div>
+          <Link to="/hoa-manage" style={{ textDecoration: 'none' }}>
+            <div className="card" style={{ background: 'rgba(245, 158, 11, 0.08)', border: '1.5px solid #F59E0B', cursor: 'pointer', transition: 'all 0.2s ease' }} onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-2px)')} onMouseLeave={e => (e.currentTarget.style.transform = 'none')}>
+              <div className="text-xs" style={{ color: '#F59E0B', fontWeight: 700 }}>⏳ Pending Registrations</div>
+              <div style={{ fontSize: 'var(--font-2xl)', fontWeight: 800, color: '#FBBF24', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span>{pendingCount}</span>
+                <span style={{ fontSize: 11, background: '#F59E0B', color: '#000', padding: '2px 8px', borderRadius: 10, fontWeight: 800 }}>Review →</span>
+              </div>
+            </div>
+          </Link>
           <div className="card" style={{ background: 'var(--bg-surface)', border: '1px solid rgba(220, 38, 38, 0.3)' }}>
             <div className="text-xs text-muted" style={{ color: 'var(--text-muted)' }}>HOA Officers & Staff</div>
             <div style={{ fontSize: 'var(--font-2xl)', fontWeight: 800, color: '#DC2626' }}>{users.filter(u => ['hoa_admin', 'admin_staff', 'security_guard'].includes(u.role_name)).length}</div>

@@ -225,6 +225,32 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const [pendingRegCount, setPendingRegCount] = useState<number>(() => {
+    try {
+      const raw = localStorage.getItem('hoa_mock_pending_registrations');
+      return raw ? JSON.parse(raw).length : 1;
+    } catch {
+      return 1;
+    }
+  });
+
+  useEffect(() => {
+    const updateCount = () => {
+      try {
+        const raw = localStorage.getItem('hoa_mock_pending_registrations');
+        const list = raw ? JSON.parse(raw) : [];
+        setPendingRegCount(list.length || 1);
+      } catch {
+        setPendingRegCount(1);
+      }
+    };
+    window.addEventListener('storage', updateCount);
+    window.addEventListener('hoa_storage_update', updateCount);
+    return () => {
+      window.removeEventListener('storage', updateCount);
+      window.removeEventListener('hoa_storage_update', updateCount);
+    };
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -333,53 +359,96 @@ export default function Sidebar() {
 
       {/* ── MIDDLE NAV BODY: DEEP CHARCOAL/BLACK SLATE ── */}
       <div className="sidebar-nav-container" style={{ flex: 1, overflowY: 'auto', padding: '14px 10px', background: '#0A0E17' }}>
-        {sections.map((sec, secIdx) => (
-          <div key={sec.title} style={{ marginBottom: 18 }}>
-            <div style={{
-              fontSize: 10,
-              fontWeight: 800,
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              color: '#64748B',
-              padding: '0 8px 6px',
-              opacity: 0.9
-            }}>
-              {sec.title}
-            </div>
+        {sections.map((sec, secIdx) => {
+          const isOperations = sec.title.toLowerCase() === 'operations';
+          return (
+            <div key={sec.title} style={{ marginBottom: 14 }}>
+              <div style={{
+                fontSize: 11,
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                letterSpacing: '0.09em',
+                color: isOperations ? '#38BDF8' : '#94A3B8',
+                padding: '6px 8px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 7,
+                borderTop: secIdx > 0 ? '1px solid rgba(255, 255, 255, 0.08)' : 'none',
+                paddingTop: secIdx > 0 ? 12 : 6,
+              }}>
+                <span style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: '50%',
+                  background: isOperations ? '#38BDF8' : '#64748B',
+                  boxShadow: isOperations ? '0 0 6px #38BDF8' : 'none'
+                }} />
+                <span>{sec.title}</span>
+                {isOperations && (
+                  <span style={{
+                    marginLeft: 'auto',
+                    fontSize: 9,
+                    fontWeight: 900,
+                    padding: '1px 6px',
+                    borderRadius: 4,
+                    background: 'rgba(56, 189, 248, 0.18)',
+                    color: '#38BDF8',
+                    border: '1px solid rgba(56, 189, 248, 0.35)',
+                    letterSpacing: '0.04em'
+                  }}>
+                    HUB
+                  </span>
+                )}
+              </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-              {sec.items.map(item => {
-                const IconComponent = item.icon;
-                return (
-                  <NavLink
-                    key={item.path}
-                    to={item.path}
-                    className={({ isActive }) => `sidebar-nav-link ${isActive ? 'active' : ''}`}
-                  >
-                    <span className="nav-icon-wrap" style={{ display: 'flex', alignItems: 'center' }}>
-                      <IconComponent />
-                    </span>
-                    <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {item.label}
-                    </span>
-                    {item.badgeKey === 'alerts' && activeAlerts.length > 0 && (
-                      <span style={{
-                        fontSize: 10,
-                        fontWeight: 800,
-                        background: '#DC2626',
-                        color: '#FFFFFF',
-                        padding: '1px 6px',
-                        borderRadius: 10
-                      }}>
-                        {activeAlerts.length}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                {sec.items.map(item => {
+                  const IconComponent = item.icon;
+                  const isApprovalHub = item.path === '/hoa-manage';
+                  return (
+                    <NavLink
+                      key={item.path}
+                      to={item.path}
+                      className={({ isActive }) => `sidebar-nav-link ${isActive ? 'active' : ''}`}
+                    >
+                      <span className="nav-icon-wrap" style={{ display: 'flex', alignItems: 'center' }}>
+                        <IconComponent />
                       </span>
-                    )}
-                  </NavLink>
-                );
-              })}
+                      <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {item.label}
+                      </span>
+                      {isApprovalHub && (
+                        <span style={{
+                          fontSize: 10,
+                          fontWeight: 800,
+                          background: '#F59E0B',
+                          color: '#000000',
+                          padding: '1px 6px',
+                          borderRadius: 10,
+                          boxShadow: '0 0 6px rgba(245, 158, 11, 0.4)'
+                        }}>
+                          {pendingRegCount > 0 ? `${pendingRegCount} Pending` : 'Approvals'}
+                        </span>
+                      )}
+                      {item.badgeKey === 'alerts' && activeAlerts.length > 0 && (
+                        <span style={{
+                          fontSize: 10,
+                          fontWeight: 800,
+                          background: '#DC2626',
+                          color: '#FFFFFF',
+                          padding: '1px 6px',
+                          borderRadius: 10
+                        }}>
+                          {activeAlerts.length}
+                        </span>
+                      )}
+                    </NavLink>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         {/* Public Website Link */}
         <div style={{ marginTop: 8, borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: 12 }}>

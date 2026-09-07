@@ -1,33 +1,40 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 
 export default function ForgotPassword() {
-  const [step, setStep] = useState(1);
   const [emailOrPhone, setEmailOrPhone] = useState('');
   const [otpCode, setOtpCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [step, setStep] = useState(1); // 1: Email, 2: OTP, 3: New Pass, 4: Success
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
-
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+
+  const isLight = theme === 'light';
 
   const handleSendCode = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    if (!emailOrPhone) {
-      setError('Please enter your registered email or phone number');
+    if (!emailOrPhone.trim()) {
+      setError('Please enter your registered email address or mobile number.');
       return;
     }
-    setStep(2);
+    setError('');
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setStep(2);
+    }, 600);
   };
 
   const handleVerifyCode = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (otpCode !== '123456' && otpCode.length !== 6) {
-      setError('Invalid 6-digit verification code');
+    if (otpCode.trim() !== '123456') {
+      setError('Invalid verification code. Please enter simulation code 123456.');
       return;
     }
     setStep(3);
@@ -36,54 +43,58 @@ export default function ForgotPassword() {
   const handleResetPassword = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (newPassword !== confirmPassword) {
-      setError('Passwords do not match');
+    if (newPassword.length < 6) {
+      setError('Password must be at least 6 characters.');
       return;
     }
-
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
-      setSuccessMsg('Your password has been successfully reset! You can now log in with your new password.');
+      setSuccessMsg('Your account password has been updated securely. You can now sign in to Northridge Grove Phase 2 Portal.');
       setStep(4);
-    }, 1000);
+    }, 800);
   };
 
   return (
-    <div className="login-page">
+    <div className={`login-page ${theme}`}>
       
-      {/* ── TOP HEADER WITH BACK TO HOME BUTTON ── */}
-      <header style={{ width: '100%', position: 'absolute', top: 0, left: 0, right: 0, padding: '16px 32px', zIndex: 30, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(5, 8, 17, 0.8)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+      {/* ── TOP HEADER WITH BACK TO HOME BUTTON & THEME TOGGLE ── */}
+      <header className="auth-top-header">
         <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ width: 40, height: 40, borderRadius: '50%', overflow: 'hidden', border: '2px solid #F59E0B' }}>
+          <div style={{ width: 40, height: 40, borderRadius: '50%', overflow: 'hidden', border: '2px solid #F59E0B', flexShrink: 0 }}>
             <img src="/nrg-ph2-logo.png" alt="NRG PH2 HOA INC Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
-          <span style={{ color: '#FFFFFF', fontWeight: 800, fontSize: '16px', letterSpacing: '-0.02em' }}>
+          <span className="auth-header-title">
             NRG PH2 HOA INC
           </span>
         </Link>
 
-        <Link
-          to="/"
-          style={{
-            display: 'flex', alignItems: 'center', gap: 8,
-            padding: '8px 18px', borderRadius: 8,
-            background: 'rgba(255,255,255,0.1)', color: '#FFFFFF',
-            border: '1px solid rgba(255,255,255,0.25)',
-            textDecoration: 'none', fontSize: 13, fontWeight: 600,
-            transition: 'all 0.2s ease',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = '#166534';
-            e.currentTarget.style.borderColor = '#166534';
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)';
-          }}
-        >
-          ← Back to Public Website
-        </Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button
+            type="button"
+            onClick={toggleTheme}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '7px 14px', borderRadius: 8,
+              background: isLight ? '#FFFFFF' : 'rgba(255,255,255,0.08)',
+              color: isLight ? '#1E293B' : '#FFFFFF',
+              border: isLight ? '1px solid #CBD5E1' : '1px solid rgba(255,255,255,0.2)',
+              cursor: 'pointer', fontSize: 12.5, fontWeight: 700,
+            }}
+          >
+            {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
+          </button>
+          <Link
+            to="/"
+            className="auth-back-btn"
+          >
+            ← Back to Public Website
+          </Link>
+        </div>
       </header>
 
       <div className="login-bg">
@@ -100,8 +111,8 @@ export default function ForgotPassword() {
               <img src="/nrg-ph2-logo.png" alt="NRG PH2 Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div style={{ textAlign: 'left' }}>
-              <h2 className="login-brand-name" style={{ fontSize: '1.35rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.01em', margin: 0 }}>Password Recovery</h2>
-              <p className="login-brand-tagline" style={{ fontSize: '0.84rem', color: '#F59E0B', fontWeight: 600, margin: '2px 0 0 0' }}>NRG PH2 HOA INC • Phase 2</p>
+              <h2 className="login-brand-name" style={{ fontSize: '1.35rem', fontWeight: 900, letterSpacing: '-0.01em', margin: 0 }}>Password Recovery</h2>
+              <p className="login-brand-tagline" style={{ fontSize: '0.84rem', fontWeight: 700, margin: '2px 0 0 0' }}>NRG PH2 HOA INC • Phase 2</p>
             </div>
           </div>
 
@@ -142,8 +153,8 @@ export default function ForgotPassword() {
                 📩 Send Verification Code
               </button>
 
-              <div style={{ textAlign: 'center', marginTop: 14, fontSize: 13, color: '#9CA3AF' }}>
-                Remember your password? <Link to="/login" style={{ color: '#F87171', fontWeight: 700, textDecoration: 'underline' }}>Back to Login</Link>
+              <div style={{ textAlign: 'center', marginTop: 14, fontSize: 13, color: isLight ? '#475569' : '#9CA3AF' }}>
+                Remember your password? <Link to="/login" style={{ color: isLight ? '#DC2626' : '#F87171', fontWeight: 700, textDecoration: 'underline' }}>Back to Login</Link>
               </div>
             </form>
           )}
@@ -151,9 +162,15 @@ export default function ForgotPassword() {
           {/* STEP 2: Enter 6-Digit OTP */}
           {step === 2 && (
             <form onSubmit={handleVerifyCode} className="login-form">
-              <div style={{ background: 'rgba(220,38,38,0.15)', border: '1px solid rgba(220,38,38,0.4)', padding: 14, borderRadius: 8, marginBottom: 16 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#F87171' }}>Code Sent to {emailOrPhone}</div>
-                <div style={{ fontSize: 12, color: '#E5E7EB', marginTop: 4 }}>Enter simulation code <code>123456</code> to proceed.</div>
+              <div style={{
+                background: isLight ? '#FEF2F2' : 'rgba(220,38,38,0.15)',
+                border: isLight ? '1px solid #FECACA' : '1px solid rgba(220,38,38,0.4)',
+                padding: 14, borderRadius: 8, marginBottom: 16
+              }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: isLight ? '#B91C1C' : '#F87171' }}>Code Sent to {emailOrPhone}</div>
+                <div style={{ fontSize: 12, color: isLight ? '#475569' : '#E5E7EB', marginTop: 4 }}>
+                  Enter simulation code <code style={{ background: isLight ? '#FEE2E2' : 'rgba(255,255,255,0.1)', color: isLight ? '#B91C1C' : '#FFFFFF', padding: '2px 6px', borderRadius: 4 }}>123456</code> to proceed.
+                </div>
               </div>
 
               <div>
@@ -173,7 +190,12 @@ export default function ForgotPassword() {
               </div>
 
               <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
-                <button type="button" onClick={() => setStep(1)} style={{ flex: 1, padding: 12, borderRadius: 8, background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', fontWeight: 600, cursor: 'pointer' }}>
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="auth-btn-back"
+                  style={{ flex: 1 }}
+                >
                   ← Back
                 </button>
                 <button type="submit" style={{ flex: 1, padding: 12, borderRadius: 8, background: '#DC2626', color: '#fff', border: 'none', fontWeight: 700, cursor: 'pointer' }}>
@@ -234,8 +256,8 @@ export default function ForgotPassword() {
           {step === 4 && (
             <div style={{ textAlign: 'center', padding: 20 }}>
               <div style={{ fontSize: '3.5rem', marginBottom: 12 }}>🎉</div>
-              <h3 style={{ fontSize: 20, fontWeight: 800, color: '#FFF', marginBottom: 8 }}>Password Updated!</h3>
-              <p style={{ fontSize: 13, color: '#9CA3AF', marginBottom: 24 }}>{successMsg}</p>
+              <h3 style={{ fontSize: 20, fontWeight: 800, color: isLight ? '#0F172A' : '#FFF', marginBottom: 8 }}>Password Updated!</h3>
+              <p style={{ fontSize: 13, color: isLight ? '#475569' : '#9CA3AF', marginBottom: 24 }}>{successMsg}</p>
 
               <button
                 style={{

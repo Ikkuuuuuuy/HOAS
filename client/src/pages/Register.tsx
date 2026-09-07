@@ -18,6 +18,7 @@ const BLOCK_STREET_MAP: Record<string, string> = {
 
 export default function Register() {
   const { theme, toggleTheme } = useTheme();
+  const isLight = theme === 'light';
   const [step, setStep] = useState(1);
   
   // Registration Inputs
@@ -35,10 +36,22 @@ export default function Register() {
   // Valid ID Verification State
   const [idType, setIdType] = useState("National ID");
   const [idNumber, setIdNumber] = useState('');
-  const [proofDocUrl, setProofDocUrl] = useState('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600');
+  const [proofDocUrl, setProofDocUrl] = useState('');
   const [attachedFile, setAttachedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600');
+  const [previewUrl, setPreviewUrl] = useState<string>('');
   const [otpCode, setOtpCode] = useState('123456');
+
+  // Proof of Property Ownership State (Deed of Sale OR Contract to Sell OR Title)
+  const [ownershipDocType, setOwnershipDocType] = useState('Deed of Absolute Sale (DOAS)');
+  const [ownershipDocNumber, setOwnershipDocNumber] = useState('');
+  const [ownershipDocUrl, setOwnershipDocUrl] = useState('');
+  const [ownershipAttachedFile, setOwnershipAttachedFile] = useState<File | null>(null);
+  const [ownershipPreviewUrl, setOwnershipPreviewUrl] = useState<string>('');
+
+  // Drag & drop highlight state
+  const [isDraggingId, setIsDraggingId] = useState(false);
+  const [isDraggingOwnership, setIsDraggingOwnership] = useState(false);
+
   const [agreePrivacyConsent, setAgreePrivacyConsent] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
@@ -62,18 +75,41 @@ export default function Register() {
   const currentStreet = BLOCK_STREET_MAP[selectedBlock] || 'Maagap Street';
   const fullAddress = `${selectedBlock} ${selectedLot}, ${currentStreet}, Northridge Grove Phase 2, Brgy. Tungkong Mangga, CSJDM, Bulacan`;
 
+  const handleProcessIdFile = (file: File) => {
+    setAttachedFile(file);
+    if (file.type.startsWith('image/')) {
+      const objUrl = URL.createObjectURL(file);
+      setPreviewUrl(objUrl);
+      setProofDocUrl(objUrl);
+    } else {
+      setPreviewUrl('');
+      setProofDocUrl(file.name);
+    }
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setAttachedFile(file);
-      if (file.type.startsWith('image/')) {
-        const objUrl = URL.createObjectURL(file);
-        setPreviewUrl(objUrl);
-        setProofDocUrl(objUrl);
-      } else {
-        setPreviewUrl('');
-        setProofDocUrl(file.name);
-      }
+      handleProcessIdFile(file);
+    }
+  };
+
+  const handleProcessOwnershipFile = (file: File) => {
+    setOwnershipAttachedFile(file);
+    if (file.type.startsWith('image/')) {
+      const objUrl = URL.createObjectURL(file);
+      setOwnershipPreviewUrl(objUrl);
+      setOwnershipDocUrl(objUrl);
+    } else {
+      setOwnershipPreviewUrl('');
+      setOwnershipDocUrl(file.name);
+    }
+  };
+
+  const handleOwnershipFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleProcessOwnershipFile(file);
     }
   };
 
@@ -89,8 +125,14 @@ export default function Register() {
     setConfirmPassword('Resident@1234');
     setAccountNo(rec.accountNo);
     setIdType(rec.idType || 'National ID');
-    setProofDocUrl(rec.idPhotoUrl || 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600');
-    setPreviewUrl(rec.idPhotoUrl || 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600');
+    setProofDocUrl('');
+    setPreviewUrl('');
+    setAttachedFile(null);
+    setOwnershipDocType('Deed of Absolute Sale (DOAS)');
+    setOwnershipDocNumber('');
+    setOwnershipDocUrl('');
+    setOwnershipPreviewUrl('');
+    setOwnershipAttachedFile(null);
     setError('');
   };
 
@@ -108,7 +150,7 @@ export default function Register() {
       return;
     }
 
-    // Move to Mandatory ID Upload Step
+    // Move to Mandatory ID & Ownership Upload Step
     setStep(2);
   };
 
@@ -118,6 +160,11 @@ export default function Register() {
 
     if (!proofDocUrl && !attachedFile) {
       setError('Please attach a clear picture of your valid Government ID for verification.');
+      return;
+    }
+
+    if (!ownershipDocUrl && !ownershipAttachedFile) {
+      setError('Please attach your Proof of Ownership (Deed of Sale OR Contract to Sell OR Title).');
       return;
     }
 
@@ -152,11 +199,26 @@ export default function Register() {
     const pendingRecord = {
       id: regUserId,
       full_name: fullName,
+      fullName: fullName,
       email: normalizedEmail,
       phone_number: contactNumber,
+      phone: contactNumber,
       address: fullAddress,
+      registeredBlock: selectedBlock,
+      registeredLot: selectedLot,
+      id_type: idType,
+      idType: idType,
+      id_number: idNumber,
+      idNumber: idNumber,
       proof_doc_url: previewUrl || proofDocUrl || '',
-      status: 'pending_approval',
+      proofDocUrl: previewUrl || proofDocUrl || '',
+      ownership_doc_url: ownershipPreviewUrl || ownershipDocUrl || '',
+      ownershipDocUrl: ownershipPreviewUrl || ownershipDocUrl || '',
+      ownership_doc_type: ownershipDocType,
+      ownershipDocType: ownershipDocType,
+      ownership_doc_number: ownershipDocNumber,
+      ownershipDocNumber: ownershipDocNumber,
+      status: autoApproveExpected ? 'active' : 'pending_approval',
       created_at: new Date().toISOString()
     };
     try {
@@ -177,16 +239,32 @@ export default function Register() {
         email: normalizedEmail,
         password: password,
         fullName,
+        full_name: fullName,
         roleName: 'resident',
         roleId: 5,
         tenantId: 'tenant-palmera-1',
         tenantName: 'NRG PH2 HOA INC',
         tenantType: 'subdivision',
-        status: 'pending_approval',
+        status: autoApproveExpected ? 'active' : 'pending_approval',
         phone: contactNumber,
+        phone_number: contactNumber,
         address: fullAddress,
+        registeredBlock: selectedBlock,
+        registeredLot: selectedLot,
+        idType,
+        idNumber,
+        id_type: idType,
+        id_number: idNumber,
         proofDocUrl: previewUrl || proofDocUrl || '',
-        createdAt: new Date().toISOString()
+        proof_doc_url: previewUrl || proofDocUrl || '',
+        ownershipDocUrl: ownershipPreviewUrl || ownershipDocUrl || '',
+        ownership_doc_url: ownershipPreviewUrl || ownershipDocUrl || '',
+        ownershipDocType: ownershipDocType,
+        ownership_doc_type: ownershipDocType,
+        ownershipDocNumber: ownershipDocNumber,
+        ownership_doc_number: ownershipDocNumber,
+        createdAt: new Date().toISOString(),
+        created_at: new Date().toISOString()
       });
       localStorage.setItem('hoa_registered_users', JSON.stringify(filteredReg));
     } catch (e) {
@@ -306,42 +384,30 @@ export default function Register() {
         <div className="login-card" style={{ padding: '32px' }}>
           
           {/* Brand Header */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <span style={{ background: '#166534', color: '#86EFAC', padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 800 }}>
-                  ⚡ SMART HOA AUTO-ACCEPT
-                </span>
-                <span style={{ color: '#9CA3AF', fontSize: 12 }}>Official Masterlist Sync</span>
-              </div>
-              <h1 style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--text-primary)', margin: 0 }}>
-                Homeowner Portal Registration
-              </h1>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: 4 }}>
-                Automated instant approval for verified Northridge Grove Phase 2 property owners.
-              </p>
-            </div>
-            <div style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.3)', padding: '6px 12px', borderRadius: 8, textAlign: 'right' }}>
-              <div style={{ fontSize: 10, color: '#FBBF24', fontWeight: 700 }}>DATABASE STATUS</div>
-              <div style={{ fontSize: 12, color: '#FDE68A', fontWeight: 800 }}>✓ 312 Lots Pre-Synced</div>
-            </div>
+          <div style={{ marginBottom: 24 }}>
+            <h1 style={{ fontSize: '1.6rem', fontWeight: 900, color: 'var(--text-primary)', margin: 0 }}>
+              Homeowner Portal Registration
+            </h1>
+            <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginTop: 6, lineHeight: 1.5 }}>
+              Automated instant approval for verified Northridge Grove Phase 2 property owners.
+            </p>
           </div>
 
-            {/* 1-Click Fast Demo Pre-Fill Helper */}
+          {/* 1-Click Fast Demo Pre-Fill Helper */}
           {step === 1 && (
             <div style={{
-              background: 'var(--bg-hover)',
-              border: '1px solid rgba(245, 158, 11, 0.35)',
+              background: isLight ? '#FFFBEB' : 'var(--bg-hover)',
+              border: isLight ? '1px solid #FCD34D' : '1px solid rgba(245, 158, 11, 0.35)',
               borderRadius: 12,
               padding: '14px 18px',
               marginBottom: 22,
-              boxShadow: '0 4px 16px rgba(0,0,0,0.06)'
+              boxShadow: isLight ? '0 2px 8px rgba(0,0,0,0.04)' : '0 4px 16px rgba(0,0,0,0.06)'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                <span style={{ fontSize: 12.5, fontWeight: 800, color: '#FBBF24', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ fontSize: 12.5, fontWeight: 800, color: isLight ? '#92400E' : '#FBBF24', display: 'flex', alignItems: 'center', gap: 6 }}>
                   ⚡ Quick Demo: Test Instant Auto-Accept
                 </span>
-                <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>1-Click pre-fill verified resident</span>
+                <span style={{ fontSize: 11, color: isLight ? '#78350F' : 'var(--text-muted)' }}>1-Click pre-fill verified resident</span>
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                 {HOA_MASTERLIST_DATABASE.slice(0, 4).map(rec => (
@@ -352,9 +418,9 @@ export default function Register() {
                     style={{
                       padding: '7px 12px',
                       borderRadius: 8,
-                      background: 'var(--bg-surface)',
-                      border: '1px solid var(--border)',
-                      color: 'var(--text-primary)',
+                      background: isLight ? '#FFFFFF' : 'var(--bg-surface)',
+                      border: isLight ? '1px solid #CBD5E1' : '1px solid var(--border)',
+                      color: isLight ? '#0F172A' : 'var(--text-primary)',
                       fontSize: 12,
                       fontWeight: 600,
                       cursor: 'pointer',
@@ -362,19 +428,19 @@ export default function Register() {
                       alignItems: 'center',
                       gap: 6,
                       transition: 'all 0.2s ease',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
+                      boxShadow: isLight ? '0 1px 3px rgba(0,0,0,0.06)' : '0 2px 4px rgba(0,0,0,0.3)'
                     }}
                     onMouseEnter={e => {
-                      e.currentTarget.style.background = '#166534';
-                      e.currentTarget.style.borderColor = '#22C55E';
+                      e.currentTarget.style.background = isLight ? '#F0FDF4' : '#166534';
+                      e.currentTarget.style.borderColor = isLight ? '#16A34A' : '#22C55E';
                     }}
                     onMouseLeave={e => {
-                      e.currentTarget.style.background = 'var(--bg-surface)';
-                      e.currentTarget.style.borderColor = 'var(--border)';
+                      e.currentTarget.style.background = isLight ? '#FFFFFF' : 'var(--bg-surface)';
+                      e.currentTarget.style.borderColor = isLight ? '#CBD5E1' : 'var(--border)';
                     }}
                   >
-                    <span style={{ color: 'var(--text-primary)' }}>👤 {rec.ownerName}</span>
-                    <span style={{ color: '#FBBF24', fontSize: 11, fontWeight: 700 }}>({rec.block} {rec.lot})</span>
+                    <span style={{ color: isLight ? '#0F172A' : 'var(--text-primary)' }}>👤 {rec.ownerName}</span>
+                    <span style={{ color: isLight ? '#B45309' : '#FBBF24', fontSize: 11, fontWeight: 700 }}>({rec.block} {rec.lot})</span>
                   </button>
                 ))}
               </div>
@@ -386,30 +452,40 @@ export default function Register() {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            background: 'var(--bg-hover)',
+            background: isLight ? '#F8FAFC' : 'var(--bg-hover)',
             padding: '12px 18px',
             borderRadius: 10,
-            border: '1px solid var(--border)',
+            border: isLight ? '1px solid #E2E8F0' : '1px solid var(--border)',
             marginBottom: 22
           }}>
             {[
               { num: 1, label: '1. Personal & Property Info' },
-              { num: 2, label: '2. Valid ID Verification' },
+              { num: 2, label: '2. Valid ID & Ownership' },
               { num: 4, label: '3. Registration Status' },
-            ].map(s => (
-              <div key={s.num} style={{ display: 'flex', alignItems: 'center', gap: 6, opacity: step >= s.num ? 1 : 0.45 }}>
-                <div style={{
-                  width: 24, height: 24, borderRadius: '50%',
-                  background: step >= s.num ? '#16A34A' : 'rgba(255,255,255,0.15)',
-                  color: '#fff', fontSize: 11, fontWeight: 800,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: step >= s.num ? '0 0 8px rgba(34,197,94,0.4)' : 'none'
-                }}>
-                  {s.num === 4 ? 3 : s.num}
+            ].map(s => {
+              const isActive = step >= s.num;
+              return (
+                <div key={s.num} style={{ display: 'flex', alignItems: 'center', gap: 7, opacity: isActive ? 1 : (isLight ? 0.75 : 0.5) }}>
+                  <div style={{
+                    width: 26, height: 26, borderRadius: '50%',
+                    background: isActive ? '#16A34A' : (isLight ? '#CBD5E1' : 'rgba(255,255,255,0.15)'),
+                    color: isActive ? '#FFFFFF' : (isLight ? '#334155' : '#94A3B8'),
+                    fontSize: 11.5, fontWeight: 800,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: isActive ? '0 0 8px rgba(34,197,94,0.4)' : 'none'
+                  }}>
+                    {s.num === 4 ? 3 : s.num}
+                  </div>
+                  <span style={{
+                    fontSize: 12,
+                    fontWeight: isActive ? 800 : 600,
+                    color: isActive ? (isLight ? '#0F172A' : 'var(--text-primary)') : (isLight ? '#475569' : 'var(--text-muted)')
+                  }}>
+                    {s.label}
+                  </span>
                 </div>
-                <span style={{ fontSize: 12, fontWeight: 700, color: step >= s.num ? 'var(--text-primary)' : 'var(--text-muted)' }}>{s.label}</span>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {error && (
@@ -631,31 +707,32 @@ export default function Register() {
             </form>
           )}
 
-          {/* ── STEP 2: MANDATORY VALID GOVERNMENT ID UPLOAD ── */}
+          {/* ── STEP 2: MANDATORY VALID GOVERNMENT ID & PROOF OF OWNERSHIP UPLOAD ── */}
           {step === 2 && (
             <form onSubmit={handleNextStep2} className="login-form">
+              {/* ID Verification Header Box */}
               <div style={{
-                background: 'rgba(245, 158, 11, 0.08)',
-                border: '1px solid rgba(245, 158, 11, 0.3)',
+                background: isLight ? '#FFFBEB' : 'rgba(245, 158, 11, 0.08)',
+                border: isLight ? '1px solid #FCD34D' : '1px solid rgba(245, 158, 11, 0.3)',
                 padding: '16px 18px',
                 borderRadius: 12,
                 marginBottom: 18
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#FBBF24', fontSize: 13.5, fontWeight: 800, marginBottom: 4 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: isLight ? '#92400E' : '#FBBF24', fontSize: 13.5, fontWeight: 800, marginBottom: 4 }}>
                   <span>🛡️</span>
-                  <span>Valid Government ID Verification (Name, Birthdate & Age)</span>
+                  <span>1. Valid Government ID Verification (Name, Birthdate & Age)</span>
                 </div>
-                <p style={{ fontSize: 12, color: 'var(--text-primary)', margin: 0, lineHeight: 1.5 }}>
+                <p style={{ fontSize: 12, color: isLight ? '#1E293B' : 'var(--text-primary)', margin: 0, lineHeight: 1.5 }}>
                   Please upload a clear, unblurred photo of your government-issued ID to verify your legal identity: <strong>{fullName || 'Applicant'}</strong> ({birthDate ? `Born ${birthDate}` : ''}).
                 </p>
                 <div style={{
-                  background: 'rgba(59, 130, 246, 0.1)',
-                  border: '1px solid rgba(59, 130, 246, 0.25)',
+                  background: isLight ? '#EFF6FF' : 'rgba(59, 130, 246, 0.1)',
+                  border: isLight ? '1px solid #BFDBFE' : '1px solid rgba(59, 130, 246, 0.25)',
                   padding: '8px 12px',
                   borderRadius: 6,
                   marginTop: 8,
                   fontSize: 11.5,
-                  color: 'var(--text-primary)'
+                  color: isLight ? '#1E3A8A' : 'var(--text-primary)'
                 }}>
                   💡 <strong>Address Exemption Notice:</strong> The address printed on your valid ID does <u>not</u> need to match your new Northridge Grove Phase 2 property. We only verify your <strong>Legal Name</strong>, <strong>Birthdate</strong>, and <strong>Age</strong>.
                 </div>
@@ -703,77 +780,323 @@ export default function Register() {
                 <input
                   type="file"
                   id="valid-id-file-upload"
-                  accept="image/*"
+                  accept="image/*,.pdf"
                   onChange={handleFileChange}
                   style={{ display: 'none' }}
                 />
                 
                 <label
                   htmlFor="valid-id-file-upload"
+                  onDragOver={(e) => { e.preventDefault(); setIsDraggingId(true); }}
+                  onDragLeave={() => setIsDraggingId(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setIsDraggingId(false);
+                    const file = e.dataTransfer.files?.[0];
+                    if (file) handleProcessIdFile(file);
+                  }}
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    padding: '24px 18px',
-                    borderRadius: 12,
-                    background: 'var(--bg-hover)',
-                    border: previewUrl ? '2px solid #22C55E' : '2px dashed var(--border)',
+                    padding: previewUrl || attachedFile ? '24px 18px' : '36px 20px',
+                    borderRadius: 16,
+                    background: isDraggingId
+                      ? (isLight ? '#F0FDF4' : 'rgba(22, 163, 74, 0.12)')
+                      : (isLight ? '#FFFFFF' : 'rgba(255, 255, 255, 0.02)'),
+                    border: (previewUrl || attachedFile)
+                      ? (isLight ? '2px solid #16A34A' : '2px solid #22C55E')
+                      : isDraggingId
+                      ? (isLight ? '2px dashed #16A34A' : '2px dashed #22C55E')
+                      : (isLight ? '1.5px dashed #D1D5DB' : '1.5px dashed rgba(255, 255, 255, 0.25)'),
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
                     textAlign: 'center',
+                    boxShadow: isLight ? '0 1px 3px rgba(0,0,0,0.02)' : 'none',
                   }}
                 >
-                  {previewUrl ? (
+                  {previewUrl || attachedFile ? (
                     <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <img
-                        src={previewUrl}
-                        alt="Valid ID Preview"
-                        style={{ maxHeight: 180, maxWidth: '100%', objectFit: 'contain', borderRadius: 8, border: '1px solid rgba(255,255,255,0.2)', marginBottom: 12 }}
-                      />
-                      <div style={{ fontSize: 13, fontWeight: 800, color: '#86EFAC' }}>
-                        ✓ {attachedFile ? attachedFile.name : 'Sample ID Attached'} — Click to Replace Picture
+                      {previewUrl ? (
+                        <img
+                          src={previewUrl}
+                          alt="Valid ID Preview"
+                          style={{ maxHeight: 180, maxWidth: '100%', objectFit: 'contain', borderRadius: 10, border: isLight ? '1px solid #CBD5E1' : '1px solid rgba(255,255,255,0.2)', marginBottom: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                        />
+                      ) : (
+                        <div style={{ fontSize: 38, marginBottom: 8 }}>📄</div>
+                      )}
+                      <div style={{ fontSize: 13.5, fontWeight: 800, color: isLight ? '#15803D' : '#86EFAC' }}>
+                        ✓ {attachedFile ? attachedFile.name : 'Valid ID Attached'} — Click to Replace Picture
                       </div>
-                      <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 3 }}>
+                      <div style={{ fontSize: 11.5, color: isLight ? '#475569' : 'var(--text-muted)', marginTop: 3 }}>
                         Ensure photo, full name, and birth date are crisp and clearly legible.
                       </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setAttachedFile(null);
+                          setPreviewUrl('');
+                          setProofDocUrl('');
+                        }}
+                        style={{
+                          marginTop: 10,
+                          padding: '4px 12px',
+                          borderRadius: 6,
+                          background: isLight ? '#FEE2E2' : 'rgba(239, 68, 68, 0.15)',
+                          border: isLight ? '1px solid #FECACA' : '1px solid rgba(239, 68, 68, 0.3)',
+                          color: isLight ? '#B91C1C' : '#FCA5A5',
+                          fontSize: 11.5,
+                          fontWeight: 700,
+                          cursor: 'pointer'
+                        }}
+                      >
+                        ✕ Remove File
+                      </button>
                     </div>
                   ) : (
-                    <>
-                      <div style={{ fontSize: 38, marginBottom: 8 }}>📷</div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>
-                        Click to Snap Photo or Upload Government ID
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={isLight ? '#9CA3AF' : '#94A3B8'} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 12 }}>
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                      </svg>
+                      <div style={{ fontSize: 14.5, fontWeight: 600, color: isLight ? '#111827' : '#F8FAFC', marginBottom: 4 }}>
+                        Choose a file or drag & drop
                       </div>
-                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
-                        Supports JPG, PNG, WEBP (Max 10MB)
+                      <div style={{ fontSize: 12, color: isLight ? '#9CA3AF' : '#94A3B8', marginBottom: 16 }}>
+                        JPEG, PNG, PDF, and format, up to 20MB
                       </div>
-                    </>
+                      <span style={{
+                        padding: '6px 18px',
+                        borderRadius: 6,
+                        background: isLight ? '#FFFFFF' : 'rgba(255,255,255,0.08)',
+                        border: isLight ? '1px solid #D1D5DB' : '1px solid rgba(255,255,255,0.2)',
+                        color: isLight ? '#1F2937' : '#F3F4F6',
+                        fontSize: 12.5,
+                        fontWeight: 600,
+                        boxShadow: isLight ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
+                        display: 'inline-block'
+                      }}>
+                        Browse File
+                      </span>
+                    </div>
                   )}
                 </label>
               </div>
 
+              {/* ── 2. PROOF OF PROPERTY OWNERSHIP (DOAS OR CTS OR TITLE) ── */}
+              <div style={{
+                marginTop: 18,
+                background: isLight ? '#F0FDF4' : 'rgba(16, 185, 129, 0.08)',
+                border: isLight ? '1.5px solid #86EFAC' : '1px solid rgba(16, 185, 129, 0.3)',
+                padding: '16px 18px',
+                borderRadius: 12,
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6, flexWrap: 'wrap', gap: 6 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: isLight ? '#065F46' : '#6EE7B7', fontSize: 13.5, fontWeight: 800 }}>
+                    <span>📜</span>
+                    <span>2. Proof of Property Ownership</span>
+                  </div>
+                  <span style={{
+                    background: isLight ? '#DCFCE7' : 'rgba(34, 197, 94, 0.2)',
+                    color: isLight ? '#15803D' : '#86EFAC',
+                    border: isLight ? '1px solid #86EFAC' : '1px solid rgba(74, 222, 128, 0.4)',
+                    padding: '2px 8px',
+                    borderRadius: 6,
+                    fontSize: 11,
+                    fontWeight: 800,
+                  }}>
+                    ⚡ Submit ANY 1 (OR Only)
+                  </span>
+                </div>
+
+                {/* Explicit (OR) Notice Banner */}
+                <div style={{
+                  background: isLight ? '#FEF3C7' : 'rgba(245, 158, 11, 0.12)',
+                  border: isLight ? '1px solid #FCD34D' : '1px solid rgba(245, 158, 11, 0.3)',
+                  padding: '9px 12px',
+                  borderRadius: 8,
+                  marginBottom: 12,
+                  fontSize: 12,
+                  color: isLight ? '#92400E' : '#FDE68A',
+                  lineHeight: 1.45,
+                }}>
+                  📢 <strong>(OR) Only Required:</strong> Please submit only <u>one (1)</u> of the following proofs of ownership — <strong>Deed of Absolute Sale (DOAS)</strong> <em>OR</em> <strong>Contract to Sell (CTS)</strong> <em>OR</em> <strong>Land Title (TCT)</strong>. You do not need to provide all three.
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 12, marginBottom: 12 }}>
+                  <div>
+                    <label className="form-label">
+                      Select Document Type Provided <span className="req-star">*</span>
+                    </label>
+                    <select
+                      className="form-input"
+                      value={ownershipDocType}
+                      onChange={e => setOwnershipDocType(e.target.value)}
+                      required
+                    >
+                      <option value="Deed of Absolute Sale (DOAS)">Deed of Absolute Sale (DOAS)</option>
+                      <option value="Contract to Sell (CTS)">Contract to Sell (CTS)</option>
+                      <option value="Transfer Certificate of Title (TCT)">Transfer Certificate of Title (TCT / Land Title)</option>
+                      <option value="Certificate of Turnover">Developer Turnover / Acceptance Form</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="form-label">Doc / Contract / Title No. (Optional)</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      placeholder="e.g. TCT-123456 / CTS-2024-001"
+                      value={ownershipDocNumber}
+                      onChange={e => setOwnershipDocNumber(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="form-label">
+                    Upload Document Photo or PDF (DOAS / CTS / Title) <span className="req-star">*</span>
+                  </label>
+                  <input
+                    type="file"
+                    id="ownership-doc-upload"
+                    accept="image/*,.pdf"
+                    onChange={handleOwnershipFileChange}
+                    style={{ display: 'none' }}
+                  />
+
+                  <label
+                    htmlFor="ownership-doc-upload"
+                    onDragOver={(e) => { e.preventDefault(); setIsDraggingOwnership(true); }}
+                    onDragLeave={() => setIsDraggingOwnership(false)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setIsDraggingOwnership(false);
+                      const file = e.dataTransfer.files?.[0];
+                      if (file) handleProcessOwnershipFile(file);
+                    }}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: ownershipPreviewUrl || ownershipAttachedFile ? '24px 18px' : '36px 20px',
+                      borderRadius: 16,
+                      background: isDraggingOwnership
+                        ? (isLight ? '#F0FDF4' : 'rgba(22, 163, 74, 0.12)')
+                        : (isLight ? '#FFFFFF' : 'rgba(255, 255, 255, 0.02)'),
+                      border: (ownershipPreviewUrl || ownershipAttachedFile)
+                        ? (isLight ? '2px solid #16A34A' : '2px solid #22C55E')
+                        : isDraggingOwnership
+                        ? (isLight ? '2px dashed #16A34A' : '2px dashed #22C55E')
+                        : (isLight ? '1.5px dashed #D1D5DB' : '1.5px dashed rgba(255, 255, 255, 0.25)'),
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      textAlign: 'center',
+                      boxShadow: isLight ? '0 1px 3px rgba(0,0,0,0.02)' : 'none',
+                    }}
+                  >
+                    {ownershipPreviewUrl || ownershipAttachedFile ? (
+                      <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        {ownershipPreviewUrl ? (
+                          <img
+                            src={ownershipPreviewUrl}
+                            alt="Proof of Ownership Preview"
+                            style={{ maxHeight: 180, maxWidth: '100%', objectFit: 'contain', borderRadius: 10, border: isLight ? '1px solid #CBD5E1' : '1px solid rgba(255,255,255,0.2)', marginBottom: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                          />
+                        ) : (
+                          <div style={{ fontSize: 38, marginBottom: 8 }}>📄</div>
+                        )}
+                        <div style={{ fontSize: 13.5, fontWeight: 800, color: isLight ? '#15803D' : '#86EFAC' }}>
+                          ✓ {ownershipAttachedFile ? ownershipAttachedFile.name : `${ownershipDocType} Attached`} — Click to Replace
+                        </div>
+                        <div style={{ fontSize: 11.5, color: isLight ? '#475569' : 'var(--text-muted)', marginTop: 3 }}>
+                          Document verified for {selectedBlock} {selectedLot}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setOwnershipAttachedFile(null);
+                            setOwnershipPreviewUrl('');
+                            setOwnershipDocUrl('');
+                          }}
+                          style={{
+                            marginTop: 10,
+                            padding: '4px 12px',
+                            borderRadius: 6,
+                            background: isLight ? '#FEE2E2' : 'rgba(239, 68, 68, 0.15)',
+                            border: isLight ? '1px solid #FECACA' : '1px solid rgba(239, 68, 68, 0.3)',
+                            color: isLight ? '#B91C1C' : '#FCA5A5',
+                            fontSize: 11.5,
+                            fontWeight: 700,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          ✕ Remove File
+                        </button>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={isLight ? '#9CA3AF' : '#94A3B8'} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 12 }}>
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="17 8 12 3 7 8" />
+                          <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                        <div style={{ fontSize: 14.5, fontWeight: 600, color: isLight ? '#111827' : '#F8FAFC', marginBottom: 4 }}>
+                          Choose a file or drag & drop
+                        </div>
+                        <div style={{ fontSize: 12, color: isLight ? '#9CA3AF' : '#94A3B8', marginBottom: 16 }}>
+                          JPEG, PNG, PDF, and format, up to 20MB
+                        </div>
+                        <span style={{
+                          padding: '6px 18px',
+                          borderRadius: 6,
+                          background: isLight ? '#FFFFFF' : 'rgba(255,255,255,0.08)',
+                          border: isLight ? '1px solid #D1D5DB' : '1px solid rgba(255,255,255,0.2)',
+                          color: isLight ? '#1F2937' : '#F3F4F6',
+                          fontSize: 12.5,
+                          fontWeight: 600,
+                          boxShadow: isLight ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
+                          display: 'inline-block'
+                        }}>
+                          Browse File
+                        </span>
+                      </div>
+                    )}
+                  </label>
+                </div>
+              </div>
+
               {/* Data Vault Notice */}
               <div style={{
-                background: 'var(--bg-hover)',
-                border: '1px solid var(--border)',
+                marginTop: 18,
+                background: isLight ? '#F8FAFC' : 'var(--bg-hover)',
+                border: isLight ? '1px solid #E2E8F0' : '1px solid var(--border)',
                 padding: '10px 14px',
                 borderRadius: 8,
                 fontSize: 11.5,
-                color: 'var(--text-secondary)',
+                color: isLight ? '#334155' : 'var(--text-secondary)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 8
               }}>
                 <span>🔒</span>
                 <span>
-                  <strong>Encrypted Vault Protection:</strong> Uploaded ID images are encrypted and restricted solely to Super Admin Master Clearance.
+                  <strong>Encrypted Vault Protection:</strong> Uploaded ID and ownership documents are encrypted and restricted solely to Super Admin Master Clearance.
                 </span>
               </div>
 
               {/* Mandatory Consent Checkbox */}
               <div style={{
-                background: agreePrivacyConsent ? 'rgba(22, 101, 52, 0.12)' : 'var(--bg-hover)',
-                border: agreePrivacyConsent ? '1.5px solid #22C55E' : '1px solid var(--border)',
+                background: agreePrivacyConsent ? (isLight ? '#F0FDF4' : 'rgba(22, 101, 52, 0.12)') : (isLight ? '#F8FAFC' : 'var(--bg-hover)'),
+                border: agreePrivacyConsent ? (isLight ? '1.5px solid #16A34A' : '1.5px solid #22C55E') : (isLight ? '1px solid #CBD5E1' : '1px solid var(--border)'),
                 padding: '14px 16px',
                 borderRadius: 10,
                 display: 'flex',
@@ -789,8 +1112,8 @@ export default function Register() {
                   style={{ width: 18, height: 18, marginTop: 2, cursor: 'pointer', accentColor: '#16A34A' }}
                   required
                 />
-                <label htmlFor="privacy-consent-checkbox" style={{ fontSize: 12, color: 'var(--text-primary)', cursor: 'pointer', lineHeight: 1.5 }}>
-                  I declare that all submitted details are true and correct. I explicitly consent to the collection, processing, and encrypted storage of my PII, Sensitive Personal Data (Birthdate, Gender, Government ID), and emergency contacts by <strong>Northridge Grove Phase 2 HOA Inc.</strong> pursuant to the{' '}
+                <label htmlFor="privacy-consent-checkbox" style={{ fontSize: 12, color: isLight ? '#0F172A' : 'var(--text-primary)', cursor: 'pointer', lineHeight: 1.5 }}>
+                  I declare that all submitted details are true and correct. I explicitly consent to the collection, processing, and encrypted storage of my PII, Sensitive Personal Data (Birthdate, Gender, Government ID, Proof of Ownership), and emergency contacts by <strong>Northridge Grove Phase 2 HOA Inc.</strong> pursuant to the{' '}
                   <button
                     type="button"
                     onClick={(e) => {
@@ -799,7 +1122,7 @@ export default function Register() {
                       setShowPrivacyModal(true);
                     }}
                     style={{
-                      color: '#38BDF8',
+                      color: isLight ? '#0284C7' : '#38BDF8',
                       textDecoration: 'underline',
                       background: 'none',
                       border: 'none',
@@ -820,9 +1143,10 @@ export default function Register() {
                   onClick={() => setStep(1)}
                   style={{
                     flex: 1, padding: 12, borderRadius: 8,
-                    background: 'var(--bg-hover)', color: 'var(--text-primary)',
-                    border: '1px solid var(--border)',
-                    fontWeight: 600, cursor: 'pointer'
+                    background: isLight ? '#F1F5F9' : 'var(--bg-hover)',
+                    color: isLight ? '#1E293B' : 'var(--text-primary)',
+                    border: isLight ? '1px solid #CBD5E1' : '1px solid var(--border)',
+                    fontWeight: 700, cursor: 'pointer'
                   }}
                 >
                   ← Back to Details
@@ -875,7 +1199,7 @@ export default function Register() {
                     <span style={{ background: '#22C55E', color: '#052E16', fontSize: 11, fontWeight: 900, padding: '2px 8px', borderRadius: 4 }}>
                       ACTIVE & VERIFIED
                     </span>
-                    <span style={{ color: '#86EFAC', fontSize: 12, fontWeight: 700 }}>
+                    <span style={{ color: isLight ? '#15803D' : '#86EFAC', fontSize: 12, fontWeight: 700 }}>
                       No Admin Waiting Time Required
                     </span>
                   </div>
@@ -884,9 +1208,18 @@ export default function Register() {
                   </div>
                 </div>
               ) : (
-                <div style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)', padding: 16, borderRadius: 10, textAlign: 'left', marginBottom: 24 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: '#FBBF24', marginBottom: 4 }}>⏳ Status: Pending HOA Board Verification</div>
-                  <div style={{ fontSize: 12, color: 'var(--text-primary)' }}>
+                <div style={{
+                  background: isLight ? '#FEF3C7' : 'rgba(245,158,11,0.15)',
+                  border: isLight ? '1px solid #FCD34D' : '1px solid rgba(245,158,11,0.4)',
+                  padding: 16,
+                  borderRadius: 10,
+                  textAlign: 'left',
+                  marginBottom: 24
+                }}>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: isLight ? '#92400E' : '#FBBF24', marginBottom: 4 }}>
+                    ⏳ Status: Pending HOA Board Verification
+                  </div>
+                  <div style={{ fontSize: 12, color: isLight ? '#1E293B' : 'var(--text-primary)' }}>
                     The HOA Board will review your submitted application. Once approved, your account will be activated immediately.
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import PageContainer from '../../components/layout/PageContainer';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { useToast } from '../../context/ToastContext';
 import AdminPaymentVerificationModal, { PendingPaymentData } from '../../components/billing/AdminPaymentVerificationModal';
 import OfficialPrintableReceipt, { ReceiptData } from '../../components/billing/OfficialPrintableReceipt';
@@ -86,6 +87,8 @@ const DEFAULT_APPROVALS: PaymentApprovalItem[] = [
 
 export default function PaymentApprovals() {
   const { user } = useAuth();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const { success, error: showError, info } = useToast();
 
   const [approvalsList, setApprovalsList] = useState<PaymentApprovalItem[]>(() => {
@@ -299,7 +302,7 @@ export default function PaymentApprovals() {
       title="Payment Approvals & Treasury Verification"
       subtitle="Review resident GCash payment proofs, audit reference numbers against bank deposits, and approve or reject submissions."
     >
-      <div style={{ maxWidth: 1240, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div style={{ width: '100%', maxWidth: '100%', margin: '0', display: 'flex', flexDirection: 'column', gap: 20 }}>
 
         {/* ── TOP KPI METRICS SUMMARY CARDS ── */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
@@ -517,19 +520,19 @@ export default function PaymentApprovals() {
             </div>
           </div>
 
-          <div style={{ overflowX: 'auto' }}>
-            <table className="table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+          <div style={{ overflowX: 'auto', width: '100%' }}>
+            <table className="table" style={{ width: '100%', minWidth: 980, borderCollapse: 'collapse', fontSize: 13 }}>
               <thead>
                 <tr style={{ background: 'var(--bg-elevated, var(--bg-hover))', borderBottom: '1px solid var(--border)', textAlign: 'left' }}>
-                  <th style={{ padding: '12px 18px', fontWeight: 700, color: 'var(--text-muted)', fontSize: 12 }}>RESIDENT / PAYOR</th>
-                  <th style={{ padding: '12px 18px', fontWeight: 700, color: 'var(--text-muted)', fontSize: 12 }}>ASSESSMENT PERIOD</th>
-                  <th style={{ padding: '12px 18px', fontWeight: 700, color: 'var(--text-muted)', fontSize: 12 }}>AMOUNT</th>
-                  <th style={{ padding: '12px 18px', fontWeight: 700, color: 'var(--text-muted)', fontSize: 12 }}>CHANNEL</th>
-                  <th style={{ padding: '12px 18px', fontWeight: 700, color: 'var(--text-muted)', fontSize: 12 }}>GCASH REF NO.</th>
-                  <th style={{ padding: '12px 18px', fontWeight: 700, color: 'var(--text-muted)', fontSize: 12 }}>PAYMENT PROOF</th>
-                  <th style={{ padding: '12px 18px', fontWeight: 700, color: 'var(--text-muted)', fontSize: 12 }}>SUBMITTED AT</th>
-                  <th style={{ padding: '12px 18px', fontWeight: 700, color: 'var(--text-muted)', fontSize: 12 }}>STATUS</th>
-                  <th style={{ padding: '12px 18px', fontWeight: 700, color: 'var(--text-muted)', fontSize: 12, textAlign: 'right' }}>ADMIN ACTION</th>
+                  <th style={{ padding: '12px 14px', fontWeight: 700, color: 'var(--text-muted)', fontSize: 12, minWidth: 160, whiteSpace: 'nowrap' }}>RESIDENT / PAYOR</th>
+                  <th style={{ padding: '12px 14px', fontWeight: 700, color: 'var(--text-muted)', fontSize: 12, minWidth: 130, whiteSpace: 'nowrap' }}>ASSESSMENT PERIOD</th>
+                  <th style={{ padding: '12px 14px', fontWeight: 700, color: 'var(--text-muted)', fontSize: 12, minWidth: 100, whiteSpace: 'nowrap' }}>AMOUNT</th>
+                  <th style={{ padding: '12px 14px', fontWeight: 700, color: 'var(--text-muted)', fontSize: 12, minWidth: 90, whiteSpace: 'nowrap' }}>CHANNEL</th>
+                  <th style={{ padding: '12px 14px', fontWeight: 700, color: 'var(--text-muted)', fontSize: 12, minWidth: 150, whiteSpace: 'nowrap' }}>GCASH REF NO.</th>
+                  <th style={{ padding: '12px 14px', fontWeight: 700, color: 'var(--text-muted)', fontSize: 12, minWidth: 95, whiteSpace: 'nowrap' }}>PAYMENT PROOF</th>
+                  <th style={{ padding: '12px 14px', fontWeight: 700, color: 'var(--text-muted)', fontSize: 12, minWidth: 125, whiteSpace: 'nowrap' }}>SUBMITTED AT</th>
+                  <th style={{ padding: '12px 14px', fontWeight: 700, color: 'var(--text-muted)', fontSize: 12, minWidth: 115, whiteSpace: 'nowrap' }}>STATUS</th>
+                  <th style={{ padding: '12px 14px', fontWeight: 700, color: 'var(--text-muted)', fontSize: 12, minWidth: 135, textAlign: 'right', whiteSpace: 'nowrap' }}>ADMIN ACTION</th>
                 </tr>
               </thead>
               <tbody>
@@ -556,30 +559,30 @@ export default function PaymentApprovals() {
                         }}
                       >
                         {/* Resident / Payor */}
-                        <td style={{ padding: '14px 18px' }}>
-                          <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: 13.5 }}>
+                        <td style={{ padding: '12px 14px', minWidth: 160 }}>
+                          <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: 13.5, whiteSpace: 'nowrap' }}>
                             {item.payorName}
                           </div>
-                          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+                          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2, whiteSpace: 'nowrap' }}>
                             {item.propertyAddress}
                           </div>
-                          <div style={{ fontSize: 11, color: '#16A34A', fontWeight: 700, marginTop: 2 }}>
+                          <div style={{ fontSize: 11, color: '#16A34A', fontWeight: 700, marginTop: 2, whiteSpace: 'nowrap' }}>
                             {item.memberId}
                           </div>
                         </td>
 
                         {/* Assessment Period */}
-                        <td style={{ padding: '14px 18px', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                        <td style={{ padding: '12px 14px', fontWeight: 600, color: 'var(--text-secondary)', minWidth: 130 }}>
                           {item.billingPeriod}
                         </td>
 
                         {/* Amount */}
-                        <td style={{ padding: '14px 18px', fontWeight: 800, color: 'var(--text-primary)', fontSize: 14 }}>
+                        <td style={{ padding: '12px 14px', fontWeight: 800, color: 'var(--text-primary)', fontSize: 14, whiteSpace: 'nowrap' }}>
                           {item.amount}
                         </td>
 
                         {/* Channel */}
-                        <td style={{ padding: '14px 18px' }}>
+                        <td style={{ padding: '12px 14px', whiteSpace: 'nowrap' }}>
                           <span style={{
                             background: 'rgba(0, 92, 238, 0.12)',
                             color: '#005CEE',
@@ -590,33 +593,37 @@ export default function PaymentApprovals() {
                             fontSize: 12,
                             display: 'inline-flex',
                             alignItems: 'center',
-                            gap: 5
+                            gap: 5,
+                            whiteSpace: 'nowrap'
                           }}>
                             <span>📱</span> {item.channel}
                           </span>
                         </td>
 
                         {/* GCash Ref No */}
-                        <td style={{ padding: '14px 18px' }}>
+                        <td style={{ padding: '12px 14px', minWidth: 150, whiteSpace: 'nowrap' }}>
                           <span style={{
                             fontFamily: 'monospace',
                             fontWeight: 800,
-                            color: '#1E293B',
-                            background: '#F1F5F9',
-                            padding: '4px 8px',
+                            color: isLight ? '#1E293B' : '#60A5FA',
+                            background: isLight ? '#F1F5F9' : 'rgba(59, 130, 246, 0.14)',
+                            border: isLight ? '1px solid #CBD5E1' : '1px solid rgba(59, 130, 246, 0.3)',
+                            padding: '5px 10px',
                             borderRadius: 6,
                             fontSize: 12.5,
-                            letterSpacing: '0.04em'
+                            letterSpacing: '0.04em',
+                            display: 'inline-block',
+                            whiteSpace: 'nowrap'
                           }}>
                             {item.refNo}
                           </span>
-                          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 3 }}>
-                            Sender: {item.senderPhone}
+                          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4, whiteSpace: 'nowrap' }}>
+                            Sender: <strong style={{ color: isLight ? '#334155' : '#94A3B8' }}>{item.senderPhone}</strong>
                           </div>
                         </td>
 
                         {/* Payment Proof Thumbnail */}
-                        <td style={{ padding: '14px 18px' }}>
+                        <td style={{ padding: '12px 14px', whiteSpace: 'nowrap' }}>
                           {item.screenshotUrl ? (
                             <div
                               onClick={() => setPreviewScreenshotUrl(item.screenshotUrl)}
@@ -648,12 +655,12 @@ export default function PaymentApprovals() {
                         </td>
 
                         {/* Submitted At */}
-                        <td style={{ padding: '14px 18px', fontSize: 12, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                        <td style={{ padding: '12px 14px', fontSize: 12, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
                           {item.submittedAt}
                         </td>
 
                         {/* Status */}
-                        <td style={{ padding: '14px 18px' }}>
+                        <td style={{ padding: '12px 14px', whiteSpace: 'nowrap' }}>
                           {isPending && (
                             <span style={{
                               background: 'rgba(245, 158, 11, 0.15)',
@@ -665,7 +672,8 @@ export default function PaymentApprovals() {
                               fontSize: 12,
                               display: 'inline-flex',
                               alignItems: 'center',
-                              gap: 5
+                              gap: 5,
+                              whiteSpace: 'nowrap'
                             }}>
                               <span>⏳</span> Pending Review
                             </span>
@@ -682,12 +690,13 @@ export default function PaymentApprovals() {
                                 fontSize: 12,
                                 display: 'inline-flex',
                                 alignItems: 'center',
-                                gap: 5
+                                gap: 5,
+                                whiteSpace: 'nowrap'
                               }}>
                                 <span>✓</span> Approved &amp; Paid
                               </span>
                               {item.orNumber && (
-                                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2, fontFamily: 'monospace' }}>
+                                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2, fontFamily: 'monospace', whiteSpace: 'nowrap' }}>
                                   OR: {item.orNumber}
                                 </div>
                               )}
@@ -705,7 +714,8 @@ export default function PaymentApprovals() {
                                 fontSize: 12,
                                 display: 'inline-flex',
                                 alignItems: 'center',
-                                gap: 5
+                                gap: 5,
+                                whiteSpace: 'nowrap'
                               }}>
                                 <span>✕</span> Rejected
                               </span>
@@ -719,7 +729,7 @@ export default function PaymentApprovals() {
                         </td>
 
                         {/* Admin Action */}
-                        <td style={{ padding: '14px 18px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                        <td style={{ padding: '12px 14px', textAlign: 'right', whiteSpace: 'nowrap' }}>
                           {isPending && (
                             <div style={{ display: 'inline-flex', gap: 8 }}>
                               <button

@@ -2,15 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { HOA_OFFICERS_DATA } from './admin/HOAOfficersDirectory';
-
 declare global {
   interface Window {
     L: any;
   }
 }
 
-const NAV_LINKS = ['Home', 'About', 'Map & Amenities', 'Events', 'HOA Officers', 'Contact'];
+const NAV_LINKS = ['Home', 'About', 'Map & Amenities', 'Events', 'Contact'];
 
 const NEWS = [
   {
@@ -450,7 +448,6 @@ export default function PublicLandingPage() {
     'About': 'about',
     'Map & Amenities': 'map-amenities',
     'Events': 'events',
-    'HOA Officers': 'hoa-officers',
     'Contact': 'contact',
   };
 
@@ -992,146 +989,6 @@ export default function PublicLandingPage() {
               📄 Download Full HOA By-Laws & CCRs (PDF) via Portal
             </button>
           </div>
-        </div>
-      </section>
-
-      {/* ── HOA OFFICERS & DIRECTORY SECTION ── */}
-      <section id="hoa-officers" style={{ padding: '90px 24px', background: 'var(--landing-section-warm)', transition: 'background 0.3s ease' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div className="reveal" style={{ textAlign: 'center', marginBottom: 48 }}>
-            <p style={{ fontSize: 11.5, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#166534', fontWeight: 800, marginBottom: 10 }}>Official Association Leadership</p>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.8rem, 3vw, 2.7rem)', fontWeight: 900, color: 'var(--landing-text)', lineHeight: 1.15, marginBottom: 14, letterSpacing: '-0.02em' }}>
-              NRG PH2 HOA Officers & Committee Chairs
-            </h2>
-            <p style={{ color: 'var(--landing-text-sub)', fontSize: 15.5, maxWidth: 680, margin: '0 auto', lineHeight: 1.7 }}>
-              Meet the duly elected Executive Board of Directors, dedicated Block Leaders (Blocks 1–9), and Working Committee Chairs serving Northridge Grove Phase 2.
-            </p>
-          </div>
-
-          {/* 1. EXECUTIVE BOARD CARDS */}
-          <div style={{ marginBottom: 40 }}>
-            <div style={{ fontSize: 13, fontWeight: 800, color: '#DC2626', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 16 }}>
-              👑 Executive Board of Directors
-            </div>
-            <div className="grid grid-3" style={{ gap: 16 }}>
-              {HOA_OFFICERS_DATA.filter(o => o.category === 'executive').map((off, i) => (
-                <div
-                  key={i}
-                  className="card hover-lift"
-                  style={{
-                    background: 'var(--landing-card-bg)',
-                    border: `1.5px solid ${off.color}40`,
-                    padding: 20,
-                    borderRadius: 14,
-                    boxShadow: isDark ? '0 4px 20px rgba(0,0,0,0.3)' : '0 4px 16px rgba(0,0,0,0.04)',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <div style={{ height: 4, background: off.color, position: 'absolute', top: 0, left: 0, right: 0 }} />
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <div style={{ width: 44, height: 44, borderRadius: '50%', background: `${off.color}15`, color: off.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 800 }}>
-                        {off.avatarIcon}
-                      </div>
-                      <div>
-                        <div style={{ fontSize: 10, fontWeight: 900, color: off.color, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{off.badge}</div>
-                        <div style={{ fontSize: 16, fontWeight: 900, color: 'var(--landing-text)' }}>{off.name}</div>
-                      </div>
-                    </div>
-                    <div style={{ fontSize: 13, fontWeight: 800, color: off.color, marginTop: 4 }}>{off.role}</div>
-                    <div style={{ fontSize: 11.5, color: 'var(--landing-text-muted)', marginTop: 2 }}>{off.blockOrDept}</div>
-                  </div>
-
-                  <div style={{ fontSize: 11.5, color: 'var(--landing-text-sub)', marginTop: 12, paddingTop: 10, borderTop: `1px solid var(--landing-card-border)`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: 11, color: 'var(--landing-text-muted)', fontWeight: 600 }}>🏛️ Executive Board</span>
-                    <span style={{ fontSize: 10, background: `${off.color}15`, color: off.color, padding: '2px 8px', borderRadius: 6, fontWeight: 700 }}>Elected Officer</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* 2. BLOCK LEADERS */}
-          <div style={{ marginBottom: 40 }}>
-            <div style={{ fontSize: 13, fontWeight: 800, color: '#0891B2', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 16 }}>
-              🏘️ Block Coordinators (Blocks 1 to 9)
-            </div>
-            <div className="grid grid-3" style={{ gap: 14 }}>
-              {HOA_OFFICERS_DATA.filter(o => o.category === 'block_leader').map((off, i) => (
-                <div
-                  key={i}
-                  className="card hover-lift"
-                  style={{
-                    background: 'var(--landing-card-bg)',
-                    border: `1px solid var(--landing-card-border)`,
-                    padding: 16,
-                    borderRadius: 12,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <div>
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="badge" style={{ background: '#ECFEFF', color: '#0891B2', fontWeight: 800, fontSize: 11 }}>{off.badge}</span>
-                      <span style={{ fontSize: 16 }}>🏘️</span>
-                    </div>
-                    <div style={{ fontSize: 14.5, fontWeight: 800, color: 'var(--landing-text)' }}>{off.name}</div>
-                    <div style={{ fontSize: 11.5, color: '#0891B2', fontWeight: 700, marginTop: 2 }}>{off.role}</div>
-                  </div>
-
-                  <div style={{ fontSize: 11, color: 'var(--landing-text-muted)', marginTop: 10, paddingTop: 8, borderTop: `1px solid var(--landing-card-border)`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span>📍 Block Coordinator</span>
-                    <span style={{ fontSize: 10, color: '#0891B2', background: '#ECFEFF', padding: '2px 6px', borderRadius: 4, fontWeight: 700 }}>Active Lead</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* 3. WORKING COMMITTEES */}
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 800, color: '#166534', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 16 }}>
-              🛡️ Working Committees & Special Taskforces (10 Committees)
-            </div>
-            <div className="grid grid-2" style={{ gap: 14 }}>
-              {HOA_OFFICERS_DATA.filter(o => o.category === 'committee').map((off, i) => (
-                <div
-                  key={i}
-                  className="card hover-lift"
-                  style={{
-                    background: 'var(--landing-card-bg)',
-                    border: `1px solid var(--landing-card-border)`,
-                    padding: 16,
-                    borderRadius: 12,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <div>
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="badge" style={{ background: `${off.color}15`, color: off.color, fontWeight: 800, fontSize: 10 }}>{String(off.badge || 'OFFICER').toUpperCase()}</span>
-                      <span style={{ fontSize: 18 }}>{off.avatarIcon}</span>
-                    </div>
-                    <div style={{ fontSize: 14.5, fontWeight: 800, color: 'var(--landing-text)' }}>{off.name}</div>
-                    <div style={{ fontSize: 12.5, fontWeight: 700, color: off.color, marginTop: 2 }}>{off.role}</div>
-                    <div style={{ fontSize: 11, color: 'var(--landing-text-muted)', marginTop: 3 }}>Scope: {off.blockOrDept}</div>
-                  </div>
-
-                  <div style={{ fontSize: 11, color: 'var(--landing-text-muted)', marginTop: 10, paddingTop: 8, borderTop: `1px solid var(--landing-card-border)`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span>🛡️ Working Committee</span>
-                    <span style={{ fontSize: 10, color: off.color, background: `${off.color}15`, padding: '2px 6px', borderRadius: 4, fontWeight: 700 }}>Official Taskforce</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
         </div>
       </section>
 

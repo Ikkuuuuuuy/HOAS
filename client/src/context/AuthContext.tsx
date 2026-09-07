@@ -479,12 +479,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (data && data.error && !data.error.toLowerCase().includes('failed to fetch')) {
-        throw new Error(data.error);
+        // Backend did not authenticate, proceed to local registered users check
       }
-    } catch (err: any) {
-      if (err.message && (err.message.includes('Invalid credentials') || err.message.includes('incorrect password'))) {
-        throw err;
-      }
+    } catch {
+      // Backend unavailable or network error, proceed to fallback
     }
 
     if (!apiSuccess) {
@@ -538,7 +536,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // Fallback demo user authentication for Vercel / Client-side demo deployment
       const matchedDemoUser = DEMO_USERS_MAP[normalizedEmail];
-
       if (matchedDemoUser) {
         const mockToken = `demo-jwt-${matchedDemoUser.roleName}-${Date.now()}`;
         setAccessToken(mockToken);
@@ -558,7 +555,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      throw new Error('Invalid email or password. Please use one of the quick demo sign-in accounts below.');
+      throw new Error('Invalid email or password. Please verify your credentials or register an account.');
     }
   }, []);
 
